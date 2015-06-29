@@ -25,7 +25,7 @@ import net.java.amateras.db.visual.model.RootModel;
  * A command line tool to import database schema into a existing erd file.
  * <p>
  * <strong>Usage:</strong>
- * <pre>tools.ImportERDCommand erd-file</pre>
+ * <pre>tools.ImportSchemaCommand erd-file</pre>
  * 
  * @author Naoki Takezoe
  */
@@ -84,13 +84,17 @@ public class ImportSchemaCommand {
 	private static Class<?> loadJdbcDriver(String jarPath, String driver) throws Exception {
 		URL jarURL = new URL("file:///" + jarPath);
 		JarClassLoader classLoader = new JarClassLoader(new URL[]{ jarURL });
-		java.util.List<Class<?>> list = classLoader.getJDBCDriverClass(jarPath);
-		for(Class<?> item: list){
-			if(item.getName().equals(driver)){
-				return item;
+		try {
+			java.util.List<Class<?>> list = classLoader.getJDBCDriverClass(jarPath);
+			for(Class<?> item: list){
+				if(item.getName().equals(driver)){
+					return item;
+				}
 			}
+			throw new Exception("JDBC driver is not found!");
+		} finally {
+			classLoader.close();
 		}
-		throw new Exception("JDBC driver is not found!");
 	}
 	
 	private static IDialect getDialect(String dialectName) throws Exception {
