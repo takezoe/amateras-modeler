@@ -1,0 +1,69 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" type="text/css" href="../book.css">
+  <title>エクスポート - AmaterasERD</title>
+</head>
+<body>
+<h1>エクスポート</h1>
+
+<h2><a name="export_ddl">ダイアグラムからDDLを生成する</a></h2>
+<p>
+  ダイアグラムからデータベースを構築するためのDDLを生成します。
+  DDLにはDROP文を含めるかどうか、制約をALTER TABLE文として出力するかなどを指定することができます。
+</p>
+<ol>
+  <li>ダイアグラムエディタで右クリック &gt; [エクスポート] &gt; [DDL]を選択します。</li>
+  <li>出力先のディレクトリ、ファイル名、出力オプションを選択してDDLを出力します。
+    <p>
+      <img src="export_ddl.png" alt="Export as DDL">
+    </p>
+  </li>
+</ol>
+<p>
+  ダイアグラム上で右クリック &gt; [選択されたテーブルのDDLを表示]を選択することで、
+  ダイアログでDDLを確認することもできます。
+</p>
+
+<h2><a name="export_html">ダイアグラムからHTMLを生成する</a></h2>
+<p>
+  ダイアグラムからJavadoc風のHTMLを生成します。
+</p>
+<ol>
+  <li>ダイアグラムエディタで右クリック &gt; [エクスポート] &gt; [HTML]を選択します。
+    <p>
+      <img src="export_as_html_1.png" alt="Export as HTML">
+    </p>
+  </li>
+  <li>HTMLを出力するディレクトリを選択します。</li>
+</ol>
+
+<h2><a name="export_image">ダイアグラムから画像ファイルを生成する</a></h2>
+<p>
+  ダイアグラムから画像ファイルを生成します。
+</p>
+<ol>
+  <li>ダイアグラムエディタで右クリック &gt; [エクスポート] &gt; [イメージ]を選択します。</li>
+  <li>画像ファイルのファイル名を入力します。AmaterasERDは以下の形式の画像ファイルの生成をサポートしています:
+    <ul>
+      <li>*.png</li>
+      <li>*.jpg, *.jpeg</li>
+      <li>*.bmp</li>
+    </ul>
+  </li>
+</ol>
+<p>
+  なお、ダイアグラム上で右クリック > [画像としてコピー]を選択することでクリップボードに画像としてコピーすることもできます。
+</p>
+
+<h2><a name="export_excel">ダイアグラムからExcelを生成する</a></h2>
+<p>
+  ダイアグラムからテーブル定義書（Excel）を生成します。
+</p>
+<ol>
+  <li>ダイアグラムエディタで右クリック &gt; [エクスポート] &gt; [Excel]を選択します。</li>
+  <li>DDLを出力するディレクトリを選択し、DDLファイルのファイル名を入力します。</li>
+</ol>
+
+</body>
+</html>

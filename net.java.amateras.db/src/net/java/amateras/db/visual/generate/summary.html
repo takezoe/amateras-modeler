@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Tables</title>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+  </head>
+  <body onload="setTitle()">
+  <script type="text/javascript">
+  function setTitle(){
+    parent.document.title="Summary";
+  }
+  </script>
+  
+    <table border="1" cellpadding="3" cellspacing="0" width="100%">
+      <tr class="TableHeadingColor">
+        <td colspan="3"><strong>Table Summary</strong></td>
+      </tr>
+      #foreach($table in $model.tables)
+      <tr class="TableRowColor">
+        <td width="5%" nowrap>
+          <strong><a href="tables/${table.tableName}.html"
+          #if($table.linkedTable)
+            class="imported"
+          #end
+          >$table.tableName</a></strong>
+        </td>
+        <td width="5%" nowrap>
+          <strong>$util.escapeHTML2($table.logicalName)</strong>
+        </td>
+        <td>
+          $util.escapeHTML2($table.description)
+        </td>
+      </tr>
+      #end
+    </TABLE>
+    
+    
+    #if(!$model.dommains.empty)
+    <br>
+    
+    <table border="1" cellpadding="3" cellspacing="0" width="100%">
+      <tr class="TableHeadingColor">
+        <td colspan="2"><strong>Domain Summary</strong></td>
+      </tr>
+      <tr class="TableHeadingColor">
+        <td width="1%" valign="top"><strong>$msg.get("dommain.name")</strong></td>
+        <td width="1%" valign="top"><strong>$msg.get("dommain.type")</strong></td>
+      </tr>
+      #foreach($dommain in $model.dommains)
+      <tr class="TableRowColor">
+        <td width="1%" valign="top" nowrap>
+          <code><strong>$util.escapeHTML($dommain.name)</strong></code>
+        </td>
+        <td width="1%" valign="top" nowrap>
+          <code>$util.escapeHTML($dommain.type.name)($dommain.size)</code>
+        </td>
+      </tr>
+      #end
+    </table>
+    #end
+  </body>
+</html>

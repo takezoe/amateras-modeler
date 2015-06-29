@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<clay-model clay-version="1.1.0">
+<database-model alias="" author="" begin-script="" end-script="" name="sample" remarks="" sql-dialect-id="jp.azzurri.clay.model.physical.dialect.HSQLDB_1_7_0_Dialect" version="1.0">
+<database-model-description></database-model-description>
+<schema-list>
+<schema alias="" name="DEFAULT_SCHEMA" remarks="">
+<schema-description></schema-description>
+<domain-list/>
+<table-list>
+<table alias="" name="UserInfo" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="69" width="144" x="35" y="30"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="true" name="COLUMN_1" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="254" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant type-name-pattern="CHAR"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="true" name="COLUMN_2" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="254" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant type-name-pattern="CHAR"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_USERINFO" remarks="">
+<primary-key-description></primary-key-description>
+<primary-key-column name="COLUMN_1"/>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list>
+<foreign-key alias="" name="FK_TABLE_1_1" on-delete="" on-update="" referenced-key="PK_TABLE_2" referenced-table="TABLE_2" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+<foreign-key-column column-name="COLUMN_1" referenced-key-column-name="COLUMN_1"/>
+<foreign-key-column column-name="COLUMN_2" referenced-key-column-name="COLUMN_2"/>
+</foreign-key>
+</foreign-key-list>
+<index-list/>
+</table>
+<table alias="" name="TABLE_2" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="-1" width="-1" x="23" y="208"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="true" name="COLUMN_1" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="254" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant type-name-pattern="CHAR"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="true" name="COLUMN_2" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="254" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant type-name-pattern="CHAR"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_TABLE_2" remarks="">
+<primary-key-description></primary-key-description>
+<primary-key-column name="COLUMN_1"/>
+<primary-key-column name="COLUMN_2"/>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list/>
+<index-list/>
+</table>
+<table alias="" name="TABLE_3" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="-1" width="-1" x="275" y="297"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="true" name="COLUMN_1" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="254" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+<variant type-name-pattern="CHAR"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="false" name="COLUMN_2" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="254" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="false" name="COLUMN_3" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="254" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_TABLE_3" remarks="">
+<primary-key-description></primary-key-description>
+<primary-key-column name="COLUMN_1"/>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list>
+<foreign-key alias="" name="FK_TABLE_3_1" on-delete="" on-update="" referenced-key="PK_TABLE_2" referenced-table="TABLE_2" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+<foreign-key-column column-name="COLUMN_2" referenced-key-column-name="COLUMN_1"/>
+<foreign-key-column column-name="COLUMN_2" referenced-key-column-name="COLUMN_2"/>
+</foreign-key>
+</foreign-key-list>
+<index-list/>
+</table>
+<table alias="" name="TABLE_4" remarks="">
+<table-description></table-description>
+<table-figure-bounds height="-1" width="-1" x="310" y="69"/>
+<column-list>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="true" name="COLUMN_1" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant type-name-pattern="CHAR"/>
+<variant precision-max="254" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="false" name="COLUMN_2" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="254" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="false" name="COLUMN_3" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="254" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="false" name="COLUMN_4" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="254" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+</data-type>
+</column>
+<column alias="" auto-increment="false" column-size="10" decimal-digits="0" default-value="" mandatory="false" name="COLUMN_5" remarks="">
+<column-description></column-description>
+<data-type jdbc-type="1" literal-prefix="'" literal-suffix="'" name="CHAR" selected-variant-pattern="CHAR(%n)">
+<variant precision-max="254" precision-min="1" precision-variable="%n" type-name-pattern="CHAR(%n)"/>
+</data-type>
+</column>
+</column-list>
+<primary-key alias="" name="PK_TABLE_4" remarks="">
+<primary-key-description></primary-key-description>
+<primary-key-column name="COLUMN_1"/>
+</primary-key>
+<unique-key-list/>
+<foreign-key-list>
+<foreign-key alias="" name="FK_TABLE_4_1" on-delete="" on-update="" referenced-key="PK_USERINFO" referenced-table="UserInfo" referenced-table-schema="DEFAULT_SCHEMA" remarks="" source-entity-role="" source-multiplicity="0..*" source-relationship-type="" target-entity-role="" target-multiplicity="1" target-relationship-type="">
+<foreign-key-description></foreign-key-description>
+<foreign-key-figure>
+<fk-fig-bendpoint-list/>
+</foreign-key-figure>
+<foreign-key-column column-name="COLUMN_1" referenced-key-column-name="COLUMN_1"/>
+</foreign-key>
+</foreign-key-list>
+<index-list/>
+</table>
+</table-list>
+</schema>
+</schema-list>
+</database-model>
+</clay-model>

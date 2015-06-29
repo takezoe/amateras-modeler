@@ -1,0 +1,7 @@
+@import "../../PRODUCT_PLUGIN/book.css";
+p.note {
+  margin-left: 20px;
+  margin-right: 20px;
+  background-color: #FFFF88;
+  padding: 4px;
+}pre {	border: 1px solid gray;	padding: 10px;}

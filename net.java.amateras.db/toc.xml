@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<toc label="AmaterasERD" topic="docs/index.html">
+ <topic href="docs/create_diagram/index.html" label="ダイアグラムの作成">
+ </topic>
+ <topic href="docs/edit_diagram/index.html" label="ダイアグラムの編集">
+ </topic>
+ <topic href="docs/domain/index.html" label="ドメイン（共通データ型）">
+ </topic>
+ <topic href="docs/validation/index.html" label="ダイアグラムの検証">
+ </topic>
+ <topic href="docs/convert/index.html" label="名称変換">
+ </topic>
+ <topic href="docs/importing/index.html" label="インポート">
+ </topic>
+ <topic label="エクスポート" href="docs/exporting/index.html">
+ </topic>
+ <topic label="その他のツール" href="docs/other_tools/index.html">
+ </topic>
+</toc>

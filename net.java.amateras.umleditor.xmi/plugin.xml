@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            id="net.java.amateras.umleditor.xmi.editorPopupMenuContribution"
+            targetID="net.java.amateras.uml.classdiagram.ClassDiagramEditor.EditorContext">
+         <menu
+               id="net.java.amateras.uml.xmi.menu"
+               label="%plugin.menu"
+               path="generate">
+            <separator name="xmi"/>
+         </menu>
+         <action
+               class="net.java.amateras.uml.xmi.popup.actions.XMIImportAction"
+               icon="icons/import.gif"
+               id="net.java.amateras.uml.xmi.import"
+               label="%plugin.menu.import"
+               menubarPath="net.java.amateras.uml.xmi.menu/xmi"/>
+         <action
+               class="net.java.amateras.uml.xmi.popup.actions.XMIExportAction"
+               icon="icons/export.gif"
+               id="net.java.amateras.uml.xmi.export"
+               label="%plugin.menu.export"
+               menubarPath="net.java.amateras.uml.xmi.menu/xmi"/>
+      </viewerContribution>
+   </extension>
+
+</plugin>

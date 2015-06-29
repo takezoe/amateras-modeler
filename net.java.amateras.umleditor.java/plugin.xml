@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <viewerContribution
+            id="net.java.amateras.umleditor.java.editorPopupMenuContribution"
+            targetID="net.java.amateras.uml.classdiagram.ClassDiagramEditor.EditorContext">
+         <menu
+               id="net.java.amateras.uml.java.menu"
+               label="%plugin.menu"
+               path="generate">
+            <separator name="java"/>
+         </menu>
+         <action
+               class="net.java.amateras.uml.java.SyncAction"
+               icon="icons/synced.gif"
+               id="net.java.amateras.uml.java.SyncAction"
+               label="%plugin.menu.sync"
+               menubarPath="net.java.amateras.uml.java.menu/java"/>
+         <action
+               class="net.java.amateras.uml.java.JavaExportAction"
+               icon="icons/export.gif"
+               id="net.java.amateras.uml.java.javaExportAction"
+               label="%plugin.menu.export"
+               menubarPath="net.java.amateras.uml.java.menu/java"/>
+         <action
+               class="net.java.amateras.uml.java.JavaImportAction"
+               icon="icons/import.gif"
+               id="net.java.amateras.uml.java.javaImportAction"
+               label="%plugin.menu.import"
+               menubarPath="net.java.amateras.uml.java.menu/java"/>
+         <action
+               class="net.java.amateras.uml.java.OpenSourceAction"
+               enablesFor="+"
+               id="net.java.amateras.uml.java.OpenSourceAction"
+               label="%plugin.menu.open"
+               menubarPath="net.java.amateras.uml.java.menu/java">
+            <selection class="org.eclipse.gef.EditPart"/>
+         </action>
+      </viewerContribution>
+   </extension>
+      <extension
+         point="net.java.amateras.umleditor.dnd">
+      <listenerFactory class="net.java.amateras.uml.dnd.java.ClassDiagramDropTargetListenerFactory"/>
+      <listenerFactory class="net.java.amateras.uml.dnd.java.SequenceDiagramDropTargetListenerFactory"/>
+   </extension>
+      <extension
+            point="org.eclipse.ui.views">
+         <view
+               category="net.java.amateras.umleditor.category"
+               class="net.java.amateras.uml.java.views.SampleView"
+               icon="icons/sample.gif"
+               id="net.java.amateras.uml.java.views.SampleView"
+               name="%plugin.sample.view"/>
+         <category
+               id="net.java.amateras.umleditor.category"
+               name="%plugin.category"/>
+      </extension>
+</plugin>

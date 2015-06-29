@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Tables</title>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+  </head>
+  <body>
+  <strong><a href="summary.html" target="right">All Tables</a></strong><br>
+  <table>
+  <tr>
+    <td>
+    #foreach($table in $model.children)
+      #if($table.tableName)
+      <a href="tables/${table.tableName}.html" target="right"
+        #if($table.linkedTable)
+          class="imported"
+        #end
+      >$util.escapeHTML2($table.tableName)</a><br>
+      #end
+    #end
+    </td>
+  </tr>
+  </table>
+  </body>
+</html>

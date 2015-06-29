@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AmaterasERD Tools">
+	<target name="amateras-erd.jar">
+		<jar destfile="./lib/amateras-erd.jar" 
+			basedir="../net.java.amateras.db/bin"/>
+	</target>
+	
+	<target name="amateras-xstream.jar">
+		<mkdir dir="tmp" />
+		<copy todir="tmp">
+			<fileset dir="../net.java.amateras.xstream/lib" includes="*.jar" />
+		</copy>
+		
+		<mkdir dir="./tmp/classes" />
+		<unjar src="./tmp/commons-lang-2.0.jar" dest="./tmp/classes" />
+		<unjar src="./tmp/dom4j-1.3.jar" dest="./tmp/classes" />
+		<unjar src="./tmp/jdom-1.0.jar" dest="./tmp/classes" />
+		<unjar src="./tmp/jmock-2004-03-19.jar" dest="./tmp/classes" />
+		<unjar src="./tmp/joda-time-1.0.jar" dest="./tmp/classes" />
+		<unjar src="./tmp/stax-api-1.0.jar" dest="./tmp/classes" />
+		<unjar src="./tmp/xml-writer-0.2.jar" dest="./tmp/classes" />
+		<unjar src="./tmp/xom-1.0b3.jar" dest="./tmp/classes" />
+		<unjar src="./tmp/xpp3-1.1.3.4d_b4_min.jar" dest="./tmp/classes" />
+		<unjar src="./tmp/xstream-1.1.2.jar" dest="./tmp/classes" />
+		
+		<copy todir="./tmp/classes">
+			<fileset dir="../net.java.amateras.xstream/bin" />
+		</copy>
+		
+		<jar destfile="./lib/amateras-xstream.jar" basedir="./tmp/classes" />
+		
+		<delete dir="./tmp" />
+	</target>
+	
+	<target name="amateras-erd-tools.jar">
+		<mkdir dir="tmp" />
+		<copy todir="tmp">
+			<fileset dir="./lib" includes="*.jar" />
+		</copy>
+		
+		<mkdir dir="./tmp/classes" />
+		<unjar src="./tmp/amateras-erd.jar" dest="./tmp/classes" />
+		<unjar src="./tmp/amateras-xstream.jar" dest="./tmp/classes" />
+		<unjar src="./tmp/commons-collections-3.1.jar" dest="./tmp/classes" />
+		<unjar src="./tmp/velocity-1.5-dev.jar" dest="./tmp/classes" />
+		<unjar src="./tmp/org.eclipse.ui.views_3.2.101.M20080207-0800.jar" dest="./tmp/classes" />
+		<unjar src="./tmp/org.eclipse.draw2d_3.4.0.v20080115.jar" dest="./tmp/classes" />
+		<unjar src="./tmp/org.eclipse.swt.win32.win32.x86_3.3.3.v3349.jar" dest="./tmp/classes" />
+		
+		<copy todir="./tmp/classes">
+			<fileset dir="./bin" />
+		</copy>
+		
+		<delete dir="./tmp/classes/META-INF" />
+		
+		<jar destfile="./amateras-erd-tools.jar" basedir="./tmp/classes" />
+		
+		<delete dir="./tmp" />
+	</target>
+	
+	<target name="generate-html">
+		<java classname="tools.GenerateHTMLCommand" fork="true"
+			classpath="./amateras-erd-tools.jar">
+			<arg value="./sample/sample.erd"/>
+			<arg value="./sample/html"/>
+		</java>
+	</target>
+	
+	<target name="import-schema">
+		<java classname="tools.ImportSchemaCommand" fork="true"
+			classpath="./amateras-erd-tools.jar">
+			<arg value="./sample/sample.erd"/>
+		</java>
+	</target>
+			
+	<target name="generate-html-test">
+		<java classname="tools.GenerateHTMLCommand" fork="true"
+			classpath="./bin;
+			           ./lib/commons-collections-3.1.jar;
+			           ./lib/velocity-1.5-dev.jar;
+			           ./lib/amateras-xstream.jar;
+			           ./lib/amateras-erd.jar;
+			           ./lib/org.eclipse.ui.views_3.2.101.M20080207-0800.jar;
+			           ./lib/org.eclipse.draw2d_3.4.0.v20080115.jar;
+			           ./lib/org.eclipse.swt.win32.win32.x86_3.3.3.v3349.jar">
+			<arg value="./sample/sample.erd"/>
+			<arg value="./sample/html"/>
+		</java>
+	</target>
+	
+	<target name="import-schema-test">
+		<java classname="tools.ImportSchemaCommand" fork="true"
+			classpath="./bin;
+			           ./lib/commons-collections-3.1.jar;
+			           ./lib/velocity-1.5-dev.jar;
+			           ./lib/amateras-xstream.jar;
+			           ./lib/amateras-erd.jar;
+			           ./lib/org.eclipse.ui.views_3.2.101.M20080207-0800.jar;
+			           ./lib/org.eclipse.draw2d_3.4.0.v20080115.jar;
+			           ./lib/org.eclipse.swt.win32.win32.x86_3.3.3.v3349.jar">
+			<arg value="./sample/sample.erd"/>
+		</java>
+	</target>
+</project>
