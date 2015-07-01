@@ -2,8 +2,6 @@
 
 Lightweight UML and ER-diagram editor for Eclipse. Former AmaterasUML and AmaterasERD.
 
-It provides following features:
-
 - UML
   - Class diagram graphical editing
   - Sequence diagram graphical editing
