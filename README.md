@@ -33,7 +33,7 @@ History
 - Refreshing imported tables.
 -The dictionary which is used for name conversion became customizable.
 
-See details here about new features.
+See details [here](http://osdn.jp/projects/amateras/wiki/AmaterasERD_1_0_9) about new features.
 
 ### 2011/02/12 - AmaterasERD 1.0.8
 
@@ -44,7 +44,7 @@ See details here about new features.
 - Diagram font configuration
 - HTML generation tool from *.erd file which could be used in command-line
 
-See details here about new features.
+See details [here](http://osdn.jp/projects/amateras/wiki/AmaterasERD_1_0_8) about new features.
 
 ### 2010/01/03 - AmaterasERD 1.0.7
 
@@ -57,7 +57,7 @@ See details here about new features.
 - Show and snap to Grid, snap to other figure
 - SQL Highlighting
 
-See details here about new features.
+See details [here](http://osdn.jp/projects/amateras/wiki/AmaterasERD_1_0_7) about new features.
 
 ### 2009/05/05 - AmaterasERD 1.0.6
 
@@ -65,7 +65,7 @@ See details here about new features.
 - Additional SQL (such as inserting initial data) of each table
 - Auto diagram reloading when the file is updated such as SVN update
 
-See details here about new features.
+See details [here](http://osdn.jp/projects/amateras/wiki/AmaterasERD_1_0_6) about new features.
 
 ### 2008/12/10 - AmaterasERD 1.0.5
 
@@ -73,7 +73,7 @@ See details here about new features.
 - Table background color has been configurable
 - Incremental search in the JDBC importing wizard
 
-See details here about new features.
+See details [here](http://osdn.jp/projects/amateras/wiki/AmaterasERD_1_0_5) about new features.
 
 ### 2008/9/3 - AmaterasERD 1.0.4.1
 
@@ -87,7 +87,7 @@ See details here about new features.
 - Linked Table
 - Table copy and paste
 
-See details here about new features.
+See details [here](http://osdn.jp/projects/amateras/wiki/AmaterasERD_1_0_4) about new features.
 
 ### 2008/6/7 - AmaterasERD 1.0.3
 
@@ -101,7 +101,7 @@ See details here about new features.
 - Domain (Generic data type definition) support
 - HTML report imprived
 
-See details here about new features.
+See details [here](http://osdn.jp/projects/amateras/wiki/AmaterasERD_1_0_3) about new features.
 
 ### 2008/2/7 - AmaterasERD 1.0.2
 
@@ -114,7 +114,7 @@ See details here about new features.
   - Auto increment column
 - New extension point (net.java.amateras.db.generators)
 
-See details here about new features.
+See details [here](http://osdn.jp/projects/amateras/wiki/AmaterasERD_1_0_2) about new features.
 
 ### 2007/7/19 - AmaterasERD 1.0.1
 
