@@ -5,6 +5,7 @@ import java.util.List;
 import net.java.amateras.uml.action.AbstractUMLEditorAction;
 import net.java.amateras.uml.classdiagram.editpart.AttributeEditPart;
 import net.java.amateras.uml.classdiagram.editpart.ClassEditPart;
+import net.java.amateras.uml.classdiagram.editpart.EnumEditPart;
 import net.java.amateras.uml.classdiagram.editpart.InterfaceEditPart;
 import net.java.amateras.uml.classdiagram.editpart.OperationEditPart;
 import net.java.amateras.uml.classdiagram.figure.UMLClassFigure;
@@ -108,6 +109,8 @@ public abstract class AbstractAttributeAndOperationAction extends AbstractUMLEdi
 			return (UMLClassFigure)((ClassEditPart)parent).getFigure();
 		} else if(parent instanceof InterfaceEditPart){
 			return (UMLClassFigure)((InterfaceEditPart)parent).getFigure();
+		} else if(parent instanceof EnumEditPart){
+			return (UMLClassFigure)((EnumEditPart)parent).getFigure();
 		}
 		return null;
 	}

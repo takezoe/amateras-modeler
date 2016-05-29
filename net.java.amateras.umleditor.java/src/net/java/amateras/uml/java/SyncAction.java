@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.java.amateras.uml.classdiagram.ClassDiagramEditor;
 import net.java.amateras.uml.classdiagram.model.ClassModel;
+import net.java.amateras.uml.classdiagram.model.EnumModel;
 import net.java.amateras.uml.classdiagram.model.InterfaceModel;
 import net.java.amateras.uml.editpart.AbstractUMLEntityEditPart.DeleteCommand;
 import net.java.amateras.uml.model.AbstractUMLEntityModel;
@@ -52,6 +53,8 @@ public class SyncAction implements IEditorActionDelegate {
 				
 			} else if(model instanceof InterfaceModel){
 				className = ((InterfaceModel) model).getName();
+			} else if(model instanceof EnumModel){
+				className = ((EnumModel) model).getName();
 			}
 			
 			className = UMLJavaUtils.stripGenerics(className);
@@ -95,7 +98,7 @@ public class SyncAction implements IEditorActionDelegate {
 			for(Object obj: ((IStructuredSelection) selection).toArray()){
 				if(obj instanceof EditPart){
 					Object model = ((EditPart) obj).getModel();
-					if(model instanceof ClassModel || model instanceof InterfaceModel){
+					if(model instanceof ClassModel || model instanceof InterfaceModel || model instanceof EnumModel){
 						target.add((AbstractUMLEntityModel) model);
 					}
 				}
