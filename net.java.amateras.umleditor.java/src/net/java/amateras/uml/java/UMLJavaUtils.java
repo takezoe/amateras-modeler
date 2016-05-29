@@ -8,6 +8,8 @@ import net.java.amateras.uml.classdiagram.model.AggregationModel;
 import net.java.amateras.uml.classdiagram.model.Argument;
 import net.java.amateras.uml.classdiagram.model.AttributeModel;
 import net.java.amateras.uml.classdiagram.model.ClassModel;
+import net.java.amateras.uml.classdiagram.model.CommonEntityModel;
+import net.java.amateras.uml.classdiagram.model.EnumModel;
 import net.java.amateras.uml.classdiagram.model.GeneralizationModel;
 import net.java.amateras.uml.classdiagram.model.InterfaceModel;
 import net.java.amateras.uml.classdiagram.model.OperationModel;
@@ -48,6 +50,8 @@ public class UMLJavaUtils {
 			return ((ClassModel)model).getName();
 		} else if(model instanceof InterfaceModel){
 			return ((InterfaceModel)model).getName();
+		} else if(model instanceof EnumModel){
+			return ((EnumModel)model).getName();
 		}
 		
 		return null;
@@ -138,6 +142,8 @@ public class UMLJavaUtils {
 				attr.setName(fields[i].getElementName());
 				attr.setType(Signature.toString(fields[i].getTypeSignature()));
 				attr.setStatic(Flags.isStatic(fields[i].getFlags()));
+				attr.setFinal(Flags.isFinal(fields[i].getFlags()));
+				attr.setEnumCst(fields[i].isEnumConstant());
 				
 				if(type.isInterface()){
 					attr.setVisibility(Visibility.PUBLIC);
@@ -266,7 +272,7 @@ public class UMLJavaUtils {
 					String className = stripGenerics(((InterfaceModel)obj).getName());
 					if(className != null && className.equals(interfaceName)){
 						AbstractUMLConnectionModel conn = null;
-						if(model instanceof ClassModel){
+						if(model instanceof ClassModel || model instanceof EnumModel){
 							conn = new RealizationModel();
 						} else if(model instanceof InterfaceModel){
 							conn = new GeneralizationModel();
@@ -283,7 +289,7 @@ public class UMLJavaUtils {
 	}
 	
 	public static void appendAggregationConnection(RootModel root, IType type, 
-			ClassModel model) throws JavaModelException {
+			CommonEntityModel model) throws JavaModelException {
 		List<AbstractUMLModel>  children = model.getChildren();
 		for(AbstractUMLModel obj: children){
 			if(obj instanceof AttributeModel){
@@ -320,6 +326,28 @@ public class UMLJavaUtils {
 							conn.attachSource();
 							conn.attachTarget();
 							break;
+						}
+					} else if(entity instanceof EnumModel){
+						boolean addElmt = false;
+						// Try to avoid that the enum is aggregate to itself, since by definition
+						// an enum contains some elements of its own type which are static and final
+						if (type.isEnum() == false) {
+							addElmt = true;
+						}
+						else {
+							if (model.getName().compareTo(((EnumModel) entity).getName()) != 0) {
+								addElmt = true;
+							}
+						}
+						if (addElmt) {
+							if(stripGenerics(((EnumModel) entity).getName()).equals(attrType)){
+								AbstractUMLConnectionModel conn = new AggregationModel();
+								conn.setSource((EnumModel) entity);
+								conn.setTarget(model);
+								conn.attachSource();
+								conn.attachTarget();
+								break;
+							}
 						}
 					}
 				}

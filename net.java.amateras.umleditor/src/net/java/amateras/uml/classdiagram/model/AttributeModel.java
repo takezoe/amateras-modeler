@@ -19,11 +19,14 @@ public class AttributeModel extends AbstractUMLModel implements Cloneable {
 	private String name = "";
 	private String type = "int";
 	private boolean isStatic;
+	private boolean isFinal;
+	private boolean isEnumCst;
 	
 	public static final String P_VISIBILITY = "_visibility";
 	public static final String P_NAME = "_name";
 	public static final String P_TYPE = "_type";
 	public static final String P_STATIC = "_static";
+	public static final String P_FINAL = "_final";
 	
 	public String getName() {
 		return name;
@@ -48,8 +51,13 @@ public class AttributeModel extends AbstractUMLModel implements Cloneable {
 	}
 	
 	public void setVisibility(Visibility visibility) {
-		this.visibility = visibility;
-		firePropertyChange(P_VISIBILITY,null,visibility);
+		if (this.isEnumCst() == true) {
+			this.visibility = Visibility.PUBLIC;
+		}
+		else {
+			this.visibility = visibility;
+		}
+		firePropertyChange(P_VISIBILITY,null,this.visibility);
 		if (getParent() != null) {
 			getParent().forceUpdate();
 		}
@@ -60,8 +68,44 @@ public class AttributeModel extends AbstractUMLModel implements Cloneable {
 	}
 
 	public void setStatic(boolean isStatic) {
-		this.isStatic = isStatic;
-		firePropertyChange(P_STATIC,null,new Boolean(isStatic));
+		if (this.isEnumCst() == true) {
+			this.isStatic = true;
+		}
+		else {
+			this.isStatic = isStatic;
+		}
+		firePropertyChange(P_STATIC,null,new Boolean(this.isStatic));
+	}
+	
+	public boolean isFinal() {
+		return isFinal;
+	}
+	
+	public void setFinal(boolean isFinal) {
+		if (this.isEnumCst() == true) {
+			this.isFinal = true;
+		}
+		else {
+			this.isFinal = isFinal;
+		}
+		firePropertyChange(P_FINAL,null,new Boolean(this.isFinal));
+	}
+	
+	public boolean isEnumCst() {
+		return isEnumCst;
+	}
+	
+	/**
+	 * An enum element is set: public, static and final
+	 * @param isEnumCst
+	 */
+	public void setEnumCst(boolean isEnumCst) {
+		this.isEnumCst = isEnumCst;
+		if (this.isEnumCst == true) {
+			setVisibility(Visibility.PUBLIC);
+			setStatic(true);
+			setFinal(true);
+		}
 	}
 
 	public IPropertyDescriptor[] getPropertyDescriptors() {
@@ -74,7 +118,9 @@ public class AttributeModel extends AbstractUMLModel implements Cloneable {
 						UMLPlugin.getDefault().getResourceString("property.visibility"),
 						Visibility.getVisibilities()),
 				new BooleanPropertyDescriptor(P_STATIC,
-						UMLPlugin.getDefault().getResourceString("property.static"))
+						UMLPlugin.getDefault().getResourceString("property.static")),
+				new BooleanPropertyDescriptor(P_FINAL,
+						UMLPlugin.getDefault().getResourceString("property.final"))
 		};
 	}
 
@@ -87,6 +133,8 @@ public class AttributeModel extends AbstractUMLModel implements Cloneable {
 			return getVisibility();
 		} else if(id.equals(P_STATIC)){
 			return new Boolean(isStatic());
+		} else if(id.equals(P_FINAL)){
+			return new Boolean(isFinal());
 		}
 		return null;
 	}
@@ -99,6 +147,8 @@ public class AttributeModel extends AbstractUMLModel implements Cloneable {
 		} else if(id.equals(P_VISIBILITY)){
 			return true;
 		} else if(id.equals(P_STATIC)){
+			return true;
+		} else if(id.equals(P_FINAL)){
 			return true;
 		}
 		return false;
@@ -113,6 +163,8 @@ public class AttributeModel extends AbstractUMLModel implements Cloneable {
 			setVisibility((Visibility)value);
 		} else if(id.equals(P_STATIC)){
 			setStatic(((Boolean)value).booleanValue());
+		} else if(id.equals(P_FINAL)){
+			setFinal(((Boolean)value).booleanValue());
 		}
 	}
 
@@ -132,6 +184,8 @@ public class AttributeModel extends AbstractUMLModel implements Cloneable {
 		newModel.setType(getType());
 		newModel.setVisibility(getVisibility());
 		newModel.setStatic(isStatic());
+		newModel.setFinal(isFinal());
+		newModel.setEnumCst(isEnumCst());
 		return newModel;
 	}
 	

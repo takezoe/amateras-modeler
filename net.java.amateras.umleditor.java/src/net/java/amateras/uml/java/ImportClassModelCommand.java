@@ -6,6 +6,8 @@ import java.util.List;
 import net.java.amateras.uml.UMLPlugin;
 import net.java.amateras.uml.classdiagram.model.AttributeModel;
 import net.java.amateras.uml.classdiagram.model.ClassModel;
+import net.java.amateras.uml.classdiagram.model.CommonEntityModel;
+import net.java.amateras.uml.classdiagram.model.EnumModel;
 import net.java.amateras.uml.classdiagram.model.InterfaceModel;
 import net.java.amateras.uml.classdiagram.model.OperationModel;
 import net.java.amateras.uml.model.AbstractUMLConnectionModel;
@@ -84,6 +86,9 @@ public class ImportClassModelCommand extends Command {
 				AbstractUMLEntityModel model = addedModels.get(i);
 				if(types[i].isInterface()){
 					UMLJavaUtils.appendInterfacesConnection(this.root, types[i], model);
+				} else if (types[i].isEnum()){
+					UMLJavaUtils.appendInterfacesConnection(this.root, types[i], model);
+					UMLJavaUtils.appendAggregationConnection(this.root, types[i], (EnumModel) model);
 				} else {
 					UMLJavaUtils.appendSuperClassConnection(this.root, types[i], model);
 					UMLJavaUtils.appendInterfacesConnection(this.root, types[i], model);
@@ -98,32 +103,31 @@ public class ImportClassModelCommand extends Command {
 	
 	private AbstractUMLEntityModel createModel(IType type){
 		try {
+			CommonEntityModel model = null;
 			if(type.isInterface()){
-				InterfaceModel model = new InterfaceModel();
-				model.setName(type.getFullyQualifiedParameterizedName());
-				AttributeModel[] fields = UMLJavaUtils.getFields(type);
-				for(int i=0;i<fields.length;i++){
-					model.addChild(fields[i]);
-				}
-				OperationModel[] methods = UMLJavaUtils.getMethods(type);
-				for(int i=0;i<methods.length;i++){
-					model.addChild(methods[i]);
-				}
-				return model;
-				
-			} else if(type.isClass()){
-				ClassModel model = new ClassModel();
-				model.setName(type.getFullyQualifiedParameterizedName());
-				AttributeModel[] attrs = UMLJavaUtils.getFields(type);
-				for(int i=0;i<attrs.length;i++){
-					model.addChild(attrs[i]);
-				}
-				OperationModel[] methods = UMLJavaUtils.getMethods(type);
-				for(int i=0;i<methods.length;i++){
-					model.addChild(methods[i]);
-				}
-				return model;
+				model = new InterfaceModel();
 			}
+			else if(type.isClass()){
+				model = new ClassModel();
+			}
+			else if (type.isEnum()) {
+				model = new EnumModel();
+			}
+			else {
+				return null;
+			}
+			
+			model.setName(type.getFullyQualifiedParameterizedName());
+			AttributeModel[] fieldsAttrs = UMLJavaUtils.getFields(type);
+			for (int i = 0 ; i < fieldsAttrs.length ; ++i) {
+				model.addChild(fieldsAttrs[i]);
+			}
+			OperationModel[] methods = UMLJavaUtils.getMethods(type);
+			for(int i=0;i<methods.length;i++){
+				model.addChild(methods[i]);
+			}
+			
+			return model;
 		} catch(Exception ex){
 			UMLPlugin.logException(ex);
 		}

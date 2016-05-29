@@ -10,6 +10,7 @@ import java.util.Map;
 import net.java.amateras.uml.classdiagram.model.Argument;
 import net.java.amateras.uml.classdiagram.model.AttributeModel;
 import net.java.amateras.uml.classdiagram.model.ClassModel;
+import net.java.amateras.uml.classdiagram.model.EnumModel;
 import net.java.amateras.uml.classdiagram.model.GeneralizationModel;
 import net.java.amateras.uml.classdiagram.model.InterfaceModel;
 import net.java.amateras.uml.classdiagram.model.OperationModel;
@@ -46,6 +47,9 @@ public class JavaExportWizard extends Wizard {
 			}
 			if(child instanceof InterfaceModel){
 				this.target.put(((InterfaceModel)child).getName(), (AbstractUMLEntityModel) child);
+			}
+			if(child instanceof EnumModel){
+				this.target.put(((EnumModel)child).getName(), (AbstractUMLEntityModel) child);
 			}
 		}
 	}
@@ -109,7 +113,7 @@ public class JavaExportWizard extends Wizard {
 				source = createClassSource((ClassModel)obj);
 			} else if(obj instanceof InterfaceModel){
 				source = createInterfaceSource((InterfaceModel)obj);
-			}
+			}//TODO JLD: Manage enum case
 			
 			// create a source file
 			try {

@@ -46,6 +46,14 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 				}
 				return className.equals(getName());
 			}
+			else if (parent != null && parent instanceof EnumModel) {
+				String className = ((EnumModel) parent).getName();
+				int index = className.lastIndexOf('.');
+				if(index >= 0){
+					className = className.substring(index + 1);
+				}
+				return className.equals(getName());
+			}
 		}
 		return false;
 	}
