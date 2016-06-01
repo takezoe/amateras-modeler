@@ -70,7 +70,13 @@ public abstract class CommonEntityEditPart extends AbstractUMLEntityEditPart {
 		CommonEntityModel model = (CommonEntityModel) getModel();
 		UMLClassFigure figure = getClassFigure();
 
-		figure.setClassName(showSimpleName() ? model.getSimpleName() : model.getName());
+		figure.setClassName(model.getSimpleName());
+		if (showSimpleName() == true) {
+			figure.setPackageName("");
+		}
+		else {
+			figure.setPackageName(model.getPackageName());
+		}
 		figure.setStereoType(model.getStereoType());
 
 		figure.setBackgroundColor(model.getBackgroundColor());
@@ -86,7 +92,14 @@ public abstract class CommonEntityEditPart extends AbstractUMLEntityEditPart {
 
 		UMLClassFigure figure = (UMLClassFigure) getFigure();
 		CommonEntityModel model = (CommonEntityModel) getModel();
-		figure.setClassName(showSimpleName() ? model.getSimpleName() : model.getName());
+		
+		figure.setClassName(model.getSimpleName());
+		if (showSimpleName() == true) {
+			figure.setPackageName("");
+		}
+		else {
+			figure.setPackageName(model.getPackageName());
+		}
 		figure.setStereoType(model.getStereoType());
 		figure.setBackgroundColor(model.getBackgroundColor());
 		figure.setForegroundColor(model.getForegroundColor());

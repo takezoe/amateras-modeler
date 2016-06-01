@@ -9,6 +9,9 @@ import net.java.amateras.uml.classdiagram.figure.ext.EnumFigure;
 import net.java.amateras.uml.classdiagram.figure.ext.InterfaceFigure;
 
 import org.eclipse.draw2d.Figure;
+import org.eclipse.swt.graphics.Image;
+
+import static net.java.amateras.uml.editpart.AbstractUMLEditPart.addDecoratorTopRight;
 
 /**
  * The factory to create figures in the class diagram.
@@ -17,11 +20,16 @@ import org.eclipse.draw2d.Figure;
  */
 public class ClassFigureFactory {
 
-	public static UMLClassFigure getClassFigure() { 
-		if (UMLPlugin.getDefault().getPreferenceStore().getBoolean(UMLPlugin.PREF_NEWSTYLE)) {
-			return new ClassFigure();
+	public static UMLClassFigure getClassFigure(boolean isAbstract) { 
+		Image iconImage = UMLPlugin.getImageDescriptor("icons/class.gif").createImage();
+		if (isAbstract) {
+			Image iconDecorator = UMLPlugin.getImageDescriptor("icons/abstract_co.gif").createImage();
+			iconImage = addDecoratorTopRight(iconImage, iconDecorator);
 		}
-		return new UMLClassFigure(UMLPlugin.getImageDescriptor("icons/class.gif").createImage(), new Figure());
+		if (UMLPlugin.getDefault().getPreferenceStore().getBoolean(UMLPlugin.PREF_NEWSTYLE)) {
+			return new ClassFigure(iconImage);
+		}
+		return new UMLClassFigure(iconImage, new Figure());
 	}
 	
 	public static UMLClassFigure getInterfaceFigure() {

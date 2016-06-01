@@ -154,6 +154,17 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 		}
 		return simpleName;
 	}
+	
+	public String getPackageName() {
+		String packageName = "";
+		if (getName() != null) {
+			int lastDotPosition = getName().lastIndexOf('.');
+			if (lastDotPosition != -1) {
+				packageName = getName().substring(0, lastDotPosition);
+			}
+		}
+		return packageName;
+	}
 
 	public boolean isPropertySet(Object id) {
 		if (id.equals(StereoTypeModel.P_STEREO_TYPE)) {
