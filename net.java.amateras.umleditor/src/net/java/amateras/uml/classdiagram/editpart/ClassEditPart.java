@@ -24,8 +24,8 @@ public class ClassEditPart extends CommonEntityEditPart {
 
 		Font font = ((AbstractGraphicalEditPart) getParent()).getFigure().getFont();
 		FontData fontData = font.getFontData()[0];
-		this.normal = new Font(null, fontData.getName(), fontData.getHeight(), SWT.NULL);
-		this.italic = new Font(null, fontData.getName(), fontData.getHeight(), SWT.ITALIC);
+		this.normal = new Font(null, fontData.getName(), fontData.getHeight(), SWT.NULL|SWT.BOLD);
+		this.italic = new Font(null, fontData.getName(), fontData.getHeight(), SWT.ITALIC|SWT.BOLD);
 
 		if (model.isAbstract()) {
 			figure.setFont(italic);
@@ -55,6 +55,7 @@ public class ClassEditPart extends CommonEntityEditPart {
 	}
 
 	public UMLClassFigure getClassFigure() {
-		return ClassFigureFactory.getClassFigure();
+		ClassModel model = (ClassModel) getModel();
+		return ClassFigureFactory.getClassFigure(model.isAbstract());
 	}
 }

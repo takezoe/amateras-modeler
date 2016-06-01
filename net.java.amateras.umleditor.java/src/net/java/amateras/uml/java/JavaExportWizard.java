@@ -265,6 +265,9 @@ public class JavaExportWizard extends Wizard {
 		if(ope.isStatic()){
 			sb.append("static ");
 		}
+		if(ope.isFinal()){
+			sb.append("final ");
+		}
 		if(ope.isAbstract()){
 			sb.append("abstract ");
 		}

@@ -17,6 +17,7 @@ import net.java.amateras.uml.model.RootModel;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 
@@ -108,7 +109,11 @@ public class ImportClassModelCommand extends Command {
 				model = new InterfaceModel();
 			}
 			else if(type.isClass()){
-				model = new ClassModel();
+				ClassModel modelClass = new ClassModel();
+				if (Flags.isAbstract(type.getFlags())) {
+					modelClass.setAbstract(true);
+				}
+				model = modelClass;
 			}
 			else if (type.isEnum()) {
 				model = new EnumModel();

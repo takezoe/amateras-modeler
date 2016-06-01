@@ -184,6 +184,7 @@ public class UMLJavaUtils {
 				}
 				ope.setAbstract(Flags.isAbstract(methods[i].getFlags()));
 				ope.setStatic(Flags.isStatic(methods[i].getFlags()));
+				ope.setFinal(Flags.isFinal(methods[i].getFlags()));
 				List<Argument> params = new ArrayList<Argument>();
 				String[] names = methods[i].getParameterNames();
 				String[] types = methods[i].getParameterTypes();
