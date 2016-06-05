@@ -123,6 +123,7 @@ public class ImportClassModelCommand extends Command {
 			}
 			
 			model.setName(type.getFullyQualifiedParameterizedName());
+			model.setPath(type.getPath().toString());
 			AttributeModel[] fieldsAttrs = UMLJavaUtils.getFields(type);
 			for (int i = 0 ; i < fieldsAttrs.length ; ++i) {
 				model.addChild(fieldsAttrs[i]);

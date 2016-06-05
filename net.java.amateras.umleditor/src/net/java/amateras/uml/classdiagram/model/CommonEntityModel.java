@@ -33,6 +33,7 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 				new TextPropertyDescriptor(StereoTypeModel.P_STEREO_TYPE, UMLPlugin.getDefault().getResourceString("property.stereoType")),
 				new PropertyDescriptor(P_SIMPLE_ENTITY_NAME, UMLPlugin.getDefault().getResourceString("property.simpleName")),
 				new TextPropertyDescriptor(P_ENTITY_NAME, UMLPlugin.getDefault().getResourceString("property.name")),
+				new TextPropertyDescriptor(P_PATH, UMLPlugin.getDefault().getResourceString("property.path")),
 				new ColorPropertyDescriptor(P_BACKGROUND_COLOR, UMLPlugin.getDefault().getResourceString("property.background")),
 				new PropertyDescriptor(P_ATTRIBUTES, UMLPlugin.getDefault().getResourceString("property.attributes")),
 				new PropertyDescriptor(P_OPERATIONS, UMLPlugin.getDefault().getResourceString("property.operations")) };
@@ -75,13 +76,23 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 	protected static final String P_ATTRIBUTES = "_attrs";
 
 	protected static final String P_OPERATIONS = "_operations";
+	
+	protected static final String P_PATH = "_path";
 
 	private String name = "";
+	
+	private String path = "";
 
 	public void setName(String newName) {
 		String oldName = this.name;
 		this.name = newName;
 		firePropertyChange(P_ENTITY_NAME, oldName, newName);
+	}
+	
+	public void setPath(String newName) {
+		String oldName = this.path;
+		this.path = newName;
+		firePropertyChange(P_PATH, oldName, newName);
 	}
 
 	/**
@@ -106,6 +117,10 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 	public String getName() {
 		return this.name;
 	}
+	
+	public String getPath() {
+		return this.path;
+	}
 
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		return propertyDescriptors;
@@ -118,6 +133,8 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 			return getSimpleName();
 		} else if (id.equals(P_ENTITY_NAME)) {
 			return getName();
+		} else if (id.equals(P_PATH)) {
+			return getPath();
 		} else if (id.equals(P_ATTRIBUTES)) {
 			List<AttributeModel> rv = new ArrayList<AttributeModel>();
 			for (Iterator<AbstractUMLModel> iter = getChildren().iterator(); iter.hasNext();) {
@@ -173,6 +190,8 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 			return true;
 		} else if (id.equals(P_ENTITY_NAME)) {
 			return true;
+		} else if (id.equals(P_PATH)) {
+			return true;
 		}
 		return super.isPropertySet(id);
 	}
@@ -182,6 +201,8 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 			setStereoType((String) value);
 		} else if (id.equals(P_ENTITY_NAME)) {
 			setName((String) value);
+		} else if (id.equals(P_PATH)) {
+			setPath((String) value);
 		}
 		super.setPropertyValue(id, value);
 	}
