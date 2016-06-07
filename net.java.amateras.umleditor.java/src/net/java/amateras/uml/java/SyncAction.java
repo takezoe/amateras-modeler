@@ -4,15 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.java.amateras.uml.classdiagram.ClassDiagramEditor;
-import net.java.amateras.uml.classdiagram.model.ClassModel;
-import net.java.amateras.uml.classdiagram.model.EnumModel;
-import net.java.amateras.uml.classdiagram.model.InterfaceModel;
-import net.java.amateras.uml.editpart.AbstractUMLEntityEditPart.DeleteCommand;
-import net.java.amateras.uml.model.AbstractUMLEntityModel;
-import net.java.amateras.uml.model.RootModel;
-
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
@@ -30,6 +25,15 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 
+import net.java.amateras.uml.classdiagram.ClassDiagramEditor;
+import net.java.amateras.uml.classdiagram.model.ClassModel;
+import net.java.amateras.uml.classdiagram.model.CommonEntityModel;
+import net.java.amateras.uml.classdiagram.model.EnumModel;
+import net.java.amateras.uml.classdiagram.model.InterfaceModel;
+import net.java.amateras.uml.editpart.AbstractUMLEntityEditPart.DeleteCommand;
+import net.java.amateras.uml.model.AbstractUMLEntityModel;
+import net.java.amateras.uml.model.RootModel;
+
 public class SyncAction implements IEditorActionDelegate {
 	
 	private ClassDiagramEditor editor;
@@ -46,24 +50,36 @@ public class SyncAction implements IEditorActionDelegate {
 		}
 		
 		for(AbstractUMLEntityModel model: new ArrayList<AbstractUMLEntityModel>(target)){
-			String className  = null;
 			
-			if(model instanceof ClassModel){
-				className = ((ClassModel) model).getName();
-				
-			} else if(model instanceof InterfaceModel){
-				className = ((InterfaceModel) model).getName();
-			} else if(model instanceof EnumModel){
-				className = ((EnumModel) model).getName();
+			CommonEntityModel modelComEntity = (CommonEntityModel)model;
+			
+			IJavaProject javaProject = null;
+			
+			// Search if the origin source file could be found from path property
+			String path = modelComEntity.getPath();
+			if (path.isEmpty() == false) {
+				String[] pathPart = path.split("/");
+				String searchProject = pathPart[1];
+				IWorkspace workspace = ResourcesPlugin.getWorkspace();
+				IProject project = workspace.getRoot().getProject(searchProject);
+				if (project.isOpen()) {
+					javaProject = JavaCore.create(project);
+				}
+			}
+			else {
+				// Search in current project if class exist
+				IEditorInput input = this.editor.getEditorInput();
+				if (input instanceof IFileEditorInput) {
+					IFile file = ((IFileEditorInput) input).getFile();
+					javaProject = JavaCore.create(file.getProject());
+				}
 			}
 			
-			className = UMLJavaUtils.stripGenerics(className);
-			
-			IEditorInput input = this.editor.getEditorInput();
-			if(input instanceof IFileEditorInput){
+			if (javaProject != null) {
+				String className = modelComEntity.getName();
+				className = UMLJavaUtils.stripGenerics(className);
+				
 				try {
-					IFile file = ((IFileEditorInput) input).getFile();
-					IJavaProject javaProject = JavaCore.create(file.getProject());
 					IType type = javaProject.findType(className);
 					if(type != null && type.exists()){
 						RootModel root = (RootModel) this.editor.getAdapter(RootModel.class);
@@ -83,7 +99,8 @@ public class SyncAction implements IEditorActionDelegate {
 						
 						stack.execute(commandChain);
 					}
-				} catch(JavaModelException ex){
+				}
+				catch (JavaModelException ex) {
 					ex.printStackTrace();
 				}
 			}
