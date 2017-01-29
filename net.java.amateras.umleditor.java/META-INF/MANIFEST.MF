@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.gef,
  org.eclipse.jdt.ui,
- net.java.amateras.umleditor
+ net.java.amateras.umleditor,
+ org.eclipse.ui.workbench
 Bundle-Vendor: %plugin.author
 Eclipse-LazyStart: true
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

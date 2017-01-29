@@ -1,4 +1,4 @@
-package net.java.amateras.uml.java;
+package net.java.amateras.uml.synchronizer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,19 +31,31 @@ import net.java.amateras.uml.classdiagram.model.CommonEntityModel;
 import net.java.amateras.uml.classdiagram.model.EnumModel;
 import net.java.amateras.uml.classdiagram.model.InterfaceModel;
 import net.java.amateras.uml.editpart.AbstractUMLEntityEditPart.DeleteCommand;
+import net.java.amateras.uml.java.ImportClassModelCommand;
+import net.java.amateras.uml.java.UMLJavaUtils;
 import net.java.amateras.uml.model.AbstractUMLEntityModel;
 import net.java.amateras.uml.model.RootModel;
 
+/**
+ * Manual synchronization between class diagram elements and Java source
+ */
 public class SyncAction implements IEditorActionDelegate {
 	
 	private ClassDiagramEditor editor;
 	private List<AbstractUMLEntityModel> target = new ArrayList<AbstractUMLEntityModel>();
 
+	@Override
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
 		this.editor = (ClassDiagramEditor)targetEditor;
 		action.setEnabled(false);
 	}
+	
+	public void setTargetList(List<AbstractUMLEntityModel> target, IEditorPart targetEditor) {
+		this.editor = (ClassDiagramEditor)targetEditor;
+		this.target = target;
+	}
 
+	@Override
 	public void run(IAction action) {
 		if(target.isEmpty()){
 			return;
@@ -107,6 +119,7 @@ public class SyncAction implements IEditorActionDelegate {
 		}
 	}
 
+	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 		target.clear();
 		
@@ -141,12 +154,14 @@ public class SyncAction implements IEditorActionDelegate {
 			commandList.add(command);
 		}
 		
+		@Override
 		public void execute(){
 			for(Command command: commandList){
 				command.execute();
 			}
 		}
 		
+		@Override
 		public void undo(){
 			List<Command> revervseList = new ArrayList<Command>(commandList);
 			Collections.reverse(revervseList);

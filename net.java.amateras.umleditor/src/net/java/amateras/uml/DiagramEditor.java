@@ -1,19 +1,10 @@
 package net.java.amateras.uml;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
-
-import net.java.amateras.uml.action.AbstractUMLEditorAction;
-import net.java.amateras.uml.action.CopyAsImageAction;
-import net.java.amateras.uml.action.OpenOutlineViewAction;
-import net.java.amateras.uml.action.OpenPropertyViewAction;
-import net.java.amateras.uml.action.SaveAsImageAction;
-import net.java.amateras.uml.dnd.UMLDropTargetListenerFactory;
-import net.java.amateras.uml.model.AbstractUMLEntityModel;
-import net.java.amateras.uml.model.AbstractUMLModel;
-import net.java.amateras.uml.model.RootModel;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -83,6 +74,17 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
+import net.java.amateras.uml.action.AbstractUMLEditorAction;
+import net.java.amateras.uml.action.AsyncSyncAction;
+import net.java.amateras.uml.action.CopyAsImageAction;
+import net.java.amateras.uml.action.OpenOutlineViewAction;
+import net.java.amateras.uml.action.OpenPropertyViewAction;
+import net.java.amateras.uml.action.SaveAsImageAction;
+import net.java.amateras.uml.dnd.UMLDropTargetListenerFactory;
+import net.java.amateras.uml.model.AbstractUMLEntityModel;
+import net.java.amateras.uml.model.AbstractUMLModel;
+import net.java.amateras.uml.model.RootModel;
+
 /**
  * GEFを使用したエディタ。
  *
@@ -92,11 +94,14 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 	implements IPropertyChangeListener, IResourceChangeListener {
 
 	private boolean savePreviouslyNeeded = false;
+	private boolean need2Serialize = false;
 	private AbstractUMLEditorAction openOutlineAction  = null;
 	private AbstractUMLEditorAction openPropertyAction = null;
 	private AbstractUMLEditorAction saveAsImageAction  = null;
 	private AbstractUMLEditorAction copyAsImageAction  = null;
 	private boolean needViewerRefreshFlag = true;
+	
+	private final List<AsyncSyncAction> asyncActionList = new ArrayList<AsyncSyncAction>();
 
 	private KeyHandler sharedKeyHandler;
 
@@ -111,6 +116,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
 
+	@Override
 	protected void initializeGraphicalViewer() {
 		GraphicalViewer viewer = getGraphicalViewer();
 		IFile file = ((IFileEditorInput)getEditorInput()).getFile();
@@ -156,12 +162,13 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 			}
 		}
 	}
-
+	@Override
 	public void resourceChanged(final IResourceChangeEvent event) {
 		if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
 			final IEditorInput input = getEditorInput();
 			if (input instanceof IFileEditorInput) {
 				Display.getDefault().asyncExec(new Runnable() {
+					@Override
 					public void run() {
 						IFile file = ((IFileEditorInput) input).getFile();
 						if (!file.exists()) {
@@ -170,6 +177,16 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 						} else {
 							if (!getPartName().equals(file.getName())) {
 								setPartName(file.getName());
+							}
+							if (asyncActionList.isEmpty() == false) {
+								for (AsyncSyncAction asyncSyncAction : asyncActionList) {
+									asyncSyncAction.doSyncAction();
+								}
+								asyncActionList.clear();
+							}
+							if (need2Serialize) {
+								doSave(new NullProgressMonitor());
+								need2Serialize = false;
 							}
 							if(needViewerRefreshFlag){
 								refreshGraphicalViewer();
@@ -182,7 +199,19 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 			}
 		}
 	}
+	
+	/**
+	 * The diagram has been modified and need to be saved later (asynchronous) on next refresh
+	 */
+	public void need2Serialize() {
+		need2Serialize = true;
+	}
+	
+	public void appendAsyncAction(AsyncSyncAction asyncSyncAction) {
+		asyncActionList.add(asyncSyncAction);
+	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent event){
 		applyPreferences();
 	}
@@ -380,40 +409,53 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 	 */
 	protected abstract void fillDiagramPopupMenu(MenuManager manager);
 
+	@Override
 	protected void setInput(IEditorInput input) {
 		super.setInput(input);
 		setPartName(input.getName());
 	}
 
+	@Override
 	public void doSave(IProgressMonitor monitor) {
 		try {
 			IEditorInput input = getEditorInput();
 			if(input instanceof IFileEditorInput){
 				needViewerRefreshFlag = false;
 				IFile file = ((IFileEditorInput)input).getFile();
-				file.setContents(DiagramSerializer.serialize((RootModel)getGraphicalViewer().getContents().getModel()),
-						true,true,monitor);
+				file.setContents(DiagramSerializer.serialize(getRootModel()), true, true, monitor);
 			}
-		} catch(Exception ex){
+		}
+		catch(CoreException ex){
+			throw new RuntimeException(ex);
+		}
+		catch(UnsupportedEncodingException ex){
 			throw new RuntimeException(ex);
 		}
 		getCommandStack().markSaveLocation();
 	}
 
+	@Override
 	public void doSaveAs() {
 		doSave(new NullProgressMonitor());
 	}
+	
+	public RootModel getRootModel() {
+		return (RootModel)getGraphicalViewer().getContents().getModel();
+	}
 
+	@Override
 	public boolean isSaveAsAllowed() {
 		return true;
 	}
 
+	@Override
 	public void dispose(){
 		UMLPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 		super.dispose();
 	}
 
+	@Override
 	public void commandStackChanged(EventObject event) {
 		if (isDirty()) {
 			if (!savePreviouslyNeeded()) {
@@ -471,6 +513,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 		return entry;
 	}
 
+	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
 		super.selectionChanged(part,selection);
 		if (selection instanceof IStructuredSelection) {
@@ -528,6 +571,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 		private ScrollableThumbnail thumbnail;
 		private DisposeListener disposeListener;
 
+		@Override
 		public void createControl(Composite parent) {
 			this.canvas = new Canvas(parent, SWT.BORDER);
 			LightweightSystem lws = new LightweightSystem(canvas);
@@ -552,37 +596,45 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 			getGraphicalViewer().getControl().addDisposeListener(disposeListener);
 		}
 
+		@Override
 		public Control getControl(){
 			return this.canvas;
 		}
 
+		@Override
 		public void dispose() {
 			if (getGraphicalViewer().getControl() != null && !getGraphicalViewer().getControl().isDisposed()){
 				getGraphicalViewer().getControl().removeDisposeListener(disposeListener);
 			}
 		}
 
+		@Override
 		public void setActionBars(IActionBars actionBars) {
 			// nothing to do
 		}
 
+		@Override
 		public void setFocus() {
 			// nothing to do
 		}
 
+		@Override
 		public void addSelectionChangedListener(ISelectionChangedListener listener) {
 			// nothing to do
 		}
 
+		@Override
 		public ISelection getSelection() {
 			// nothing to do
 			return null;
 		}
 
+		@Override
 		public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 			// nothing to do
 		}
 
+		@Override
 		public void setSelection(ISelection selection) {
 			// nothing to do
 		}
