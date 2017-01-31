@@ -55,4 +55,4 @@ Export-Package: net.java.amateras.uml,
  net.java.amateras.uml.usecasediagram.model,
  net.java.amateras.uml.usecasediagram.property,
  net.java.amateras.uml.usecasediagram.wizard
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

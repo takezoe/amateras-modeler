@@ -162,6 +162,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 			}
 		}
 	}
+	
 	@Override
 	public void resourceChanged(final IResourceChangeEvent event) {
 		if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
@@ -248,6 +249,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 			}
 		}
 	}
+	
 	/**
 	 * ロードに失敗した場合の初期モデルを返却する.
 	 * @return
@@ -397,6 +399,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 				.setParent(getCommonKeyHandler()));
 
 	}
+	
 	/**
 	 * タイプに特化したアクションを作る.
 	 * @param viewer
