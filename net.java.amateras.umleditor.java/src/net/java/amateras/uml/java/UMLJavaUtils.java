@@ -206,6 +206,10 @@ public class UMLJavaUtils {
 	
 	public static void appendSuperClassConnection(RootModel root, IType type, 
 			AbstractUMLEntityModel model) throws JavaModelException {
+		appendSuperClassConnection(root, type, model, null);
+	}
+	public static void appendSuperClassConnection(RootModel root, IType type, 
+			AbstractUMLEntityModel model, CommonEntityModel restrict2Model) throws JavaModelException {
 		
 		if(type.getSuperclassName()==null){
 			return;
@@ -216,6 +220,12 @@ public class UMLJavaUtils {
 		List<AbstractUMLModel> children = root.getChildren();
 		for(int i=0;i<children.size();i++){
 			Object obj = children.get(i);
+			if (restrict2Model != null) {
+				if (restrict2Model.equals(obj) == false) {
+					//If we restrict super class connections to one model, we discard all others
+					continue;
+				}
+			}
 			String className = stripGenerics(UMLJavaUtils.getClassName(obj));
 			if(className!=null && className.equals(superClass)){
 				GeneralizationModel conn = new GeneralizationModel();
@@ -228,19 +238,31 @@ public class UMLJavaUtils {
 		}
 	}
 	
-	public static void appendSubConnection(RootModel root, IJavaProject project, AbstractUMLEntityModel model){
+	public static void appendSubConnection(	RootModel root, IJavaProject project,
+											AbstractUMLEntityModel model, List<AbstractUMLEntityModel> excludedModels,
+											boolean synchronizeAction){
 		List<AbstractUMLModel>  children = root.getChildren();
-		for(int i=0; i< children.size(); i++){
+		for(int i = 0 ; i< children.size(); i++){
 			AbstractUMLEntityModel child = (AbstractUMLEntityModel) children.get(i);
-			if(child != model){
+			//Bug fix: with excluded model
+			//When a set of class is added to a class diagram (drag and drop), we do not process sub connection elements
+			//of a class which are already within the imported class (excludedModels) otherwise they would be processed
+			//twice and thus leads to multiple association link
+			if ((child != model) && (excludedModels.contains(child) == false)) {
 				if(child instanceof InterfaceModel){
 					String name = ((InterfaceModel) child).getName();
 					try {
 						IType type = project.findType(name);
 						if(type != null){
-							appendInterfacesConnection(root, type, child);
+							if (synchronizeAction == false) {
+								appendInterfacesConnection(root, type, child);
+							}
+							else {
+								appendInterfacesConnection(root, type, child, (CommonEntityModel) model);
+							}
 						}
 					} catch(JavaModelException ex){
+						ex.printStackTrace();
 					}
 				}
 				if(child instanceof ClassModel){
@@ -248,11 +270,40 @@ public class UMLJavaUtils {
 					try {
 						IType type = project.findType(name);
 						if(type != null){
-							appendSuperClassConnection(root, type, child);
-							appendInterfacesConnection(root, type, child);
-							appendAggregationConnection(root, type, (ClassModel) child);
+							if (synchronizeAction == false) {
+								appendSuperClassConnection(root, type, child);
+								appendInterfacesConnection(root, type, child);
+								appendAggregationConnection(root, type, (ClassModel) child);
+							}
+							else {
+								//In synchronization case (synchro of a class of model with java source file),
+								//we force to refresh only sub connections linked with the model actually refreshed.
+								//Otherwise it will leads to multiply association link of other classes.
+								appendSuperClassConnection(root, type, child, (CommonEntityModel) model);
+								appendInterfacesConnection(root, type, child, (CommonEntityModel) model);
+								appendAggregationConnection(root, type, (ClassModel) child, (CommonEntityModel) model);
+							}
 						}
 					} catch(JavaModelException ex){
+						ex.printStackTrace();
+					}
+				}
+				if(child instanceof EnumModel){
+					String name = ((EnumModel) child).getName();
+					try {
+						IType type = project.findType(name);
+						if(type != null){
+							if (synchronizeAction == false) {
+								appendInterfacesConnection(root, type, child);
+								appendAggregationConnection(root, type, (EnumModel) child);
+							}
+							else {
+								appendInterfacesConnection(root, type, child, (CommonEntityModel) model);
+								appendAggregationConnection(root, type, (EnumModel) child, (CommonEntityModel) model);
+							}
+						}
+					} catch(JavaModelException ex){
+						ex.printStackTrace();
 					}
 				}
 			}
@@ -261,6 +312,11 @@ public class UMLJavaUtils {
 	
 	public static void appendInterfacesConnection(RootModel root, IType type, 
 			AbstractUMLEntityModel model) throws JavaModelException {
+		appendInterfacesConnection(root, type, model, null);
+	}
+	
+	public static void appendInterfacesConnection(RootModel root, IType type, 
+			AbstractUMLEntityModel model, CommonEntityModel restrict2Model) throws JavaModelException {
 		
 		String[] interfaces = type.getSuperInterfaceNames();
 		
@@ -269,6 +325,12 @@ public class UMLJavaUtils {
 			List<AbstractUMLModel>  children = root.getChildren();
 			for(int j=0;j<children.size();j++){
 				Object obj = children.get(j);
+				if (restrict2Model != null) {
+					if (restrict2Model.equals(obj) == false) {
+						//If we restrict interface connections to one model, we discard all others
+						continue;
+					}
+				}
 				if(obj instanceof InterfaceModel){
 					String className = stripGenerics(((InterfaceModel)obj).getName());
 					if(className != null && className.equals(interfaceName)){
@@ -291,10 +353,23 @@ public class UMLJavaUtils {
 	
 	public static void appendAggregationConnection(RootModel root, IType type, 
 			CommonEntityModel model) throws JavaModelException {
+		appendAggregationConnection(root, type, model, null);
+	}
+	
+	//@param restrict2Model	if null the aggregation connection is done against any other element.
+	//						If not null aggregation process only against "restrict2Model".
+	//						Useful for synchronize action since in this case the element is suppressed
+	//						and then added, only this element need to have its sub connection refreshed
+	//						otherwise other elements would have multiple erroneous associations
+	public static void appendAggregationConnection(RootModel root, IType type, 
+			CommonEntityModel model, CommonEntityModel restrict2Model) throws JavaModelException {
 		List<AbstractUMLModel>  children = model.getChildren();
 		for(AbstractUMLModel obj: children){
 			if(obj instanceof AttributeModel){
 				AttributeModel attr = (AttributeModel) obj;
+				if (attr.isStatic()) {
+					continue; //Static elements do not belong to instance of class, so there is no mean to aggregate them
+				}
 				String attrType = attr.getType();
 				if(attrType.startsWith("List") || attrType.startsWith("java.util.List")){
 					int fromIndex = attrType.indexOf('<');
@@ -310,6 +385,12 @@ public class UMLJavaUtils {
 				
 				List<AbstractUMLModel> entities = root.getChildren();
 				for(AbstractUMLModel entity: entities){
+					if (restrict2Model != null) {
+						if (restrict2Model.equals(entity) == false) {
+							//If we restrict aggregation connections to one model, we discard all others
+							continue;
+						}
+					}
 					if(entity instanceof ClassModel){
 						if(stripGenerics(((ClassModel) entity).getName()).equals(attrType)){
 							AbstractUMLConnectionModel conn = new AggregationModel();

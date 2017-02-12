@@ -20,11 +20,13 @@ public class AssociationModel extends AbstractUMLConnectionModel implements
 
 	public static final String P_TO_MULTIPLICITY = "_to";
 
+	@Override
 	public void setStereoType(String stereoType) {
 		this.stereoType = stereoType;
 		firePropertyChange(StereoTypeModel.P_STEREO_TYPE, null, stereoType);
 	}
 
+	@Override
 	public String getStereoType() {
 		return this.stereoType;
 	}
@@ -47,6 +49,7 @@ public class AssociationModel extends AbstractUMLConnectionModel implements
 		return this.toMultiplicity;
 	}
 
+	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		return new IPropertyDescriptor[] {
 				new TextPropertyDescriptor(StereoTypeModel.P_STEREO_TYPE, UMLPlugin
@@ -62,6 +65,7 @@ public class AssociationModel extends AbstractUMLConnectionModel implements
 				};
 	}
 
+	@Override
 	public Object getPropertyValue(Object id) {
 		if (id.equals(StereoTypeModel.P_STEREO_TYPE)) {
 			return getStereoType();
@@ -73,6 +77,7 @@ public class AssociationModel extends AbstractUMLConnectionModel implements
 		return super.getPropertyValue(id);
 	}
 
+	@Override
 	public void setPropertyValue(Object id, Object value) {
 		if (id.equals(StereoTypeModel.P_STEREO_TYPE)) {
 			setStereoType((String) value);

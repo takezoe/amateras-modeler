@@ -104,7 +104,7 @@ public class SyncAction implements IEditorActionDelegate {
 						deleteCommand.setTargetModel(model);
 						commandChain.add(deleteCommand);
 						
-						ImportClassModelCommand importCommand = new ImportClassModelCommand(root, type);
+						ImportClassModelCommand importCommand = new ImportClassModelCommand(root, type, true);
 						Rectangle rect = ((AbstractUMLEntityModel) model).getConstraint();
 						importCommand.setLocation(new Point(rect.x, rect.y));
 						commandChain.add(importCommand);

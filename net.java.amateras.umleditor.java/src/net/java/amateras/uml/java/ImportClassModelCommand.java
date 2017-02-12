@@ -32,6 +32,7 @@ public class ImportClassModelCommand extends Command {
 	private RootModel root;
 	private List<AbstractUMLEntityModel> models;
 	private Point location;
+	private boolean synchronizeAction = false;
 	
 	/**
 	 * Constructor for the one type adding.
@@ -41,6 +42,11 @@ public class ImportClassModelCommand extends Command {
 	 */
 	public ImportClassModelCommand(RootModel root,IType type){
 		this(root, new IType[]{ type });
+	}
+	
+	public ImportClassModelCommand(RootModel root,IType type, boolean synchronizeAction){
+		this(root, new IType[]{ type });
+		this.synchronizeAction = synchronizeAction;
 	}
 	
 	/**
@@ -58,6 +64,7 @@ public class ImportClassModelCommand extends Command {
 		this.location = location;
 	}
 	
+	@Override
 	public void execute(){
 		models = new ArrayList<AbstractUMLEntityModel>();
 		List<AbstractUMLEntityModel> addedModels = new ArrayList<AbstractUMLEntityModel>();
@@ -88,6 +95,7 @@ public class ImportClassModelCommand extends Command {
 				if(types[i].isInterface()){
 					UMLJavaUtils.appendInterfacesConnection(this.root, types[i], model);
 				} else if (types[i].isEnum()){
+					//Impossible for enum to inherit from superclass
 					UMLJavaUtils.appendInterfacesConnection(this.root, types[i], model);
 					UMLJavaUtils.appendAggregationConnection(this.root, types[i], (EnumModel) model);
 				} else {
@@ -95,7 +103,7 @@ public class ImportClassModelCommand extends Command {
 					UMLJavaUtils.appendInterfacesConnection(this.root, types[i], model);
 					UMLJavaUtils.appendAggregationConnection(this.root, types[i], (ClassModel) model);
 				}
-				UMLJavaUtils.appendSubConnection(root, types[i].getJavaProject(), model);
+				UMLJavaUtils.appendSubConnection(root, types[i].getJavaProject(), model, addedModels, synchronizeAction);
 			}
 		} catch(JavaModelException ex){
 			UMLPlugin.logException(ex);
@@ -140,6 +148,7 @@ public class ImportClassModelCommand extends Command {
 		return null;
 	}
 	
+	@Override
 	public void undo(){
 		for(AbstractUMLEntityModel model: models){
 			for(AbstractUMLConnectionModel conn: model.getModelSourceConnections()){

@@ -430,7 +430,7 @@ public class JavaClassSynchronizer {
 				e.printStackTrace();
 			}
 			catch (CoreException e) {
-				System.err.println("Unable to process: " + cldFile.getFullPath());
+				System.err.println("Unable to process (probably out of sync): " + cldFile.getFullPath());
 				e.printStackTrace();
 			}
 		}
