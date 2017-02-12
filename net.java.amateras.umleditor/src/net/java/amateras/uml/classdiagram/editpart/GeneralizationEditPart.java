@@ -7,6 +7,7 @@ import org.eclipse.draw2d.IFigure;
 
 public class GeneralizationEditPart extends AbstractUMLConnectionEditPart {
 
+	@Override
 	protected IFigure createFigure() {
 		return new GeneralizationConnectionFigure();
 	}

@@ -51,6 +51,7 @@ public abstract class AbstractUMLModel implements Serializable, IPropertySource 
 		listeners.removePropertyChangeListener(listener);
 	}
 
+	@Override
 	public Object getEditableValue() {
 		return this;
 	}
@@ -63,6 +64,7 @@ public abstract class AbstractUMLModel implements Serializable, IPropertySource 
 		return parent;
 	}
 	
+	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		return new IPropertyDescriptor[] {
 				new ColorPropertyDescriptor(P_BACKGROUND_COLOR, UMLPlugin
@@ -73,6 +75,7 @@ public abstract class AbstractUMLModel implements Serializable, IPropertySource 
 						.getDefault().getResourceString("property.showicon")) };
 	}
 
+	@Override
 	public Object getPropertyValue(Object id) {
 		if (id.equals(P_BACKGROUND_COLOR)) {
 			return backgroundColor;
@@ -84,11 +87,13 @@ public abstract class AbstractUMLModel implements Serializable, IPropertySource 
 		return null;
 	}
 
+	@Override
 	public boolean isPropertySet(Object id) {
 		return P_BACKGROUND_COLOR.equals(id) || P_FOREGROUND_COLOR.equals(id)
 				|| P_SHOW_ICON.equals(id);
 	}
 
+	@Override
 	public void setPropertyValue(Object id, Object value) {
 		if (P_BACKGROUND_COLOR.equals(id)) {
 			setBackgroundColor((RGB) value);
@@ -99,6 +104,7 @@ public abstract class AbstractUMLModel implements Serializable, IPropertySource 
 		}
 	}
 
+	@Override
 	public void resetPropertyValue(Object id) {
 	}
 

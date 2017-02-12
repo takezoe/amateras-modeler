@@ -31,6 +31,7 @@ public class ConnectionBendpoint implements Serializable, Bendpoint {
         return d1;
     }
 
+    @Override
     public Point getLocation() {
         return null;
     }

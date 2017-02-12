@@ -32,14 +32,17 @@ public class EnumModel extends CommonEntityModel {
 		super(toCopy);
 	}
 
+	@Override
 	public Object getPropertyValue(Object id) {
 		return super.getPropertyValue(id);
 	}
 
+	@Override
 	public boolean isPropertySet(Object id) {
 		return super.isPropertySet(id);
 	}
 
+	@Override
 	public void setPropertyValue(Object id, Object value) {
 		super.setPropertyValue(id, value);
 	}
@@ -48,6 +51,7 @@ public class EnumModel extends CommonEntityModel {
 	 * Clone this object. TODO, duplicated code with InterfaceModel.clone(), be careful to override clone!
 	 *@deprecated
 	 */
+	@Override
 	public Object clone() {
 		EnumModel newModel = new EnumModel();
 

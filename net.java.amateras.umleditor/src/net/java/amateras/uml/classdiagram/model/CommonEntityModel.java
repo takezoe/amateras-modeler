@@ -83,6 +83,7 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 	
 	private String path = "";
 
+	@Override
 	public void setName(String newName) {
 		String oldName = this.name;
 		this.name = newName;
@@ -99,6 +100,7 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 	 * Set simple name of the class, full class name will also be updated
 	 * @param simpleName
 	 */
+	@Override
 	public void setSimpleName(String simpleName) {
 		String packageName = "";
 		if (getName() != null) {
@@ -114,6 +116,7 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 		}
 	}
 
+	@Override
 	public String getName() {
 		return this.name;
 	}
@@ -122,10 +125,12 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 		return this.path;
 	}
 
+	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		return propertyDescriptors;
 	}
 
+	@Override
 	public Object getPropertyValue(Object id) {
 		if (id.equals(StereoTypeModel.P_STEREO_TYPE)) {
 			return getStereoType();
@@ -161,6 +166,7 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 	 * Gets the short name of the class which doesn't contain package name.
 	 * @return Short name which doesn't contain package name.
 	 */
+	@Override
 	public String getSimpleName() {
 		String simpleName = getName();
 		if (getName() != null) {
@@ -183,6 +189,7 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 		return packageName;
 	}
 
+	@Override
 	public boolean isPropertySet(Object id) {
 		if (id.equals(StereoTypeModel.P_STEREO_TYPE)) {
 			return true;
@@ -196,6 +203,7 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 		return super.isPropertySet(id);
 	}
 
+	@Override
 	public void setPropertyValue(Object id, Object value) {
 		if (id.equals(StereoTypeModel.P_STEREO_TYPE)) {
 			setStereoType((String) value);
@@ -207,14 +215,17 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 		super.setPropertyValue(id, value);
 	}
 
+	@Override
 	public String toString() {
 		return getName();
 	}
 
+	@Override
 	public String getStereoType() {
 		return stereoType == null ? "" : stereoType;
 	}
 
+	@Override
 	public void setStereoType(String stereoType) {
 		this.stereoType = stereoType;
 		firePropertyChange(StereoTypeModel.P_STEREO_TYPE, null, stereoType);
@@ -225,6 +236,7 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 	 * @deprecated Use copy constructor instead
 	 * @throws CloneNotSupportedException
 	 */
+	@Override
 	public Object clone() {
 		throw new RuntimeException("Clone is not supported, use copy constructor instead");
 

@@ -11,6 +11,7 @@ import net.java.amateras.uml.classdiagram.figure.UMLClassFigure;
 
 public class EnumEditPart extends CommonEntityEditPart {
 	
+	@Override
 	protected IFigure createFigure() {
 		UMLClassFigure figure = (UMLClassFigure) super.createFigure();
 

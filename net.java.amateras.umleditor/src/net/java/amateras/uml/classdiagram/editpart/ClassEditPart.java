@@ -16,6 +16,7 @@ public class ClassEditPart extends CommonEntityEditPart {
 
 	private Font italic = null;
 
+	@Override
 	protected IFigure createFigure() {
 		UMLClassFigure figure = (UMLClassFigure) super.createFigure();
 
@@ -36,12 +37,14 @@ public class ClassEditPart extends CommonEntityEditPart {
 		return figure;
 	}
 
+	@Override
 	public void deactivate() {
 		super.deactivate();
 		normal.dispose();
 		italic.dispose();
 	}
 
+	@Override
 	protected void refreshVisuals() {
 		super.refreshVisuals();
 		UMLClassFigure figure = (UMLClassFigure) getFigure();
@@ -54,6 +57,7 @@ public class ClassEditPart extends CommonEntityEditPart {
 		}
 	}
 
+	@Override
 	public UMLClassFigure getClassFigure() {
 		ClassModel model = (ClassModel) getModel();
 		return ClassFigureFactory.getClassFigure(model.isAbstract());
