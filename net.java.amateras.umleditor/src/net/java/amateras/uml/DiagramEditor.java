@@ -308,6 +308,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 
 	protected abstract EditPartFactory createEditPartFactory();
 
+	@Override
 	protected void configureGraphicalViewer() {
 		super.configureGraphicalViewer();
 		GraphicalViewer viewer = getGraphicalViewer();
