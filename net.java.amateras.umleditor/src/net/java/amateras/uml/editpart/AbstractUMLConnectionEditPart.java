@@ -5,11 +5,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.java.amateras.uml.classdiagram.model.StereoTypeModel;
-import net.java.amateras.uml.figure.PresentationFigure;
-import net.java.amateras.uml.model.AbstractUMLConnectionModel;
-import net.java.amateras.uml.model.AbstractUMLModel;
-
 import org.eclipse.draw2d.BendpointConnectionRouter;
 import org.eclipse.draw2d.Connection;
 import org.eclipse.draw2d.Label;
@@ -35,6 +30,11 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Text;
 
+import net.java.amateras.uml.classdiagram.model.StereoTypeModel;
+import net.java.amateras.uml.figure.PresentationFigure;
+import net.java.amateras.uml.model.AbstractUMLConnectionModel;
+import net.java.amateras.uml.model.AbstractUMLModel;
+
 public abstract class AbstractUMLConnectionEditPart extends
 		AbstractConnectionEditPart implements PropertyChangeListener {
 
@@ -45,7 +45,7 @@ public abstract class AbstractUMLConnectionEditPart extends
 		installEditPolicy(EditPolicy.COMPONENT_ROLE,
 				new EntityComponentEditPolicy());
 		installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE,
-				new UMLConnectionEndpointEditPolicy());
+				new ConnectionEndpointEditPolicy());
 		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
 				new StereoTypeDirectEditPolicy());
 		installEditPolicy(EditPolicy.CONNECTION_BENDPOINTS_ROLE,
@@ -226,9 +226,6 @@ public abstract class AbstractUMLConnectionEditPart extends
 		@Override
 		protected void showCurrentEditValue(DirectEditRequest request) {
 		}
-	}
-
-	private class UMLConnectionEndpointEditPolicy extends ConnectionEndpointEditPolicy {
 	}
 	
 	private class UMLConnectionBendpointEditPolicy extends BendpointEditPolicy {
