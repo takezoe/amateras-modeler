@@ -548,8 +548,8 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 	 */
 	protected abstract void updateDiagramAction(ISelection selection);
 
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class type) {
+	@Override
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
 		if (type == ZoomManager.class){
 			return ((ScalableRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager();
 		}

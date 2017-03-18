@@ -6,6 +6,7 @@ package net.java.amateras.uml.synchronizer;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -66,6 +67,8 @@ public class JavaClassSynchronizer {
 			
 			updateClassDiagramChanges(rootDelta);
 			
+			List<String> moveFromList = new ArrayList<String>();
+			List<IPath>  moveToList = new ArrayList<IPath>();
 			//Search if a delta occurs among the files for which we keep track
 			for (String synchronizedJavaSrcPath : javaSrcSynchro.keySet()) {
 				IPath iJavaSrcPath = new Path(synchronizedJavaSrcPath);
@@ -93,14 +96,35 @@ public class JavaClassSynchronizer {
 						}
 						break;
 					case IResourceDelta.REMOVED:
-						//A java src file has been removed => remove corresponding class from class diagram
-						updateClassDiagOnJavaSrcDelete(cldFile, synchronizedJavaSrcPath);
+						switch (deltaFlags) {
+						case (IResourceDelta.MOVED_TO | IResourceDelta.MARKERS):
+						case IResourceDelta.MOVED_TO:
+							IPath movedToPath = javaSrcDelta.getMovedToPath();
+							updateClassDiagOnJavaSrcMove(cldFile, synchronizedJavaSrcPath, movedToPath);
+							moveFromList.add(synchronizedJavaSrcPath);
+							moveToList.add(movedToPath);
+							break;
+						default:
+							//A java src file has been removed => remove corresponding class from class diagram
+							updateClassDiagOnJavaSrcDelete(cldFile, synchronizedJavaSrcPath);
+							break;
+						}
 						break;
 					case IResourceDelta.ADDED:
 						//Normally could not happened, watch only Java src files referred by existing UML diagram
+						switch (deltaFlags) {
+						case IResourceDelta.MOVED_FROM:
+							//file renamed or moved
+							break;
+						}
 						break;
 					}
 				}
+			}
+			Iterator<String> iteratorFrom = moveFromList.iterator();
+			Iterator<IPath> iteratorTo = moveToList.iterator();
+			while (iteratorFrom.hasNext() && iteratorTo.hasNext()) {
+				updateJavaSynchroAfterMove(iteratorFrom.next(), iteratorTo.next());
 			}
 		}
 
@@ -115,6 +139,27 @@ public class JavaClassSynchronizer {
 			List<IResourceDelta> modifiedClassDiag = searchClassDiagram(rootDelta, IResourceDelta.CHANGED);
 			updateClassDiagRegistration(modifiedClassDiag);
 		}
+	}
+	
+	private void updateClassDiagOnJavaSrcMove(IFile cldFile, String javaFromPath, IPath javaToPath) {
+		ClassDiagramEditor classDiagEditor = getClassDiagramEditor(cldFile);
+		
+		if (classDiagEditor != null) {
+			RootModel rootModel = classDiagEditor.getRootModel();
+			
+			List<AbstractUMLEntityModel> targetClasses = extractClassDiagElmtForModif(javaFromPath, rootModel);
+			
+			AsyncMoveAction asyncSyncAction = new AsyncMoveAction(targetClasses, javaToPath);
+			classDiagEditor.appendAsyncAction(asyncSyncAction);
+			//Request to save on disk
+			classDiagEditor.need2Serialize();
+		}
+	}
+
+	private void updateJavaSynchroAfterMove(String javaFromPath, IPath javaToPath) {
+		List<IFile> listCldFile = javaSrcSynchro.get(javaFromPath);
+		javaSrcSynchro.remove(javaFromPath);
+		javaSrcSynchro.put(javaToPath.toString(), listCldFile);
 	}
 	
 	/**

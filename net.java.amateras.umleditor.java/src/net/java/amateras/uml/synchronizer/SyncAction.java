@@ -146,7 +146,7 @@ public class SyncAction implements IEditorActionDelegate {
 	 * 
 	 * @author Naoki Takezoe
 	 */
-	private static class CommandChain extends Command {
+	public static class CommandChain extends Command {
 		
 		private List<Command> commandList = new ArrayList<Command>();
 		
