@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.java.amateras.uml.UMLPlugin;
-import net.java.amateras.uml.model.AbstractUMLEntityModel;
-import net.java.amateras.uml.model.AbstractUMLModel;
-import net.java.amateras.uml.model.ICloneableModel;
-import net.java.amateras.uml.model.TypeEntityModel;
-
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.ui.views.properties.ColorPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+
+import net.java.amateras.uml.UMLPlugin;
+import net.java.amateras.uml.model.AbstractUMLEntityModel;
+import net.java.amateras.uml.model.AbstractUMLModel;
+import net.java.amateras.uml.model.ICloneableModel;
+import net.java.amateras.uml.model.TypeEntityModel;
 
 /**
  * Common model of class and interface model
@@ -186,7 +186,7 @@ public class CommonEntityModel extends AbstractUMLEntityModel implements TypeEnt
 				packageName = getName().substring(0, lastDotPosition);
 			}
 		}
-		return packageName;
+		return packageName.replaceAll("<.+?>", "");
 	}
 
 	@Override

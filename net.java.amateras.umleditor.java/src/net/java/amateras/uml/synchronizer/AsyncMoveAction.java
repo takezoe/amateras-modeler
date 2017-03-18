@@ -57,11 +57,16 @@ public class AsyncMoveAction implements AsyncSyncAction {
 					
 					boolean nestedClass = !originTypeNoGeneric.equals(originJavaFile);
 					String nestedSuffix = "";
+					String originSurroundingGenericPart = "";
 					if (nestedClass) {
-						nestedSuffix = "." + originType;
+						nestedSuffix = "." + originTypeNoGeneric;
+						
+						originSurroundingGenericPart = modelComEntity.getName();
+						originSurroundingGenericPart = originSurroundingGenericPart.substring(0, originSurroundingGenericPart.lastIndexOf("."));
+						originSurroundingGenericPart = originSurroundingGenericPart.replaceFirst(UMLJavaUtils.stripGenerics(originSurroundingGenericPart), "");
 					}
 					
-					modelComEntity.setName(moveToPackage + "." + moveToClass + nestedSuffix + genericPart);
+					modelComEntity.setName(moveToPackage + "." + moveToClass + originSurroundingGenericPart + nestedSuffix + genericPart);
 					modelComEntity.setPath(movedToFileStr);
 					
 					List<AbstractUMLModel> childrenAttr = modelComEntity.getChildren();
