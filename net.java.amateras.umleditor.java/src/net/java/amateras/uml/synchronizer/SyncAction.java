@@ -13,6 +13,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
@@ -94,6 +95,15 @@ public class SyncAction implements IEditorActionDelegate {
 				try {
 					IType type = javaProject.findType(className);
 					if(type != null && type.exists()){
+						List<IType> nestedTypes = new ArrayList<IType>();
+						// Search nested class
+						IJavaElement[] nestedChildren = type.getChildren();
+						for (IJavaElement nestedChild : nestedChildren) {
+							if (nestedChild.getElementType() == IJavaElement.TYPE) {
+								nestedTypes.add((IType) nestedChild);
+							}
+						}
+						
 						RootModel root = (RootModel) this.editor.getAdapter(RootModel.class);
 						CommandStack stack = (CommandStack) editor.getAdapter(CommandStack.class);
 						
@@ -108,6 +118,33 @@ public class SyncAction implements IEditorActionDelegate {
 						Rectangle rect = ((AbstractUMLEntityModel) model).getConstraint();
 						importCommand.setLocation(new Point(rect.x, rect.y));
 						commandChain.add(importCommand);
+						
+						// Delete nested class
+						AbstractUMLEntityModel modelToDeleted = null;
+						for(AbstractUMLEntityModel modelNested: new ArrayList<AbstractUMLEntityModel>(target)){
+							modelToDeleted = (AbstractUMLEntityModel)modelNested;
+							String pathNested = modelComEntity.getPath();
+							String classNameNested = modelComEntity.getName();
+							if (pathNested.equals(path) && !classNameNested.equals(className)) {
+								deleteCommand = new DeleteCommand();
+								deleteCommand.setRootModel(root);
+								deleteCommand.setTargetModel(modelNested);
+								commandChain.add(deleteCommand);
+							}
+						}
+						// Import Nested class
+						for (IType nestedType : nestedTypes) {
+							if (modelToDeleted != null) {
+								rect = ((AbstractUMLEntityModel) modelToDeleted).getConstraint();
+							}
+							else {
+								rect.x += 10;
+								rect.y += 10;
+							}
+							importCommand = new ImportClassModelCommand(root, nestedType, true);
+							importCommand.setLocation(new Point(rect.x, rect.y));
+							commandChain.add(importCommand);
+						}
 						
 						stack.execute(commandChain);
 					}
