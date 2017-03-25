@@ -3,23 +3,6 @@ package net.java.amateras.uml.java;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.java.amateras.uml.UMLPlugin;
-import net.java.amateras.uml.classdiagram.model.AggregationModel;
-import net.java.amateras.uml.classdiagram.model.Argument;
-import net.java.amateras.uml.classdiagram.model.AttributeModel;
-import net.java.amateras.uml.classdiagram.model.ClassModel;
-import net.java.amateras.uml.classdiagram.model.CommonEntityModel;
-import net.java.amateras.uml.classdiagram.model.EnumModel;
-import net.java.amateras.uml.classdiagram.model.GeneralizationModel;
-import net.java.amateras.uml.classdiagram.model.InterfaceModel;
-import net.java.amateras.uml.classdiagram.model.OperationModel;
-import net.java.amateras.uml.classdiagram.model.RealizationModel;
-import net.java.amateras.uml.classdiagram.model.Visibility;
-import net.java.amateras.uml.model.AbstractUMLConnectionModel;
-import net.java.amateras.uml.model.AbstractUMLEntityModel;
-import net.java.amateras.uml.model.AbstractUMLModel;
-import net.java.amateras.uml.model.RootModel;
-
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IClassFile;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -31,6 +14,23 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.Signature;
+
+import net.java.amateras.uml.UMLPlugin;
+import net.java.amateras.uml.classdiagram.model.AggregationModel;
+import net.java.amateras.uml.classdiagram.model.Argument;
+import net.java.amateras.uml.classdiagram.model.AssociationModel;
+import net.java.amateras.uml.classdiagram.model.AttributeModel;
+import net.java.amateras.uml.classdiagram.model.ClassModel;
+import net.java.amateras.uml.classdiagram.model.CommonEntityModel;
+import net.java.amateras.uml.classdiagram.model.EnumModel;
+import net.java.amateras.uml.classdiagram.model.GeneralizationModel;
+import net.java.amateras.uml.classdiagram.model.InterfaceModel;
+import net.java.amateras.uml.classdiagram.model.OperationModel;
+import net.java.amateras.uml.classdiagram.model.RealizationModel;
+import net.java.amateras.uml.classdiagram.model.Visibility;
+import net.java.amateras.uml.model.AbstractUMLEntityModel;
+import net.java.amateras.uml.model.AbstractUMLModel;
+import net.java.amateras.uml.model.RootModel;
 
 /**
  * This class provides utility methods for the AmaterasUML-Java Plug-In.
@@ -205,7 +205,15 @@ public class UMLJavaUtils {
 	}
 	
 	public static void appendSuperClassConnection(RootModel root, IType type, 
-			AbstractUMLEntityModel model) throws JavaModelException {
+			AbstractUMLEntityModel model,
+			List<RealizationModel> oldRealisationConnections,
+			List<GeneralizationModel> oldGeneralizationConnections) throws JavaModelException {
+		appendSuperClassConnection(root, type, model, null, oldRealisationConnections, oldGeneralizationConnections);
+	}
+	public static void appendSuperClassConnection(RootModel root, IType type, 
+			AbstractUMLEntityModel model, CommonEntityModel restrict2Model,
+			List<RealizationModel> oldRealisationConnections,
+			List<GeneralizationModel> oldGeneralizationConnections) throws JavaModelException {
 		
 		if(type.getSuperclassName()==null){
 			return;
@@ -216,31 +224,50 @@ public class UMLJavaUtils {
 		List<AbstractUMLModel> children = root.getChildren();
 		for(int i=0;i<children.size();i++){
 			Object obj = children.get(i);
+			if (restrict2Model != null) {
+				if (restrict2Model.equals(obj) == false) {
+					//If we restrict super class connections to one model, we discard all others
+					continue;
+				}
+			}
 			String className = stripGenerics(UMLJavaUtils.getClassName(obj));
 			if(className!=null && className.equals(superClass)){
-				GeneralizationModel conn = new GeneralizationModel();
-				conn.setSource(model);
-				conn.setTarget((AbstractUMLEntityModel)obj);
-				conn.attachSource();
-				conn.attachTarget();
+				searchConnectPreExistingGeneralization((CommonEntityModel)obj, (CommonEntityModel) model, oldGeneralizationConnections);
 				break;
 			}
 		}
 	}
 	
-	public static void appendSubConnection(RootModel root, IJavaProject project, AbstractUMLEntityModel model){
+	public static void appendSubConnection(	RootModel root, IJavaProject project,
+											AbstractUMLEntityModel model, List<AbstractUMLEntityModel> excludedModels,
+											boolean synchronizeAction,
+											List<AssociationModel> oldAssociationConnections,
+											List<RealizationModel> oldRealisationConnections,
+											List<GeneralizationModel> oldGeneralizationConnections){
 		List<AbstractUMLModel>  children = root.getChildren();
-		for(int i=0; i< children.size(); i++){
+		for(int i = 0 ; i< children.size(); i++){
 			AbstractUMLEntityModel child = (AbstractUMLEntityModel) children.get(i);
-			if(child != model){
+			//Bug fix: with excluded model
+			//When a set of class is added to a class diagram (drag and drop), we do not process sub connection elements
+			//of a class which are already within the imported class (excludedModels) otherwise they would be processed
+			//twice and thus leads to multiple association link
+			if ((child != model) && (excludedModels.contains(child) == false)) {
 				if(child instanceof InterfaceModel){
 					String name = ((InterfaceModel) child).getName();
 					try {
 						IType type = project.findType(name);
 						if(type != null){
-							appendInterfacesConnection(root, type, child);
+							if (synchronizeAction == false) {
+								appendInterfacesConnection(root, type, child, oldRealisationConnections,
+										oldGeneralizationConnections);
+							}
+							else {
+								appendInterfacesConnection(root, type, child, (CommonEntityModel) model,
+										oldRealisationConnections, oldGeneralizationConnections);
+							}
 						}
 					} catch(JavaModelException ex){
+						ex.printStackTrace();
 					}
 				}
 				if(child instanceof ClassModel){
@@ -248,11 +275,40 @@ public class UMLJavaUtils {
 					try {
 						IType type = project.findType(name);
 						if(type != null){
-							appendSuperClassConnection(root, type, child);
-							appendInterfacesConnection(root, type, child);
-							appendAggregationConnection(root, type, (ClassModel) child);
+							if (synchronizeAction == false) {
+								appendSuperClassConnection(root, type, child, oldRealisationConnections, oldGeneralizationConnections);
+								appendInterfacesConnection(root, type, child, oldRealisationConnections, oldGeneralizationConnections);
+								appendAssociationConnection(root, type, (ClassModel) child, oldAssociationConnections);
+							}
+							else {
+								//In synchronization case (synchro of a class of model with java source file),
+								//we force to refresh only sub connections linked with the model actually refreshed.
+								//Otherwise it will leads to multiply association link of other classes.
+								appendSuperClassConnection(root, type, child, (CommonEntityModel) model, oldRealisationConnections, oldGeneralizationConnections);
+								appendInterfacesConnection(root, type, child, (CommonEntityModel) model, oldRealisationConnections, oldGeneralizationConnections);
+								appendAssociationConnection(root, type, (ClassModel) child, (CommonEntityModel) model, oldAssociationConnections);
+							}
 						}
 					} catch(JavaModelException ex){
+						ex.printStackTrace();
+					}
+				}
+				if(child instanceof EnumModel){
+					String name = ((EnumModel) child).getName();
+					try {
+						IType type = project.findType(name);
+						if(type != null){
+							if (synchronizeAction == false) {
+								appendInterfacesConnection(root, type, child, oldRealisationConnections, oldGeneralizationConnections);
+								appendAssociationConnection(root, type, (EnumModel) child, oldAssociationConnections);
+							}
+							else {
+								appendInterfacesConnection(root, type, child, (CommonEntityModel) model, oldRealisationConnections, oldGeneralizationConnections);
+								appendAssociationConnection(root, type, (EnumModel) child, (CommonEntityModel) model, oldAssociationConnections);
+							}
+						}
+					} catch(JavaModelException ex){
+						ex.printStackTrace();
 					}
 				}
 			}
@@ -260,7 +316,16 @@ public class UMLJavaUtils {
 	}
 	
 	public static void appendInterfacesConnection(RootModel root, IType type, 
-			AbstractUMLEntityModel model) throws JavaModelException {
+			AbstractUMLEntityModel model,
+			List<RealizationModel> oldRealisationConnections,
+			List<GeneralizationModel> oldGeneralizationConnections) throws JavaModelException {
+		appendInterfacesConnection(root, type, model, null, oldRealisationConnections, oldGeneralizationConnections);
+	}
+	
+	public static void appendInterfacesConnection(RootModel root, IType type, 
+			AbstractUMLEntityModel model, CommonEntityModel restrict2Model,
+			List<RealizationModel> oldRealisationConnections,
+			List<GeneralizationModel> oldGeneralizationConnections) throws JavaModelException {
 		
 		String[] interfaces = type.getSuperInterfaceNames();
 		
@@ -269,19 +334,20 @@ public class UMLJavaUtils {
 			List<AbstractUMLModel>  children = root.getChildren();
 			for(int j=0;j<children.size();j++){
 				Object obj = children.get(j);
+				if (restrict2Model != null) {
+					if (restrict2Model.equals(obj) == false) {
+						//If we restrict interface connections to one model, we discard all others
+						continue;
+					}
+				}
 				if(obj instanceof InterfaceModel){
 					String className = stripGenerics(((InterfaceModel)obj).getName());
 					if(className != null && className.equals(interfaceName)){
-						AbstractUMLConnectionModel conn = null;
 						if(model instanceof ClassModel || model instanceof EnumModel){
-							conn = new RealizationModel();
+							searchConnectPreExistingRealizationModel((CommonEntityModel)obj, (CommonEntityModel) model, oldRealisationConnections);
 						} else if(model instanceof InterfaceModel){
-							conn = new GeneralizationModel();
+							searchConnectPreExistingGeneralization((CommonEntityModel)obj, (CommonEntityModel) model, oldGeneralizationConnections);
 						}
-						conn.setSource(model);
-						conn.setTarget((AbstractUMLEntityModel)obj);
-						conn.attachSource();
-						conn.attachTarget();
 						break;
 					}
 				}
@@ -289,12 +355,74 @@ public class UMLJavaUtils {
 		}
 	}
 	
-	public static void appendAggregationConnection(RootModel root, IType type, 
-			CommonEntityModel model) throws JavaModelException {
+	private static void searchConnectPreExistingRealizationModel(CommonEntityModel target, CommonEntityModel source,
+			List<RealizationModel> oldRealisationConnections) {
+		RealizationModel conn = null;
+		for (RealizationModel gc : oldRealisationConnections) {
+			AbstractUMLEntityModel src = gc.getSource();
+			AbstractUMLEntityModel trgt = gc.getTarget();
+			if (src instanceof CommonEntityModel && trgt instanceof CommonEntityModel) {
+				if (		((CommonEntityModel)src).getName().equals(source.getName())
+						&&	((CommonEntityModel)trgt).getName().equals(target.getName())) {
+					conn = gc;
+					oldRealisationConnections.remove(conn);
+					break;
+				}
+			}
+		}
+		if (conn == null) {
+			conn = new RealizationModel();
+		}
+		conn.setSource(source);
+		conn.setTarget(target);
+		conn.attachSource();
+		conn.attachTarget();
+	}
+	
+	private static void searchConnectPreExistingGeneralization(CommonEntityModel target, CommonEntityModel source,
+			List<GeneralizationModel> oldGeneralizationConnections) {
+		GeneralizationModel conn = null;
+		for (GeneralizationModel gc : oldGeneralizationConnections) {
+			AbstractUMLEntityModel src = gc.getSource();
+			AbstractUMLEntityModel trgt = gc.getTarget();
+			if (src instanceof CommonEntityModel && trgt instanceof CommonEntityModel) {
+				if (		((CommonEntityModel)src).getName().equals(source.getName())
+						&&	((CommonEntityModel)trgt).getName().equals(target.getName())) {
+					conn = gc;
+					oldGeneralizationConnections.remove(conn);
+					break;
+				}
+			}
+		}
+		if (conn == null) {
+			conn = new GeneralizationModel();
+		}
+		conn.setSource(source);
+		conn.setTarget(target);
+		conn.attachSource();
+		conn.attachTarget();
+	}
+	
+	public static void appendAssociationConnection(RootModel root, IType type, 
+			CommonEntityModel model, List<AssociationModel> oldAssociationConnections) throws JavaModelException {
+		appendAssociationConnection(root, type, model, null, oldAssociationConnections);
+	}
+	
+	//@param restrict2Model	if null the aggregation connection is done against any other element.
+	//						If not null aggregation process only against "restrict2Model".
+	//						Useful for synchronize action since in this case the element is suppressed
+	//						and then added, only this element need to have its sub connection refreshed
+	//						otherwise other elements would have multiple erroneous associations
+	private static void appendAssociationConnection(RootModel root, IType type, 
+			CommonEntityModel model, CommonEntityModel restrict2Model,
+			List<AssociationModel> oldAssociationConnections) throws JavaModelException {
 		List<AbstractUMLModel>  children = model.getChildren();
 		for(AbstractUMLModel obj: children){
 			if(obj instanceof AttributeModel){
 				AttributeModel attr = (AttributeModel) obj;
+				if (attr.isStatic()) {
+					continue; //Static elements do not belong to instance of class, so there is no mean to aggregate them
+				}
 				String attrType = attr.getType();
 				if(attrType.startsWith("List") || attrType.startsWith("java.util.List")){
 					int fromIndex = attrType.indexOf('<');
@@ -310,23 +438,33 @@ public class UMLJavaUtils {
 				
 				List<AbstractUMLModel> entities = root.getChildren();
 				for(AbstractUMLModel entity: entities){
+					if (restrict2Model != null) {
+						if (restrict2Model.equals(entity) == false) {
+							//If we restrict aggregation connections to one model, we discard all others
+							continue;
+						}
+					}
 					if(entity instanceof ClassModel){
 						if(stripGenerics(((ClassModel) entity).getName()).equals(attrType)){
-							AbstractUMLConnectionModel conn = new AggregationModel();
-							conn.setSource((ClassModel) entity);
-							conn.setTarget(model);
-							conn.attachSource();
-							conn.attachTarget();
+							searchConnectPreExistingConnection((ClassModel) entity, model, oldAssociationConnections);
 							break;
+						}
+						else {
+							// In case, if an association existed (and shall be relinked) but not an attribute with corresponding type exists in the class
+							if (oldAssociationConnections != null) {
+								searchConnectPreExistingConnection((ClassModel) entity, model, oldAssociationConnections);
+							}
 						}
 					} else if(entity instanceof InterfaceModel){
 						if(stripGenerics(((InterfaceModel) entity).getName()).equals(attrType)){
-							AbstractUMLConnectionModel conn = new AggregationModel();
-							conn.setSource((InterfaceModel) entity);
-							conn.setTarget(model);
-							conn.attachSource();
-							conn.attachTarget();
+							searchConnectPreExistingConnection((InterfaceModel) entity, model, oldAssociationConnections);
 							break;
+						}
+						else {
+							// In case, if an association existed (and shall be relinked) but not an attribute with corresponding type exists in the class
+							if (oldAssociationConnections != null) {
+								searchConnectPreExistingConnection((InterfaceModel) entity, model, oldAssociationConnections);
+							}
 						}
 					} else if(entity instanceof EnumModel){
 						boolean addElmt = false;
@@ -342,17 +480,49 @@ public class UMLJavaUtils {
 						}
 						if (addElmt) {
 							if(stripGenerics(((EnumModel) entity).getName()).equals(attrType)){
-								AbstractUMLConnectionModel conn = new AggregationModel();
-								conn.setSource((EnumModel) entity);
-								conn.setTarget(model);
-								conn.attachSource();
-								conn.attachTarget();
+								searchConnectPreExistingConnection((EnumModel) entity, model, oldAssociationConnections);
 								break;
+							}
+							else {
+								// In case, if an association existed (and shall be relinked) but not an attribute with corresponding type exists in the class
+								if (oldAssociationConnections != null) {
+									searchConnectPreExistingConnection((EnumModel) entity, model, oldAssociationConnections);
+								}
 							}
 						}
 					}
 				}
 			}
+		}
+	}
+	
+	/** Search and connect a preexisting connection association if exist, when diagram is synchronized.
+	 * If oldAssociationConnections is null, a new connection is created: it corresponds of case when
+	 * when a java class is newly dropped into class diagram */
+	private static void searchConnectPreExistingConnection(CommonEntityModel source, CommonEntityModel target,
+			List<AssociationModel> oldAssociationConnections) {
+		List<AssociationModel> conns = new ArrayList<AssociationModel>();
+		if (oldAssociationConnections != null) {
+			for (AssociationModel ac : oldAssociationConnections) {
+				AbstractUMLEntityModel src = ac.getSource();
+				AbstractUMLEntityModel trgt = ac.getTarget();
+				if (src instanceof CommonEntityModel && trgt instanceof CommonEntityModel) {
+					if (		((CommonEntityModel)src).getName().equals(source.getName())
+							&&	((CommonEntityModel)trgt).getName().equals(target.getName())) {
+						conns.add(ac);
+					}
+				}
+			}
+			oldAssociationConnections.removeAll(conns);
+		}
+		else {
+			conns.add(new AggregationModel());
+		}
+		for (AssociationModel conn : conns) {
+			conn.setSource(source);
+			conn.setTarget(target);
+			conn.attachSource();
+			conn.attachTarget();
 		}
 	}
 

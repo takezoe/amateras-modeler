@@ -12,11 +12,13 @@ import org.eclipse.swt.graphics.ImageData;
 
 public abstract class AbstractUMLEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener {
 	
+	@Override
 	public void activate() {
 		super.activate();
 		((AbstractUMLModel) getModel()).addPropertyChangeListener(this);
 	}
 
+	@Override
 	public void deactivate() {
 		super.deactivate();
 		((AbstractUMLModel) getModel()).removePropertyChangeListener(this);
@@ -26,6 +28,7 @@ public abstract class AbstractUMLEditPart extends AbstractGraphicalEditPart impl
 	 *  (non-Javadoc)
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#refreshVisuals()
 	 */
+	@Override
 	protected void refreshVisuals() {
 		if (getFigure() instanceof PresentationFigure) {
 			PresentationFigure figure = (PresentationFigure) getFigure();
@@ -38,6 +41,7 @@ public abstract class AbstractUMLEditPart extends AbstractGraphicalEditPart impl
 	 *  (non-Javadoc)
 	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
 	 */
+	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals(AbstractUMLModel.P_BACKGROUND_COLOR)) {
 			refreshVisuals();

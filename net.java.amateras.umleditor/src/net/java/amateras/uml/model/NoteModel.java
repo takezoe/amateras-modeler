@@ -25,6 +25,7 @@ public class NoteModel extends AbstractUMLEntityModel {
 	
 	public static final String P_CONTENT = "_instance_name";
 	
+	@Override
 	public void setConstraint(Rectangle constraint) {
 		if (constraint.width < DEFAULT_WIDTH) {
 			constraint.width = DEFAULT_WIDTH;
@@ -45,6 +46,7 @@ public class NoteModel extends AbstractUMLEntityModel {
 		return content;
 	}
 
+	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		return new IPropertyDescriptor[]{
 				new TextPropertyDescriptor(P_CONTENT, 
@@ -52,6 +54,7 @@ public class NoteModel extends AbstractUMLEntityModel {
 		};
 	}
 
+	@Override
 	public Object getPropertyValue(Object id) {
 		if(id.equals(P_CONTENT)){
 			return getContent();
@@ -59,6 +62,7 @@ public class NoteModel extends AbstractUMLEntityModel {
 		return null;
 	}
 
+	@Override
 	public boolean isPropertySet(Object id) {
 		if(id.equals(P_CONTENT)){
 			return true;
@@ -66,6 +70,7 @@ public class NoteModel extends AbstractUMLEntityModel {
 		return false;
 	}
 
+	@Override
 	public void setPropertyValue(Object id, Object value) {
 		if(id.equals(P_CONTENT)){
 			setContent((String)value);

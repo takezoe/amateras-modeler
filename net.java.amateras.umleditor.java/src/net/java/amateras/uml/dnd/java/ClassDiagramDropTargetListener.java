@@ -28,11 +28,13 @@ class ClassDiagramDropTargetListener extends AbstractTransferDropTargetListener 
 		super(viewer, xfer);
 	}
 
+	@Override
 	protected void handleDragOver() {
 		getCurrentEvent().detail = DND.DROP_COPY;
 		super.handleDragOver();
 	}
 	
+	@Override
 	protected Request createTargetRequest() {
 		CreateRequest request = new CreateRequest();
 		return request;
@@ -41,6 +43,7 @@ class ClassDiagramDropTargetListener extends AbstractTransferDropTargetListener 
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.dnd.AbstractTransferDropTargetListener#getCommand()
 	 */
+	@Override
 	protected Command getCommand() {
 		RootModel root = (RootModel)getViewer().getContents().getModel();
 		IStructuredSelection selection = (IStructuredSelection) getCurrentEvent().data;
@@ -67,11 +70,13 @@ class ClassDiagramDropTargetListener extends AbstractTransferDropTargetListener 
 		return null;
 	}
 
+	@Override
 	protected void handleDrop() {
 		super.handleDrop();
 		getCurrentEvent().detail = DND.DROP_COPY;
 	}
 
+	@Override
 	protected void updateTargetRequest() {
 		// Nothing to do
 	}

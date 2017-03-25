@@ -11,6 +11,7 @@ import net.java.amateras.uml.classdiagram.figure.UMLClassFigure;
 
 public class InterfaceEditPart extends CommonEntityEditPart {
 	
+	@Override
 	protected IFigure createFigure() {
 		UMLClassFigure figure = (UMLClassFigure) super.createFigure();
 
@@ -23,6 +24,7 @@ public class InterfaceEditPart extends CommonEntityEditPart {
 		return figure;
 	}
 
+	@Override
 	public UMLClassFigure getClassFigure() {
 		return ClassFigureFactory.getInterfaceFigure();
 	}

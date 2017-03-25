@@ -20,6 +20,7 @@ import net.java.amateras.uml.classdiagram.model.AssociationModel;
 import net.java.amateras.uml.classdiagram.model.ClassModel;
 import net.java.amateras.uml.classdiagram.model.CompositeModel;
 import net.java.amateras.uml.classdiagram.model.DependencyModel;
+import net.java.amateras.uml.classdiagram.model.EnumModel;
 import net.java.amateras.uml.classdiagram.model.GeneralizationModel;
 import net.java.amateras.uml.classdiagram.model.InterfaceModel;
 import net.java.amateras.uml.classdiagram.model.RealizationModel;
@@ -83,6 +84,7 @@ public class ClassDiagramEditor extends DiagramEditor {
 //		super();
 //	}
 
+	@Override
 	protected PaletteRoot getPaletteRoot() {
 		PaletteRoot root = new PaletteRoot();
 		UMLPlugin plugin = UMLPlugin.getDefault();
@@ -108,6 +110,8 @@ public class ClassDiagramEditor extends DiagramEditor {
 		PaletteDrawer entities = new PaletteDrawer(plugin.getResourceString("palette.entity"));
 		entities.add(createEntityEntry(plugin.getResourceString("palette.entity.class"), ClassModel.class,
 				"icons/class.gif"));
+		entities.add(createEntityEntry(plugin.getResourceString("palette.entity.enum"), EnumModel.class,
+				"icons/enum.gif"));
 		entities.add(createEntityEntry(plugin.getResourceString("palette.entity.interface"),
 				InterfaceModel.class, "icons/interface.gif"));
 
@@ -134,6 +138,7 @@ public class ClassDiagramEditor extends DiagramEditor {
 		return root;
 	}
 
+	@Override
 	protected RootModel createInitializeModel() {
 		RootModel model = new RootModel();
 		model.setShowIcon(true);
@@ -142,10 +147,12 @@ public class ClassDiagramEditor extends DiagramEditor {
 		return model;
 	}
 
+	@Override
 	protected String getDiagramType() {
 		return "class";
 	}
 	
+	@Override
 	protected void createActions() {
 		super.createActions();
 		pasteAction = new PasteAction(this);
@@ -157,6 +164,7 @@ public class ClassDiagramEditor extends DiagramEditor {
 		getSelectionActions().add(copyAction.getId());
 	}
 
+	@Override
 	protected void createDiagramAction(GraphicalViewer viewer) {
 		addAttributeAction = new AddAttributeAction(viewer.getEditDomain().getCommandStack(), viewer);
 		addOperationAction = new AddOperationAction(viewer.getEditDomain().getCommandStack(), viewer);
@@ -193,6 +201,7 @@ public class ClassDiagramEditor extends DiagramEditor {
 				ToggleAction.OPERATION, Visibility.PRIVATE);
 	}
 
+	@Override
 	protected void fillDiagramPopupMenu(MenuManager manager) {
 		// TODO use ContextMenuProvider.
 		manager.add(new Separator("align"));
@@ -250,6 +259,7 @@ public class ClassDiagramEditor extends DiagramEditor {
 		manager.add(pasteAction);
 	}
 
+	@Override
 	protected void updateDiagramAction(ISelection selection) {
 		addAttributeAction.update((IStructuredSelection) selection);
 		addOperationAction.update((IStructuredSelection) selection);
@@ -276,6 +286,7 @@ public class ClassDiagramEditor extends DiagramEditor {
 		togglePublicOpe.update((IStructuredSelection) selection);
 	}
 
+	@Override
 	protected EditPartFactory createEditPartFactory() {
 		return new UMLEditPartFactory();
 	}

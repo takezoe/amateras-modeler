@@ -22,6 +22,7 @@ public class InterfaceModel extends CommonEntityModel {
 		number++;
 	}
 
+	@Override
 	public Object getPropertyValue(Object id) {
 		if (id.equals(CommonEntityModel.P_ATTRIBUTES)) {
 			List<AbstractUMLModel> rv = new ArrayList<AbstractUMLModel>();
@@ -49,6 +50,7 @@ public class InterfaceModel extends CommonEntityModel {
 		return super.getPropertyValue(id);
 	}
 
+	@Override
 	public void setPropertyValue(Object id, Object value) {
 		if (id.equals(StereoTypeModel.P_STEREO_TYPE)) {
 			setStereoType((String) value);
@@ -62,6 +64,7 @@ public class InterfaceModel extends CommonEntityModel {
 	 * Clone this object. TODO, duplicated code with InterfaceModel.clone(), be careful to override clone!
 	 *@deprecated
 	 */
+	@Override
 	public Object clone() {
 		InterfaceModel newModel = new InterfaceModel();
 

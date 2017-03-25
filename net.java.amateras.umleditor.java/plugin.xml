@@ -13,7 +13,7 @@
             <separator name="java"/>
          </menu>
          <action
-               class="net.java.amateras.uml.java.SyncAction"
+               class="net.java.amateras.uml.synchronizer.SyncAction"
                icon="icons/synced.gif"
                id="net.java.amateras.uml.java.SyncAction"
                label="%plugin.menu.sync"
