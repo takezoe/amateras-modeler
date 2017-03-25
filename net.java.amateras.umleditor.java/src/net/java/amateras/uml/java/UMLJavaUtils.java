@@ -28,7 +28,6 @@ import net.java.amateras.uml.classdiagram.model.InterfaceModel;
 import net.java.amateras.uml.classdiagram.model.OperationModel;
 import net.java.amateras.uml.classdiagram.model.RealizationModel;
 import net.java.amateras.uml.classdiagram.model.Visibility;
-import net.java.amateras.uml.model.AbstractUMLConnectionModel;
 import net.java.amateras.uml.model.AbstractUMLEntityModel;
 import net.java.amateras.uml.model.AbstractUMLModel;
 import net.java.amateras.uml.model.RootModel;
@@ -206,11 +205,15 @@ public class UMLJavaUtils {
 	}
 	
 	public static void appendSuperClassConnection(RootModel root, IType type, 
-			AbstractUMLEntityModel model) throws JavaModelException {
-		appendSuperClassConnection(root, type, model, null);
+			AbstractUMLEntityModel model,
+			List<RealizationModel> oldRealisationConnections,
+			List<GeneralizationModel> oldGeneralizationConnections) throws JavaModelException {
+		appendSuperClassConnection(root, type, model, null, oldRealisationConnections, oldGeneralizationConnections);
 	}
 	public static void appendSuperClassConnection(RootModel root, IType type, 
-			AbstractUMLEntityModel model, CommonEntityModel restrict2Model) throws JavaModelException {
+			AbstractUMLEntityModel model, CommonEntityModel restrict2Model,
+			List<RealizationModel> oldRealisationConnections,
+			List<GeneralizationModel> oldGeneralizationConnections) throws JavaModelException {
 		
 		if(type.getSuperclassName()==null){
 			return;
@@ -229,11 +232,7 @@ public class UMLJavaUtils {
 			}
 			String className = stripGenerics(UMLJavaUtils.getClassName(obj));
 			if(className!=null && className.equals(superClass)){
-				GeneralizationModel conn = new GeneralizationModel();
-				conn.setSource(model);
-				conn.setTarget((AbstractUMLEntityModel)obj);
-				conn.attachSource();
-				conn.attachTarget();
+				searchConnectPreExistingGeneralization((CommonEntityModel)obj, (CommonEntityModel) model, oldGeneralizationConnections);
 				break;
 			}
 		}
@@ -242,7 +241,9 @@ public class UMLJavaUtils {
 	public static void appendSubConnection(	RootModel root, IJavaProject project,
 											AbstractUMLEntityModel model, List<AbstractUMLEntityModel> excludedModels,
 											boolean synchronizeAction,
-											List<AssociationModel> oldAssociationConnections){
+											List<AssociationModel> oldAssociationConnections,
+											List<RealizationModel> oldRealisationConnections,
+											List<GeneralizationModel> oldGeneralizationConnections){
 		List<AbstractUMLModel>  children = root.getChildren();
 		for(int i = 0 ; i< children.size(); i++){
 			AbstractUMLEntityModel child = (AbstractUMLEntityModel) children.get(i);
@@ -257,10 +258,12 @@ public class UMLJavaUtils {
 						IType type = project.findType(name);
 						if(type != null){
 							if (synchronizeAction == false) {
-								appendInterfacesConnection(root, type, child);
+								appendInterfacesConnection(root, type, child, oldRealisationConnections,
+										oldGeneralizationConnections);
 							}
 							else {
-								appendInterfacesConnection(root, type, child, (CommonEntityModel) model);
+								appendInterfacesConnection(root, type, child, (CommonEntityModel) model,
+										oldRealisationConnections, oldGeneralizationConnections);
 							}
 						}
 					} catch(JavaModelException ex){
@@ -273,16 +276,16 @@ public class UMLJavaUtils {
 						IType type = project.findType(name);
 						if(type != null){
 							if (synchronizeAction == false) {
-								appendSuperClassConnection(root, type, child);
-								appendInterfacesConnection(root, type, child);
+								appendSuperClassConnection(root, type, child, oldRealisationConnections, oldGeneralizationConnections);
+								appendInterfacesConnection(root, type, child, oldRealisationConnections, oldGeneralizationConnections);
 								appendAssociationConnection(root, type, (ClassModel) child, oldAssociationConnections);
 							}
 							else {
 								//In synchronization case (synchro of a class of model with java source file),
 								//we force to refresh only sub connections linked with the model actually refreshed.
 								//Otherwise it will leads to multiply association link of other classes.
-								appendSuperClassConnection(root, type, child, (CommonEntityModel) model);
-								appendInterfacesConnection(root, type, child, (CommonEntityModel) model);
+								appendSuperClassConnection(root, type, child, (CommonEntityModel) model, oldRealisationConnections, oldGeneralizationConnections);
+								appendInterfacesConnection(root, type, child, (CommonEntityModel) model, oldRealisationConnections, oldGeneralizationConnections);
 								appendAssociationConnection(root, type, (ClassModel) child, (CommonEntityModel) model, oldAssociationConnections);
 							}
 						}
@@ -296,11 +299,11 @@ public class UMLJavaUtils {
 						IType type = project.findType(name);
 						if(type != null){
 							if (synchronizeAction == false) {
-								appendInterfacesConnection(root, type, child);
+								appendInterfacesConnection(root, type, child, oldRealisationConnections, oldGeneralizationConnections);
 								appendAssociationConnection(root, type, (EnumModel) child, oldAssociationConnections);
 							}
 							else {
-								appendInterfacesConnection(root, type, child, (CommonEntityModel) model);
+								appendInterfacesConnection(root, type, child, (CommonEntityModel) model, oldRealisationConnections, oldGeneralizationConnections);
 								appendAssociationConnection(root, type, (EnumModel) child, (CommonEntityModel) model, oldAssociationConnections);
 							}
 						}
@@ -313,12 +316,16 @@ public class UMLJavaUtils {
 	}
 	
 	public static void appendInterfacesConnection(RootModel root, IType type, 
-			AbstractUMLEntityModel model) throws JavaModelException {
-		appendInterfacesConnection(root, type, model, null);
+			AbstractUMLEntityModel model,
+			List<RealizationModel> oldRealisationConnections,
+			List<GeneralizationModel> oldGeneralizationConnections) throws JavaModelException {
+		appendInterfacesConnection(root, type, model, null, oldRealisationConnections, oldGeneralizationConnections);
 	}
 	
 	public static void appendInterfacesConnection(RootModel root, IType type, 
-			AbstractUMLEntityModel model, CommonEntityModel restrict2Model) throws JavaModelException {
+			AbstractUMLEntityModel model, CommonEntityModel restrict2Model,
+			List<RealizationModel> oldRealisationConnections,
+			List<GeneralizationModel> oldGeneralizationConnections) throws JavaModelException {
 		
 		String[] interfaces = type.getSuperInterfaceNames();
 		
@@ -336,21 +343,64 @@ public class UMLJavaUtils {
 				if(obj instanceof InterfaceModel){
 					String className = stripGenerics(((InterfaceModel)obj).getName());
 					if(className != null && className.equals(interfaceName)){
-						AbstractUMLConnectionModel conn = null;
 						if(model instanceof ClassModel || model instanceof EnumModel){
-							conn = new RealizationModel();
+							searchConnectPreExistingRealizationModel((CommonEntityModel)obj, (CommonEntityModel) model, oldRealisationConnections);
 						} else if(model instanceof InterfaceModel){
-							conn = new GeneralizationModel();
+							searchConnectPreExistingGeneralization((CommonEntityModel)obj, (CommonEntityModel) model, oldGeneralizationConnections);
 						}
-						conn.setSource(model);
-						conn.setTarget((AbstractUMLEntityModel)obj);
-						conn.attachSource();
-						conn.attachTarget();
 						break;
 					}
 				}
 			}
 		}
+	}
+	
+	private static void searchConnectPreExistingRealizationModel(CommonEntityModel target, CommonEntityModel source,
+			List<RealizationModel> oldRealisationConnections) {
+		RealizationModel conn = null;
+		for (RealizationModel gc : oldRealisationConnections) {
+			AbstractUMLEntityModel src = gc.getSource();
+			AbstractUMLEntityModel trgt = gc.getTarget();
+			if (src instanceof CommonEntityModel && trgt instanceof CommonEntityModel) {
+				if (		((CommonEntityModel)src).getName().equals(source.getName())
+						&&	((CommonEntityModel)trgt).getName().equals(target.getName())) {
+					conn = gc;
+					oldRealisationConnections.remove(conn);
+					break;
+				}
+			}
+		}
+		if (conn == null) {
+			conn = new RealizationModel();
+		}
+		conn.setSource(source);
+		conn.setTarget(target);
+		conn.attachSource();
+		conn.attachTarget();
+	}
+	
+	private static void searchConnectPreExistingGeneralization(CommonEntityModel target, CommonEntityModel source,
+			List<GeneralizationModel> oldGeneralizationConnections) {
+		GeneralizationModel conn = null;
+		for (GeneralizationModel gc : oldGeneralizationConnections) {
+			AbstractUMLEntityModel src = gc.getSource();
+			AbstractUMLEntityModel trgt = gc.getTarget();
+			if (src instanceof CommonEntityModel && trgt instanceof CommonEntityModel) {
+				if (		((CommonEntityModel)src).getName().equals(source.getName())
+						&&	((CommonEntityModel)trgt).getName().equals(target.getName())) {
+					conn = gc;
+					oldGeneralizationConnections.remove(conn);
+					break;
+				}
+			}
+		}
+		if (conn == null) {
+			conn = new GeneralizationModel();
+		}
+		conn.setSource(source);
+		conn.setTarget(target);
+		conn.attachSource();
+		conn.attachTarget();
 	}
 	
 	public static void appendAssociationConnection(RootModel root, IType type, 

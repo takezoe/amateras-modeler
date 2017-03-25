@@ -179,18 +179,18 @@ public class ImportClassModelCommand extends Command {
 			for(int i=0;i<addedModels.size();i++){
 				AbstractUMLEntityModel model = addedModels.get(i);
 				if(types[i].isInterface()){
-					UMLJavaUtils.appendInterfacesConnection(this.root, types[i], model);
+					UMLJavaUtils.appendInterfacesConnection(this.root, types[i], model, oldRealisationConnections, oldGeneralizationConnections);
 				} else if (types[i].isEnum()){
 					//Impossible for enum to inherit from superclass
-					UMLJavaUtils.appendInterfacesConnection(this.root, types[i], model);
+					UMLJavaUtils.appendInterfacesConnection(this.root, types[i], model, oldRealisationConnections, oldGeneralizationConnections);
 					UMLJavaUtils.appendAssociationConnection(this.root, types[i], (EnumModel) model, oldAssociationConnections);
 				} else {
-					UMLJavaUtils.appendSuperClassConnection(this.root, types[i], model);
-					UMLJavaUtils.appendInterfacesConnection(this.root, types[i], model);
+					UMLJavaUtils.appendSuperClassConnection(this.root, types[i], model, oldRealisationConnections, oldGeneralizationConnections);
+					UMLJavaUtils.appendInterfacesConnection(this.root, types[i], model, oldRealisationConnections, oldGeneralizationConnections);
 					UMLJavaUtils.appendAssociationConnection(this.root, types[i], (ClassModel) model, oldAssociationConnections);
 				}
 				UMLJavaUtils.appendSubConnection(root, types[i].getJavaProject(), model, addedModels, synchronizeAction,
-						oldAssociationConnections);
+						oldAssociationConnections, oldRealisationConnections, oldGeneralizationConnections);
 			}
 		} catch(JavaModelException ex){
 			UMLPlugin.logException(ex);
