@@ -23,6 +23,7 @@ import net.java.amateras.uml.classdiagram.model.OperationModel;
 import net.java.amateras.uml.classdiagram.model.RealizationModel;
 import net.java.amateras.uml.model.AbstractUMLConnectionModel;
 import net.java.amateras.uml.model.AbstractUMLEntityModel;
+import net.java.amateras.uml.model.AbstractUMLModel;
 import net.java.amateras.uml.model.RootModel;
 
 /**
@@ -136,6 +137,41 @@ public class ImportClassModelCommand extends Command {
 		}
 		
 		addConnections(addedModels);
+		addAssociationsWithNoCorrespondingAttribute();
+	}
+
+	/**
+	 * The deleted class may  previously had some association with other class, but no attribute of this kind.
+	 * We try to had them again if possible.
+	 */
+	private void addAssociationsWithNoCorrespondingAttribute() {
+		if (oldAssociationConnections == null) {
+			return;
+		}
+		for (AssociationModel previousAssociation : oldAssociationConnections) {
+			CommonEntityModel source = (CommonEntityModel) previousAssociation.getSource();
+			CommonEntityModel target = (CommonEntityModel) previousAssociation.getTarget();
+			for (AbstractUMLModel child : root.getChildren()) {
+				if (child instanceof CommonEntityModel) {
+					CommonEntityModel entityModel = (CommonEntityModel) child;
+					if (source.getName().equals(entityModel.getName())) {
+						for (AbstractUMLModel child2 : root.getChildren()) {
+							if (child2 instanceof CommonEntityModel) {
+								CommonEntityModel entityModel2 = (CommonEntityModel) child2;
+								if (target.getName().equals(entityModel2.getName())) {
+									previousAssociation.setSource(entityModel);
+									previousAssociation.setTarget(entityModel2);
+									previousAssociation.attachSource();
+									previousAssociation.attachTarget();
+									break;
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
+		}
 	}
 	
 	private void addConnections(List<AbstractUMLEntityModel> addedModels){

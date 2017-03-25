@@ -63,9 +63,6 @@ public class SyncAction implements IEditorActionDelegate {
 			return;
 		}
 		
-		List<AbstractUMLConnectionModel> sourceConnections = new ArrayList<AbstractUMLConnectionModel>();
-		List<AbstractUMLConnectionModel> targetConnections = new ArrayList<AbstractUMLConnectionModel>();
-		
 		for(AbstractUMLEntityModel model: new ArrayList<AbstractUMLEntityModel>(target)){
 			
 			CommonEntityModel modelComEntity = (CommonEntityModel)model;
@@ -130,6 +127,8 @@ public class SyncAction implements IEditorActionDelegate {
 						deleteCommand.setTargetModel(model);
 						commandChain.add(deleteCommand);
 						
+						List<AbstractUMLConnectionModel> sourceConnections = new ArrayList<AbstractUMLConnectionModel>();
+						List<AbstractUMLConnectionModel> targetConnections = new ArrayList<AbstractUMLConnectionModel>();
 						sourceConnections.addAll(((AbstractUMLEntityModel) model).getModelSourceConnections());
 						targetConnections.addAll(((AbstractUMLEntityModel) model).getModelTargetConnections());
 						
@@ -139,9 +138,6 @@ public class SyncAction implements IEditorActionDelegate {
 						importCommand.setPreExistingConnections(sourceConnections, targetConnections);
 						commandChain.add(importCommand);
 						
-//						Map<AbstractUMLEntityModel, List<AbstractUMLConnectionModel>> mapSrcConnNested = new HashMap<AbstractUMLEntityModel, List<AbstractUMLConnectionModel>>();
-//						Map<AbstractUMLEntityModel, List<AbstractUMLConnectionModel>> mapTrgtConnNested = new HashMap<AbstractUMLEntityModel, List<AbstractUMLConnectionModel>>();
-						
 						// Search deleted nested class
 						CommonEntityModel modelToDeleted = null;
 						for(AbstractUMLEntityModel modelNested: new ArrayList<AbstractUMLEntityModel>(target)){
@@ -150,34 +146,11 @@ public class SyncAction implements IEditorActionDelegate {
 							String classNameNested = UMLJavaUtils.stripGenerics(modelTemp.getName());
 							if (pathNested.equals(path) && !classNameNested.equals(className)) {
 								modelToDeleted = modelTemp;
-//								deleteCommand = new DeleteCommand();
-//								deleteCommand.setRootModel(root);
-//								deleteCommand.setTargetModel(modelNested);
-//								commandChain.add(deleteCommand);
-								
-//								// Memorize removed association of nested class to synchronized in order to try to restore them
-//								sourceConnections = new ArrayList<AbstractUMLConnectionModel>();
-//								targetConnections = new ArrayList<AbstractUMLConnectionModel>();
-//								sourceConnections.addAll(((AbstractUMLEntityModel) modelNested).getModelSourceConnections());
-//								targetConnections.addAll(((AbstractUMLEntityModel) modelNested).getModelTargetConnections());
-//								
-//								mapSrcConnNested.put(modelNested, sourceConnections);
-//								mapTrgtConnNested.put(modelNested, targetConnections);
 							}
 						}
-						// Import Nested class newly created
+						// Import Nested class newly created. Nested class that do not already exist in class diagram
+						// but have been added in java file
 						for (IType nestedType : nestedTypes) {
-//							sourceConnections = new ArrayList<AbstractUMLConnectionModel>();
-//							targetConnections = new ArrayList<AbstractUMLConnectionModel>();
-//							for (AbstractUMLEntityModel nm : mapSrcConnNested.keySet()) {
-//								String removedNestedClass = UMLJavaUtils.stripGenerics(((CommonEntityModel) nm).getName());
-//								String nestedTypeName = nestedType.getFullyQualifiedName().replaceAll("\\$", ".");
-//								if (removedNestedClass.equals(nestedTypeName)) {
-//									modelToDeleted = (CommonEntityModel)nm;
-//									sourceConnections.addAll(mapSrcConnNested.get(nm));
-//									targetConnections.addAll(mapTrgtConnNested.get(nm));
-//								}
-//							}
 							if (modelToDeleted != null) {
 								rect = ((AbstractUMLEntityModel) modelToDeleted).getConstraint();
 							}
@@ -187,7 +160,6 @@ public class SyncAction implements IEditorActionDelegate {
 							}
 							importCommand = new ImportClassModelCommand(root, nestedType, true);
 							importCommand.setLocation(new Point(rect.x, rect.y));
-//							importCommand.setPreExistingConnections(sourceConnections, targetConnections);
 							commandChain.add(importCommand);
 						}
 						
