@@ -3,23 +3,27 @@ package net.java.amateras.uml.java;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.java.amateras.uml.UMLPlugin;
-import net.java.amateras.uml.classdiagram.model.AttributeModel;
-import net.java.amateras.uml.classdiagram.model.ClassModel;
-import net.java.amateras.uml.classdiagram.model.CommonEntityModel;
-import net.java.amateras.uml.classdiagram.model.EnumModel;
-import net.java.amateras.uml.classdiagram.model.InterfaceModel;
-import net.java.amateras.uml.classdiagram.model.OperationModel;
-import net.java.amateras.uml.model.AbstractUMLConnectionModel;
-import net.java.amateras.uml.model.AbstractUMLEntityModel;
-import net.java.amateras.uml.model.RootModel;
-
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+
+import net.java.amateras.uml.UMLPlugin;
+import net.java.amateras.uml.classdiagram.model.AssociationModel;
+import net.java.amateras.uml.classdiagram.model.AttributeModel;
+import net.java.amateras.uml.classdiagram.model.ClassModel;
+import net.java.amateras.uml.classdiagram.model.CommonEntityModel;
+import net.java.amateras.uml.classdiagram.model.DependencyModel;
+import net.java.amateras.uml.classdiagram.model.EnumModel;
+import net.java.amateras.uml.classdiagram.model.GeneralizationModel;
+import net.java.amateras.uml.classdiagram.model.InterfaceModel;
+import net.java.amateras.uml.classdiagram.model.OperationModel;
+import net.java.amateras.uml.classdiagram.model.RealizationModel;
+import net.java.amateras.uml.model.AbstractUMLConnectionModel;
+import net.java.amateras.uml.model.AbstractUMLEntityModel;
+import net.java.amateras.uml.model.RootModel;
 
 /**
  * The command to add Java types to the class diagram.
@@ -33,6 +37,11 @@ public class ImportClassModelCommand extends Command {
 	private List<AbstractUMLEntityModel> models;
 	private Point location;
 	private boolean synchronizeAction = false;
+	
+	private List<RealizationModel> oldRealisationConnections = new ArrayList<RealizationModel>();
+	private List<GeneralizationModel> oldGeneralizationConnections = new ArrayList<GeneralizationModel>();
+	private List<DependencyModel> oldDependencyConnections = new ArrayList<DependencyModel>();
+	private List<AssociationModel> oldAssociationConnections;
 	
 	/**
 	 * Constructor for the one type adding.
@@ -58,6 +67,47 @@ public class ImportClassModelCommand extends Command {
 	public ImportClassModelCommand(RootModel root,IType[] types){
 		this.root = root;
 		this.types = types;
+	}
+	
+	/**
+	 * When an element is updated in class diagram, it is first deleted, its connections are also deleted.
+	 * After it is reloaded from java file. Preexisting connections, may have memorized parameters (bendpoints...)
+	 * So we keep the old connections and restore them.
+	 * 
+	 * @param preExistingSourceConnections
+	 * @param preExistingTargetConnections
+	 */
+	public void setPreExistingConnections(	List<AbstractUMLConnectionModel> preExistingSourceConnections,
+											List<AbstractUMLConnectionModel> preExistingTargetConnections) {
+		oldAssociationConnections = new ArrayList<AssociationModel>();
+		for (AbstractUMLConnectionModel connectionModel : preExistingSourceConnections) {
+			if (connectionModel instanceof RealizationModel) {
+				oldRealisationConnections.add((RealizationModel) connectionModel);
+			}
+			else if (connectionModel instanceof GeneralizationModel) {
+				oldGeneralizationConnections.add((GeneralizationModel) connectionModel);
+			}
+			else if (connectionModel instanceof DependencyModel) {
+				oldDependencyConnections.add((DependencyModel) connectionModel);
+			}
+			else if (connectionModel instanceof AssociationModel) {
+				oldAssociationConnections.add((AssociationModel) connectionModel);
+			}
+		}
+		for (AbstractUMLConnectionModel connectionModel : preExistingTargetConnections) {
+			if (connectionModel instanceof RealizationModel) {
+				oldRealisationConnections.add((RealizationModel) connectionModel);
+			}
+			else if (connectionModel instanceof GeneralizationModel) {
+				oldGeneralizationConnections.add((GeneralizationModel) connectionModel);
+			}
+			else if (connectionModel instanceof DependencyModel) {
+				oldDependencyConnections.add((DependencyModel) connectionModel);
+			}
+			else if (connectionModel instanceof AssociationModel) {
+				oldAssociationConnections.add((AssociationModel) connectionModel);
+			}
+		}
 	}
 	
 	public void setLocation(Point location){
@@ -97,13 +147,14 @@ public class ImportClassModelCommand extends Command {
 				} else if (types[i].isEnum()){
 					//Impossible for enum to inherit from superclass
 					UMLJavaUtils.appendInterfacesConnection(this.root, types[i], model);
-					UMLJavaUtils.appendAggregationConnection(this.root, types[i], (EnumModel) model);
+					UMLJavaUtils.appendAssociationConnection(this.root, types[i], (EnumModel) model, oldAssociationConnections);
 				} else {
 					UMLJavaUtils.appendSuperClassConnection(this.root, types[i], model);
 					UMLJavaUtils.appendInterfacesConnection(this.root, types[i], model);
-					UMLJavaUtils.appendAggregationConnection(this.root, types[i], (ClassModel) model);
+					UMLJavaUtils.appendAssociationConnection(this.root, types[i], (ClassModel) model, oldAssociationConnections);
 				}
-				UMLJavaUtils.appendSubConnection(root, types[i].getJavaProject(), model, addedModels, synchronizeAction);
+				UMLJavaUtils.appendSubConnection(root, types[i].getJavaProject(), model, addedModels, synchronizeAction,
+						oldAssociationConnections);
 			}
 		} catch(JavaModelException ex){
 			UMLPlugin.logException(ex);

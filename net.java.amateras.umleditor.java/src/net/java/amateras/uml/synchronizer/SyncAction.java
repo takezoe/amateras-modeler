@@ -34,6 +34,7 @@ import net.java.amateras.uml.classdiagram.model.InterfaceModel;
 import net.java.amateras.uml.editpart.AbstractUMLEntityEditPart.DeleteCommand;
 import net.java.amateras.uml.java.ImportClassModelCommand;
 import net.java.amateras.uml.java.UMLJavaUtils;
+import net.java.amateras.uml.model.AbstractUMLConnectionModel;
 import net.java.amateras.uml.model.AbstractUMLEntityModel;
 import net.java.amateras.uml.model.RootModel;
 
@@ -61,6 +62,9 @@ public class SyncAction implements IEditorActionDelegate {
 		if(target.isEmpty()){
 			return;
 		}
+		
+		List<AbstractUMLConnectionModel> sourceConnections = new ArrayList<AbstractUMLConnectionModel>();
+		List<AbstractUMLConnectionModel> targetConnections = new ArrayList<AbstractUMLConnectionModel>();
 		
 		for(AbstractUMLEntityModel model: new ArrayList<AbstractUMLEntityModel>(target)){
 			
@@ -96,11 +100,23 @@ public class SyncAction implements IEditorActionDelegate {
 					IType type = javaProject.findType(className);
 					if(type != null && type.exists()){
 						List<IType> nestedTypes = new ArrayList<IType>();
-						// Search nested class
+						// Search nested class not already existing in class diagram
 						IJavaElement[] nestedChildren = type.getChildren();
 						for (IJavaElement nestedChild : nestedChildren) {
 							if (nestedChild.getElementType() == IJavaElement.TYPE) {
-								nestedTypes.add((IType) nestedChild);
+								IType nestedChildIType = (IType) nestedChild;
+								String nestedTypeName = nestedChildIType.getFullyQualifiedName().replaceAll("\\$", ".");
+								boolean neverExistBefore = true;
+								for(AbstractUMLEntityModel modelNested: new ArrayList<AbstractUMLEntityModel>(target)){
+									String removedNestedClass = UMLJavaUtils.stripGenerics(((CommonEntityModel) modelNested).getName());
+									if (nestedTypeName.equals(removedNestedClass)) {
+										neverExistBefore = false;
+										break;
+									}
+								}
+								if (neverExistBefore) {
+									nestedTypes.add(nestedChildIType);
+								}
 							}
 						}
 						
@@ -114,26 +130,54 @@ public class SyncAction implements IEditorActionDelegate {
 						deleteCommand.setTargetModel(model);
 						commandChain.add(deleteCommand);
 						
+						sourceConnections.addAll(((AbstractUMLEntityModel) model).getModelSourceConnections());
+						targetConnections.addAll(((AbstractUMLEntityModel) model).getModelTargetConnections());
+						
 						ImportClassModelCommand importCommand = new ImportClassModelCommand(root, type, true);
 						Rectangle rect = ((AbstractUMLEntityModel) model).getConstraint();
 						importCommand.setLocation(new Point(rect.x, rect.y));
+						importCommand.setPreExistingConnections(sourceConnections, targetConnections);
 						commandChain.add(importCommand);
 						
-						// Delete nested class
-						AbstractUMLEntityModel modelToDeleted = null;
+//						Map<AbstractUMLEntityModel, List<AbstractUMLConnectionModel>> mapSrcConnNested = new HashMap<AbstractUMLEntityModel, List<AbstractUMLConnectionModel>>();
+//						Map<AbstractUMLEntityModel, List<AbstractUMLConnectionModel>> mapTrgtConnNested = new HashMap<AbstractUMLEntityModel, List<AbstractUMLConnectionModel>>();
+						
+						// Search deleted nested class
+						CommonEntityModel modelToDeleted = null;
 						for(AbstractUMLEntityModel modelNested: new ArrayList<AbstractUMLEntityModel>(target)){
-							modelToDeleted = (AbstractUMLEntityModel)modelNested;
-							String pathNested = modelComEntity.getPath();
-							String classNameNested = modelComEntity.getName();
+							CommonEntityModel modelTemp = (CommonEntityModel)modelNested;
+							String pathNested = modelTemp.getPath();
+							String classNameNested = UMLJavaUtils.stripGenerics(modelTemp.getName());
 							if (pathNested.equals(path) && !classNameNested.equals(className)) {
-								deleteCommand = new DeleteCommand();
-								deleteCommand.setRootModel(root);
-								deleteCommand.setTargetModel(modelNested);
-								commandChain.add(deleteCommand);
+								modelToDeleted = modelTemp;
+//								deleteCommand = new DeleteCommand();
+//								deleteCommand.setRootModel(root);
+//								deleteCommand.setTargetModel(modelNested);
+//								commandChain.add(deleteCommand);
+								
+//								// Memorize removed association of nested class to synchronized in order to try to restore them
+//								sourceConnections = new ArrayList<AbstractUMLConnectionModel>();
+//								targetConnections = new ArrayList<AbstractUMLConnectionModel>();
+//								sourceConnections.addAll(((AbstractUMLEntityModel) modelNested).getModelSourceConnections());
+//								targetConnections.addAll(((AbstractUMLEntityModel) modelNested).getModelTargetConnections());
+//								
+//								mapSrcConnNested.put(modelNested, sourceConnections);
+//								mapTrgtConnNested.put(modelNested, targetConnections);
 							}
 						}
-						// Import Nested class
+						// Import Nested class newly created
 						for (IType nestedType : nestedTypes) {
+//							sourceConnections = new ArrayList<AbstractUMLConnectionModel>();
+//							targetConnections = new ArrayList<AbstractUMLConnectionModel>();
+//							for (AbstractUMLEntityModel nm : mapSrcConnNested.keySet()) {
+//								String removedNestedClass = UMLJavaUtils.stripGenerics(((CommonEntityModel) nm).getName());
+//								String nestedTypeName = nestedType.getFullyQualifiedName().replaceAll("\\$", ".");
+//								if (removedNestedClass.equals(nestedTypeName)) {
+//									modelToDeleted = (CommonEntityModel)nm;
+//									sourceConnections.addAll(mapSrcConnNested.get(nm));
+//									targetConnections.addAll(mapTrgtConnNested.get(nm));
+//								}
+//							}
 							if (modelToDeleted != null) {
 								rect = ((AbstractUMLEntityModel) modelToDeleted).getConstraint();
 							}
@@ -143,6 +187,7 @@ public class SyncAction implements IEditorActionDelegate {
 							}
 							importCommand = new ImportClassModelCommand(root, nestedType, true);
 							importCommand.setLocation(new Point(rect.x, rect.y));
+//							importCommand.setPreExistingConnections(sourceConnections, targetConnections);
 							commandChain.add(importCommand);
 						}
 						

@@ -3,9 +3,22 @@ package net.java.amateras.uml.java;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.core.Flags;
+import org.eclipse.jdt.core.IClassFile;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IField;
+import org.eclipse.jdt.core.IImportDeclaration;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.Signature;
+
 import net.java.amateras.uml.UMLPlugin;
 import net.java.amateras.uml.classdiagram.model.AggregationModel;
 import net.java.amateras.uml.classdiagram.model.Argument;
+import net.java.amateras.uml.classdiagram.model.AssociationModel;
 import net.java.amateras.uml.classdiagram.model.AttributeModel;
 import net.java.amateras.uml.classdiagram.model.ClassModel;
 import net.java.amateras.uml.classdiagram.model.CommonEntityModel;
@@ -19,18 +32,6 @@ import net.java.amateras.uml.model.AbstractUMLConnectionModel;
 import net.java.amateras.uml.model.AbstractUMLEntityModel;
 import net.java.amateras.uml.model.AbstractUMLModel;
 import net.java.amateras.uml.model.RootModel;
-
-import org.eclipse.jdt.core.Flags;
-import org.eclipse.jdt.core.IClassFile;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IField;
-import org.eclipse.jdt.core.IImportDeclaration;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.core.Signature;
 
 /**
  * This class provides utility methods for the AmaterasUML-Java Plug-In.
@@ -240,7 +241,8 @@ public class UMLJavaUtils {
 	
 	public static void appendSubConnection(	RootModel root, IJavaProject project,
 											AbstractUMLEntityModel model, List<AbstractUMLEntityModel> excludedModels,
-											boolean synchronizeAction){
+											boolean synchronizeAction,
+											List<AssociationModel> oldAssociationConnections){
 		List<AbstractUMLModel>  children = root.getChildren();
 		for(int i = 0 ; i< children.size(); i++){
 			AbstractUMLEntityModel child = (AbstractUMLEntityModel) children.get(i);
@@ -273,7 +275,7 @@ public class UMLJavaUtils {
 							if (synchronizeAction == false) {
 								appendSuperClassConnection(root, type, child);
 								appendInterfacesConnection(root, type, child);
-								appendAggregationConnection(root, type, (ClassModel) child);
+								appendAssociationConnection(root, type, (ClassModel) child, oldAssociationConnections);
 							}
 							else {
 								//In synchronization case (synchro of a class of model with java source file),
@@ -281,7 +283,7 @@ public class UMLJavaUtils {
 								//Otherwise it will leads to multiply association link of other classes.
 								appendSuperClassConnection(root, type, child, (CommonEntityModel) model);
 								appendInterfacesConnection(root, type, child, (CommonEntityModel) model);
-								appendAggregationConnection(root, type, (ClassModel) child, (CommonEntityModel) model);
+								appendAssociationConnection(root, type, (ClassModel) child, (CommonEntityModel) model, oldAssociationConnections);
 							}
 						}
 					} catch(JavaModelException ex){
@@ -295,11 +297,11 @@ public class UMLJavaUtils {
 						if(type != null){
 							if (synchronizeAction == false) {
 								appendInterfacesConnection(root, type, child);
-								appendAggregationConnection(root, type, (EnumModel) child);
+								appendAssociationConnection(root, type, (EnumModel) child, oldAssociationConnections);
 							}
 							else {
 								appendInterfacesConnection(root, type, child, (CommonEntityModel) model);
-								appendAggregationConnection(root, type, (EnumModel) child, (CommonEntityModel) model);
+								appendAssociationConnection(root, type, (EnumModel) child, (CommonEntityModel) model, oldAssociationConnections);
 							}
 						}
 					} catch(JavaModelException ex){
@@ -351,9 +353,9 @@ public class UMLJavaUtils {
 		}
 	}
 	
-	public static void appendAggregationConnection(RootModel root, IType type, 
-			CommonEntityModel model) throws JavaModelException {
-		appendAggregationConnection(root, type, model, null);
+	public static void appendAssociationConnection(RootModel root, IType type, 
+			CommonEntityModel model, List<AssociationModel> oldAssociationConnections) throws JavaModelException {
+		appendAssociationConnection(root, type, model, null, oldAssociationConnections);
 	}
 	
 	//@param restrict2Model	if null the aggregation connection is done against any other element.
@@ -361,8 +363,9 @@ public class UMLJavaUtils {
 	//						Useful for synchronize action since in this case the element is suppressed
 	//						and then added, only this element need to have its sub connection refreshed
 	//						otherwise other elements would have multiple erroneous associations
-	public static void appendAggregationConnection(RootModel root, IType type, 
-			CommonEntityModel model, CommonEntityModel restrict2Model) throws JavaModelException {
+	private static void appendAssociationConnection(RootModel root, IType type, 
+			CommonEntityModel model, CommonEntityModel restrict2Model,
+			List<AssociationModel> oldAssociationConnections) throws JavaModelException {
 		List<AbstractUMLModel>  children = model.getChildren();
 		for(AbstractUMLModel obj: children){
 			if(obj instanceof AttributeModel){
@@ -393,21 +396,25 @@ public class UMLJavaUtils {
 					}
 					if(entity instanceof ClassModel){
 						if(stripGenerics(((ClassModel) entity).getName()).equals(attrType)){
-							AbstractUMLConnectionModel conn = new AggregationModel();
-							conn.setSource((ClassModel) entity);
-							conn.setTarget(model);
-							conn.attachSource();
-							conn.attachTarget();
+							searchConnectPreExistingConnection((ClassModel) entity, model, oldAssociationConnections);
 							break;
+						}
+						else {
+							// In case, if an association existed (and shall be relinked) but not an attribute with corresponding type exists in the class
+							if (oldAssociationConnections != null) {
+								searchConnectPreExistingConnection((ClassModel) entity, model, oldAssociationConnections);
+							}
 						}
 					} else if(entity instanceof InterfaceModel){
 						if(stripGenerics(((InterfaceModel) entity).getName()).equals(attrType)){
-							AbstractUMLConnectionModel conn = new AggregationModel();
-							conn.setSource((InterfaceModel) entity);
-							conn.setTarget(model);
-							conn.attachSource();
-							conn.attachTarget();
+							searchConnectPreExistingConnection((InterfaceModel) entity, model, oldAssociationConnections);
 							break;
+						}
+						else {
+							// In case, if an association existed (and shall be relinked) but not an attribute with corresponding type exists in the class
+							if (oldAssociationConnections != null) {
+								searchConnectPreExistingConnection((InterfaceModel) entity, model, oldAssociationConnections);
+							}
 						}
 					} else if(entity instanceof EnumModel){
 						boolean addElmt = false;
@@ -423,17 +430,49 @@ public class UMLJavaUtils {
 						}
 						if (addElmt) {
 							if(stripGenerics(((EnumModel) entity).getName()).equals(attrType)){
-								AbstractUMLConnectionModel conn = new AggregationModel();
-								conn.setSource((EnumModel) entity);
-								conn.setTarget(model);
-								conn.attachSource();
-								conn.attachTarget();
+								searchConnectPreExistingConnection((EnumModel) entity, model, oldAssociationConnections);
 								break;
+							}
+							else {
+								// In case, if an association existed (and shall be relinked) but not an attribute with corresponding type exists in the class
+								if (oldAssociationConnections != null) {
+									searchConnectPreExistingConnection((EnumModel) entity, model, oldAssociationConnections);
+								}
 							}
 						}
 					}
 				}
 			}
+		}
+	}
+	
+	/** Search and connect a preexisting connection association if exist, when diagram is synchronized.
+	 * If oldAssociationConnections is null, a new connection is created: it corresponds of case when
+	 * when a java class is newly dropped into class diagram */
+	private static void searchConnectPreExistingConnection(CommonEntityModel source, CommonEntityModel target,
+			List<AssociationModel> oldAssociationConnections) {
+		List<AssociationModel> conns = new ArrayList<AssociationModel>();
+		if (oldAssociationConnections != null) {
+			for (AssociationModel ac : oldAssociationConnections) {
+				AbstractUMLEntityModel src = ac.getSource();
+				AbstractUMLEntityModel trgt = ac.getTarget();
+				if (src instanceof CommonEntityModel && trgt instanceof CommonEntityModel) {
+					if (		((CommonEntityModel)src).getName().equals(source.getName())
+							&&	((CommonEntityModel)trgt).getName().equals(target.getName())) {
+						conns.add(ac);
+					}
+				}
+			}
+			oldAssociationConnections.removeAll(conns);
+		}
+		else {
+			conns.add(new AggregationModel());
+		}
+		for (AssociationModel conn : conns) {
+			conn.setSource(source);
+			conn.setTarget(target);
+			conn.attachSource();
+			conn.attachTarget();
 		}
 	}
 
