@@ -95,6 +95,8 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 
 	private boolean savePreviouslyNeeded = false;
 	private boolean need2Serialize = false;
+	private IEditorPart activeEditorBeforeSynchronization = null;
+	private List<IEditorPart> editorsOpenedDuringSynchronization = new ArrayList<IEditorPart>();
 	private AbstractUMLEditorAction openOutlineAction  = null;
 	private AbstractUMLEditorAction openPropertyAction = null;
 	private AbstractUMLEditorAction saveAsImageAction  = null;
@@ -172,8 +174,8 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 					@Override
 					public void run() {
 						IFile file = ((IFileEditorInput) input).getFile();
+						IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 						if (!file.exists()) {
-							IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 							page.closeEditor(DiagramEditor.this, false);
 						} else {
 							if (!getPartName().equals(file.getName())) {
@@ -194,6 +196,14 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 							} else {
 								needViewerRefreshFlag = true;
 							}
+							if (editorsOpenedDuringSynchronization.contains(DiagramEditor.this)) {
+								page.closeEditor(DiagramEditor.this, false);
+								editorsOpenedDuringSynchronization.clear();
+							}
+							if (activeEditorBeforeSynchronization != null) {
+								page.activate(activeEditorBeforeSynchronization);
+								activeEditorBeforeSynchronization = null;
+							}
 						}
 					}
 				});
@@ -204,8 +214,12 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 	/**
 	 * The diagram has been modified and need to be saved later (asynchronous) on next refresh
 	 */
-	public void need2Serialize() {
+	public void need2Serialize(IEditorPart activeEditorBeforeSynchronization, List<IEditorPart> editorsOpenedDuringSynchronization) {
 		need2Serialize = true;
+		if (activeEditorBeforeSynchronization != null) {
+			this.activeEditorBeforeSynchronization = activeEditorBeforeSynchronization;
+		}
+		this.editorsOpenedDuringSynchronization.addAll(editorsOpenedDuringSynchronization);
 	}
 	
 	public void appendAsyncAction(AsyncSyncAction asyncSyncAction) {

@@ -22,6 +22,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -54,15 +55,27 @@ public class JavaClassSynchronizer {
 	private IResourceChangeListener listener;
 	private List<IFile> cldList; // class diagram list
 	private Map<String, List<IFile>> javaSrcSynchro; // Java file <=> class diagram list
+	
+	// Memorize active editor before synchronize => allow to reselect it after all operations have ended
+	private IEditorPart activeEditorBeforeSynchronization;
+	// Updating a class diagram needs to have the class diagram editor opened. If it is not opened, we opened it
+	// and also close it after
+	private List<IEditorPart> editorsOpenedDuringSynchronization = new ArrayList<IEditorPart>();
 
 	public JavaClassSynchronizer() {}
 	
-	public class ResourceChangeListener implements IResourceChangeListener {
+	public class EventRunnable implements Runnable {
+		
+		private final IResourceChangeEvent event;
+		
+		public EventRunnable (IResourceChangeEvent event) {
+			this.event = event;
+		}
+		
 		@Override
-		public void resourceChanged(IResourceChangeEvent event) {
-			if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
-				return; // Keep only post change event
-			}
+		public void run() {
+			registerActiveEditor();
+			editorsOpenedDuringSynchronization.clear();
 			IResourceDelta rootDelta = event.getDelta();
 			
 			updateClassDiagramChanges(rootDelta);
@@ -127,18 +140,29 @@ public class JavaClassSynchronizer {
 				updateJavaSynchroAfterMove(iteratorFrom.next(), iteratorTo.next());
 			}
 		}
-
-		/**
-		 * @param rootDelta
-		 */
-		private void updateClassDiagramChanges(IResourceDelta rootDelta) {
-			List<IResourceDelta> addedClassDiag = searchClassDiagram(rootDelta, IResourceDelta.ADDED);
-			registerAddedClassDiag(addedClassDiag);
-			List<IResourceDelta> removedClassDiag = searchClassDiagram(rootDelta, IResourceDelta.REMOVED);
-			unregisterRemovedClassDiag(removedClassDiag);
-			List<IResourceDelta> modifiedClassDiag = searchClassDiagram(rootDelta, IResourceDelta.CHANGED);
-			updateClassDiagRegistration(modifiedClassDiag);
+	}
+	
+	public class ResourceChangeListener implements IResourceChangeListener {
+		@Override
+		public void resourceChanged(IResourceChangeEvent event) {
+			if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
+				return; // Keep only post change event
+			}
+			
+			Display.getDefault().asyncExec(new EventRunnable(event));
 		}
+	}
+	
+	/**
+	 * @param rootDelta
+	 */
+	private void updateClassDiagramChanges(IResourceDelta rootDelta) {
+		List<IResourceDelta> addedClassDiag = searchClassDiagram(rootDelta, IResourceDelta.ADDED);
+		registerAddedClassDiag(addedClassDiag);
+		List<IResourceDelta> removedClassDiag = searchClassDiagram(rootDelta, IResourceDelta.REMOVED);
+		unregisterRemovedClassDiag(removedClassDiag);
+		List<IResourceDelta> modifiedClassDiag = searchClassDiagram(rootDelta, IResourceDelta.CHANGED);
+		updateClassDiagRegistration(modifiedClassDiag);
 	}
 	
 	private void updateClassDiagOnJavaSrcMove(IFile cldFile, String javaFromPath, IPath javaToPath) {
@@ -152,7 +176,7 @@ public class JavaClassSynchronizer {
 			AsyncMoveAction asyncSyncAction = new AsyncMoveAction(targetClasses, javaToPath);
 			classDiagEditor.appendAsyncAction(asyncSyncAction);
 			//Request to save on disk
-			classDiagEditor.need2Serialize();
+			classDiagEditor.need2Serialize(activeEditorBeforeSynchronization, editorsOpenedDuringSynchronization);
 		}
 	}
 
@@ -176,7 +200,7 @@ public class JavaClassSynchronizer {
 			AsyncSyncAction asyncSyncAction = new AsyncDeleteAction(targetClasses, classDiagEditor);
 			classDiagEditor.appendAsyncAction(asyncSyncAction);
 			//Request to save on disk
-			classDiagEditor.need2Serialize();
+			classDiagEditor.need2Serialize(activeEditorBeforeSynchronization, editorsOpenedDuringSynchronization);
 		}
 	}
 
@@ -200,6 +224,26 @@ public class JavaClassSynchronizer {
 			}
 		}
 		return targetClasses;
+	}
+	
+	private void registerActiveEditor() {
+		activeEditorBeforeSynchronization = null;
+		IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		IWorkbenchPage page;
+		if (workbenchWindow == null) {
+			IWorkbenchWindow[] workbenchWindows = PlatformUI.getWorkbench().getWorkbenchWindows();
+			if (PlatformUI.getWorkbench().getWorkbenchWindowCount() > 0) {
+				workbenchWindow = workbenchWindows[0];
+			}
+		}
+		page = workbenchWindow.getActivePage();
+		
+		IEditorPart activeEditor = page.getActiveEditor();
+//		if (activeEditor instanceof JavaEditor) {
+		if (	activeEditor.getClass().getSimpleName().equals("CompilationUnitEditor")
+			||	activeEditor.getClass().getSimpleName().equals("JavaEditor")) {
+			activeEditorBeforeSynchronization = activeEditor;
+		}
 	}
 	
 	private ClassDiagramEditor getClassDiagramEditor(IFile cldFile) {
@@ -226,13 +270,19 @@ public class JavaClassSynchronizer {
 		IEditorPart editorPart = page.findEditor(editorInput);
 		
 		if (editorPart == null) {
+			// The class diagram editor is not already opened
 			try {
 				IEditorDescriptor cldEditDesc = PlatformUI.getWorkbench().
 						getEditorRegistry().getDefaultEditor(cldFile.getName());
 				editorPart = page.openEditor(editorInput, cldEditDesc.getId(), false);
+				if (activeEditorBeforeSynchronization != null) {
+					page.activate(activeEditorBeforeSynchronization);
+				}
+				editorsOpenedDuringSynchronization.add(editorPart);
 			}
 			catch (PartInitException e) {
 				e.printStackTrace();
+				System.err.println("Can not open class diagram editor: " + cldFile.getName());
 			}
 		}
 		ClassDiagramEditor classDiagEditor = null;
@@ -263,7 +313,7 @@ public class JavaClassSynchronizer {
 			AsyncSyncAction asyncSyncAction = new AsyncUpdateAction(targetClasses, classDiagEditor);
 			classDiagEditor.appendAsyncAction(asyncSyncAction);
 			//Request to save on disk
-			classDiagEditor.need2Serialize();
+			classDiagEditor.need2Serialize(activeEditorBeforeSynchronization, editorsOpenedDuringSynchronization);
 		}
 	}
 	
