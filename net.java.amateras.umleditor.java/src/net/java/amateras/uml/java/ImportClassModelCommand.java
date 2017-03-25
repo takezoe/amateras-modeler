@@ -137,18 +137,19 @@ public class ImportClassModelCommand extends Command {
 		}
 		
 		addConnections(addedModels);
-		addAssociationsWithNoCorrespondingAttribute();
+		addRelationsWithNoCorrespondingAttribute(oldAssociationConnections);
+		addRelationsWithNoCorrespondingAttribute(oldDependencyConnections);
 	}
 
 	/**
-	 * The deleted class may  previously had some association with other class, but no attribute of this kind.
+	 * The deleted class may  previously had some association/dependency with other class, but no attribute of this kind.
 	 * We try to had them again if possible.
 	 */
-	private void addAssociationsWithNoCorrespondingAttribute() {
-		if (oldAssociationConnections == null) {
+	private <RelationType extends AbstractUMLConnectionModel> void addRelationsWithNoCorrespondingAttribute(List<RelationType> oldRelationConnections) {
+		if (oldRelationConnections == null) {
 			return;
 		}
-		for (AssociationModel previousAssociation : oldAssociationConnections) {
+		for (RelationType previousAssociation : oldRelationConnections) {
 			CommonEntityModel source = (CommonEntityModel) previousAssociation.getSource();
 			CommonEntityModel target = (CommonEntityModel) previousAssociation.getTarget();
 			for (AbstractUMLModel child : root.getChildren()) {
