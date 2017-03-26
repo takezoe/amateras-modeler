@@ -49,8 +49,8 @@ public abstract class AbstractUMLEntityModel extends AbstractUMLModel {
 	
 	public void removeChild(AbstractUMLModel model) {
 		children.remove(model);
-		model.setParent(this);
-		firePropertyChange(P_CHILDREN,null,model);
+		model.setParent(null);
+		firePropertyChange(P_CHILDREN,model,null);
 	}
 	
 	public void forceUpdate() {
