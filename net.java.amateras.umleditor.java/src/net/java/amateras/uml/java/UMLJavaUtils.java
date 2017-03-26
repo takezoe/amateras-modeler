@@ -516,7 +516,11 @@ public class UMLJavaUtils {
 			oldAssociationConnections.removeAll(conns);
 		}
 		else {
-			conns.add(new AggregationModel());
+			// In case of class newly added (no already existing association), we can eventually
+			// create new association
+			if (addAggregationAutomatically()) {
+				conns.add(new AggregationModel());
+			}
 		}
 		for (AssociationModel conn : conns) {
 			conn.setSource(source);
@@ -524,6 +528,10 @@ public class UMLJavaUtils {
 			conn.attachSource();
 			conn.attachTarget();
 		}
+	}
+	
+	private static boolean addAggregationAutomatically() {
+		return UMLPlugin.getDefault().getPreferenceStore().getBoolean(UMLPlugin.PREF_CLASS_DIAGRAM_CREATE_AGGREGATION_ON_IMPORT);
 	}
 
 	public static String stripGenerics(String className){

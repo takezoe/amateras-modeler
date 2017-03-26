@@ -32,6 +32,8 @@ public class UMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 */
 	private BooleanFieldEditor showParameterName;
 	
+	private BooleanFieldEditor createAggregationOnImport;
+	
 	private BooleanFieldEditor createReturn;
 	
 	private BooleanFieldEditor showSimpleNameInSequenceDiagram;
@@ -67,6 +69,8 @@ public class UMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 				"preference.classdiagram.simpleName"), classGroup);
 		showParameterName = new BooleanFieldEditor(UMLPlugin.PREF_CLASS_DIAGRAM_SHOW_PARAMETER_NAME, UMLPlugin.getDefault().getResourceString(
 				"preference.classdiagram.showParameterName"), classGroup);
+		createAggregationOnImport = new BooleanFieldEditor(UMLPlugin.PREF_CLASS_DIAGRAM_CREATE_AGGREGATION_ON_IMPORT, UMLPlugin.getDefault().getResourceString(
+				"preference.classdiagram.createAggregationOnImport"), classGroup);
 
 		// for Sequence Diagram
 		Group sequenceGroup = new Group(composite, SWT.NULL);
@@ -120,6 +124,9 @@ public class UMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		showParameterName.setPreferenceStore(store);
 		showParameterName.load();
 		
+		createAggregationOnImport.setPreferenceStore(store);
+		createAggregationOnImport.load();
+		
 		createReturn.setPreferenceStore(store);
 		createReturn.load();
 		
@@ -136,6 +143,7 @@ public class UMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		newThema.store();
 		showSimpleNameInClassDiagram.store();
 		showParameterName.store();
+		createAggregationOnImport.store();
 		showSimpleNameInSequenceDiagram.store();
 		return true;
 	}
