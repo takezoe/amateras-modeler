@@ -239,6 +239,9 @@ public class JavaClassSynchronizer {
 		page = workbenchWindow.getActivePage();
 		
 		IEditorPart activeEditor = page.getActiveEditor();
+		if (activeEditor == null) {
+			return;
+		}
 //		if (activeEditor instanceof JavaEditor) {
 		if (	activeEditor.getClass().getSimpleName().equals("CompilationUnitEditor")
 			||	activeEditor.getClass().getSimpleName().equals("JavaEditor")) {
