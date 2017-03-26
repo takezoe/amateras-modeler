@@ -36,6 +36,7 @@ import net.java.amateras.uml.java.ImportClassModelCommand;
 import net.java.amateras.uml.java.UMLJavaUtils;
 import net.java.amateras.uml.model.AbstractUMLConnectionModel;
 import net.java.amateras.uml.model.AbstractUMLEntityModel;
+import net.java.amateras.uml.model.AbstractUMLModel;
 import net.java.amateras.uml.model.RootModel;
 
 /**
@@ -164,6 +165,15 @@ public class SyncAction implements IEditorActionDelegate {
 						}
 						
 						stack.execute(commandChain);
+						// After updating all the elements that need update, other non updated elements
+						// need to have their parent reference updated along the new root model.
+						// Otherwise updated elements would have the new root model as parent
+						// (root model retrieved in this function with:
+						//    (RootModel) this.editor.getAdapter(RootModel.class)).
+						// and non updated element would have the old root model as parent.
+						for (AbstractUMLModel childRoot : root.getChildren()) {
+							childRoot.setParent(root);
+						}
 					}
 				}
 				catch (JavaModelException ex) {
