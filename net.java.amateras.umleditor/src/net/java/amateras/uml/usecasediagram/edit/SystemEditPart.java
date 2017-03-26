@@ -6,13 +6,6 @@ package net.java.amateras.uml.usecasediagram.edit;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 
-import net.java.amateras.uml.editpart.NamedEntityEditPart;
-import net.java.amateras.uml.figure.EntityFigure;
-import net.java.amateras.uml.model.AbstractUMLEntityModel;
-import net.java.amateras.uml.usecasediagram.figure.SystemFigure;
-import net.java.amateras.uml.usecasediagram.figure.UsecaseFigureFactory;
-import net.java.amateras.uml.usecasediagram.model.SystemModel;
-
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
@@ -22,22 +15,34 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.requests.CreateRequest;
 
+import net.java.amateras.uml.editpart.NamedEntityEditPart;
+import net.java.amateras.uml.figure.EntityFigure;
+import net.java.amateras.uml.model.AbstractUMLEntityModel;
+import net.java.amateras.uml.model.AbstractUMLModel;
+import net.java.amateras.uml.usecasediagram.figure.SystemFigure;
+import net.java.amateras.uml.usecasediagram.figure.UsecaseFigureFactory;
+import net.java.amateras.uml.usecasediagram.model.SystemModel;
+
 /**
  * @author shida
  *
  */
 public class SystemEditPart extends NamedEntityEditPart {
 
+	@Override
 	protected void createEditPolicies() {
 		super.createEditPolicies();
 		removeEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE);
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, new SystemLayoutEditPolicy());
 	}
+	
+	@Override
 	public IFigure getContentPane() {
 		SystemFigure figure = (SystemFigure) getFigure();
 		return figure.getPanel();
 	}
 	
+	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		super.propertyChange(evt);
 		if (evt.getPropertyName().equals(SystemModel.P_CHILDREN)) {
@@ -45,20 +50,26 @@ public class SystemEditPart extends NamedEntityEditPart {
 		}
 		
 	}
+	
+	@Override
 	protected void refreshVisuals() {
 		super.refreshVisuals();
 	}
+	
+	@Override
 	protected EntityFigure createEntityFigure() {
 		return UsecaseFigureFactory.getSystemFigure();
 	}
 	
-	protected List getModelChildren() {
+	@Override
+	protected List<AbstractUMLModel> getModelChildren() {
 		SystemModel model = (SystemModel) getModel();
 		return model.getChildren();
 	}
 	
 	class SystemLayoutEditPolicy extends XYLayoutEditPolicy {
 
+		@Override
 		protected Command createAddCommand(EditPart child, Object constraint) {
 			CreateAddCommand command = new CreateAddCommand();
 			command.setModel((AbstractUMLEntityModel) child.getModel());
@@ -71,6 +82,7 @@ public class SystemEditPart extends NamedEntityEditPart {
 			return command.chain(nextCommand);
 		}
 		
+		@Override
 		protected Command createChangeConstraintCommand(EditPart child,Object constraint) {
 			ChangeConstraintCommand command = new ChangeConstraintCommand();
 			command.setModel((AbstractUMLEntityModel)child.getModel());
@@ -78,6 +90,7 @@ public class SystemEditPart extends NamedEntityEditPart {
 			return command;
 		}
 		
+		@Override
 		protected Command getCreateCommand(CreateRequest request) {
 			CreateCommand command = new CreateCommand();
 			Rectangle constraint = (Rectangle) getConstraintFor(request);
@@ -89,6 +102,7 @@ public class SystemEditPart extends NamedEntityEditPart {
 			return command;
 		}
 		
+		@Override
 		protected Command getDeleteDependantCommand(Request request) {
 			return null;
 		}
@@ -101,6 +115,7 @@ public class SystemEditPart extends NamedEntityEditPart {
 		private Rectangle constraint;
 		private Rectangle oldConstraint;
 		
+		@Override
 		public void execute(){
 			model.setConstraint(constraint);
 		}
@@ -114,6 +129,7 @@ public class SystemEditPart extends NamedEntityEditPart {
 			oldConstraint = model.getConstraint();
 		}
 		
+		@Override
 		public void undo() {
 			model.setConstraint(oldConstraint);
 		}
@@ -125,6 +141,7 @@ public class SystemEditPart extends NamedEntityEditPart {
 		private AbstractUMLEntityModel root;
 		private AbstractUMLEntityModel model;
 		
+		@Override
 		public void execute() {
 			root.copyPresentation(model);
 			root.addChild(model);
@@ -138,6 +155,7 @@ public class SystemEditPart extends NamedEntityEditPart {
 			this.model = (AbstractUMLEntityModel) model;
 		}
 		
+		@Override
 		public void undo() {
 			root.removeChild(model);
 		}
@@ -148,12 +166,14 @@ public class SystemEditPart extends NamedEntityEditPart {
 		private AbstractUMLEntityModel model;
 		private AbstractUMLEntityModel container;
 		
+		@Override
 		public void execute() {
 			this.container = model.getParent();
 			container.removeChild(model);
 			target.addChild(model);
 		}
 		
+		@Override
 		public void undo() {
 			target.removeChild(model);
 			container.addChild(model);
