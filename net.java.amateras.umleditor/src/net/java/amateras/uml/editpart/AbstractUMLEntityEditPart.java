@@ -46,6 +46,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 
 	private EntityDirectEditManager directManager = null;
 
+	@Override
 	protected void createEditPolicies() {
 		installEditPolicy(EditPolicy.COMPONENT_ROLE,
 				new EntityComponentEditPolicy());
@@ -55,6 +56,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 				new EntityDirectEditPolicy());
 	}
 
+	@Override
 	protected void refreshVisuals() {
 		super.refreshVisuals();
 		Object model = getModel();
@@ -70,35 +72,42 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 	}
 
 	/** このEditPartを接続元とするコネクション・モデルのリストを返す */
+	@Override
 	protected List<AbstractUMLConnectionModel> getModelSourceConnections() {
 		return ((AbstractUMLEntityModel) getModel())
 				.getModelSourceConnections();
 	}
 
 	/** このEditPartを接続先とするコネクション・モデルのリストを返す */
+	@Override
 	protected List<AbstractUMLConnectionModel> getModelTargetConnections() {
 		return ((AbstractUMLEntityModel) getModel())
 				.getModelTargetConnections();
 	}
 
+	@Override
 	public ConnectionAnchor getSourceConnectionAnchor(
 			ConnectionEditPart connection) {
 		return new ChopboxAnchor(getFigure());
 	}
 
+	@Override
 	public ConnectionAnchor getTargetConnectionAnchor(
 			ConnectionEditPart connection) {
 		return new ChopboxAnchor(getFigure());
 	}
 
+	@Override
 	public ConnectionAnchor getSourceConnectionAnchor(Request request) {
 		return new ChopboxAnchor(getFigure());
 	}
 
+	@Override
 	public ConnectionAnchor getTargetConnectionAnchor(Request request) {
 		return new ChopboxAnchor(getFigure());
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals(AbstractUMLEntityModel.P_FORCE_UPDATE)) {
 			refreshChildren();
@@ -110,6 +119,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 
 	/** エンティティのエディットポリシー */
 	private class EntityComponentEditPolicy extends ComponentEditPolicy {
+		@Override
 		protected Command createDeleteCommand(GroupRequest deleteRequest) {
 			DeleteCommand command = new DeleteCommand();
 			command.setRootModel(getHost().getParent().getModel());
@@ -131,6 +141,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 		// 削除対象のモデルをターゲットとするコネクションのリスト
 		private List<AbstractUMLConnectionModel> targetConnections = new ArrayList<AbstractUMLConnectionModel>();
 
+		@Override
 		public void execute() {
 			// モデルを削除する前にそのモデルをソースとするコネクションを記録しておく
 			sourceConnections.addAll(((AbstractUMLEntityModel) model)
@@ -163,6 +174,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 			this.model = (AbstractUMLModel) model;
 		}
 
+		@Override
 		public void undo() {
 			container.addChild(model);
 			// コネクションを元に戻す
@@ -187,6 +199,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 	/** コネクションのエディットポリシー */
 	private class NodeEditPolicy extends GraphicalNodeEditPolicy {
 
+		@Override
 		protected Command getConnectionCompleteCommand(
 				CreateConnectionRequest request) {
 			AbstractUMLConnectionModel conn = ((CreateConnectionCommand) request
@@ -212,6 +225,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 			return compoundCommand.unwrap();
 		}
 
+		@Override
 		protected Command getConnectionCreateCommand(
 				CreateConnectionRequest request) {
 			AbstractUMLConnectionModel conn = (AbstractUMLConnectionModel) request
@@ -225,6 +239,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 			return command;
 		}
 
+		@Override
 		protected Command getReconnectTargetCommand(ReconnectRequest request) {
 			AbstractUMLConnectionModel conn = (AbstractUMLConnectionModel) request
 					.getConnectionEditPart().getModel();
@@ -239,6 +254,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 			return command;
 		}
 
+		@Override
 		protected Command getReconnectSourceCommand(ReconnectRequest request) {
 			AbstractUMLConnectionModel conn = (AbstractUMLConnectionModel) request
 					.getConnectionEditPart().getModel();
@@ -274,6 +290,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 			this.bounds = bounds;
 		}
 
+		@Override
 		public void execute() {
 			super.execute();
 			int width = bounds.width / 2 + 20;
@@ -303,6 +320,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 			return connection;
 		}
 
+		@Override
 		public boolean canExecute() {
 			// ソースかターゲットがnullの場合は実行不可
 			if (source == null || target == null) {
@@ -315,6 +333,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 			return true;
 		}
 
+		@Override
 		public void execute() {
 			connection.attachSource();
 			connection.attachTarget();
@@ -335,6 +354,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 			connection.setTarget(target);
 		}
 
+		@Override
 		public void undo() {
 			// コネクションをソースとターゲットから取り外す
 			connection.detachSource();
@@ -353,6 +373,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 
 		private List<ConnectionBendpoint> oldBendpoints;
 
+		@Override
 		public void execute() {
 			oldBendpoints = new ArrayList<ConnectionBendpoint>(connection.getBendpoints());
 			connection.detachTarget();
@@ -373,6 +394,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 			target = (AbstractUMLEntityModel) model;
 		}
 
+		@Override
 		public boolean canExecute() {
 			// ソースかターゲットがnullの場合は実行不可
 			if (connection.getSource() == null || target == null) {
@@ -385,6 +407,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 			return true;
 		}
 
+		@Override
 		public void undo() {
 			connection.detachTarget();
 			connection.setTarget(oldTarget);
@@ -407,6 +430,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 
 		private List<ConnectionBendpoint> oldBendpoints;
 
+		@Override
 		public void execute() {
 			oldBendpoints = new ArrayList<ConnectionBendpoint>(connection.getBendpoints());
 			connection.detachSource();
@@ -427,6 +451,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 			source = (AbstractUMLEntityModel) model;
 		}
 
+		@Override
 		public boolean canExecute() {
 			// ソースかターゲットがnullの場合は実行不可
 			if (connection.getTarget() == null || source == null) {
@@ -439,6 +464,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 			return true;
 		}
 
+		@Override
 		public void undo() {
 			connection.detachSource();
 			connection.setSource(oldSource);
@@ -450,24 +476,30 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 	}
 
 	/** レイアウトのエディットポリシー */
+	
 	private class EntityLayoutEditPolicy extends LayoutEditPolicy {
+		@Override
 		protected Command getMoveChildrenCommand(Request request) {
 			return null;
 		}
 
+		@Override
 		protected EditPolicy createChildEditPolicy(EditPart child) {
 			return new NonResizableEditPolicy();
 		}
 
+		@Override
 		protected Command getCreateCommand(CreateRequest request) {
 			return null;
 		}
 
+		@Override
 		protected Command getDeleteDependantCommand(Request request) {
 			return null;
 		}
 	}
 
+	@Override
 	public void performRequest(Request req) {
 		if (getModel() instanceof EntityModel) {
 			if (req.getType().equals(RequestConstants.REQ_DIRECT_EDIT)
@@ -496,6 +528,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 					new EntityCellEditorLocator());
 		}
 
+		@Override
 		protected void initCellEditor() {
 			getCellEditor().setValue(((EntityModel) getModel()).getName());
 			Text text = (Text) getCellEditor().getControl();
@@ -507,6 +540,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 	 * CellEditorLocator
 	 */
 	private class EntityCellEditorLocator implements CellEditorLocator {
+		@Override
 		public void relocate(CellEditor celleditor) {
 			EntityFigure figure = (EntityFigure) getFigure();
 			Text text = (Text) celleditor.getControl();
@@ -527,6 +561,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 
 		private String newName;
 
+		@Override
 		public void execute() {
 			EntityModel model = (EntityModel) getModel();
 			oldName = model.getName();
@@ -537,6 +572,7 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 			newName = name;
 		}
 
+		@Override
 		public void undo() {
 			EntityModel model = (EntityModel) getModel();
 			model.setName(oldName);
@@ -548,12 +584,14 @@ public abstract class AbstractUMLEntityEditPart extends AbstractUMLEditPart
 	 */
 	private class EntityDirectEditPolicy extends DirectEditPolicy {
 
+		@Override
 		protected Command getDirectEditCommand(DirectEditRequest request) {
 			DirectEditCommand command = new DirectEditCommand();
 			command.setName((String) request.getCellEditor().getValue());
 			return command;
 		}
 
+		@Override
 		protected void showCurrentEditValue(DirectEditRequest request) {
 		}
 	}

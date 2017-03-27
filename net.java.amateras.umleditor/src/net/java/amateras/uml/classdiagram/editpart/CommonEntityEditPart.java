@@ -39,16 +39,19 @@ public abstract class CommonEntityEditPart extends AbstractUMLEntityEditPart {
 
 	private EntityDirectEditManager directManager;
 
+	@Override
 	protected void createEditPolicies() {
 		super.createEditPolicies();
 		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new ClassNameDirectEditPolicy());
 	}
 
+	@Override
 	protected List<AbstractUMLModel> getModelChildren() {
 		CommonEntityModel model = (CommonEntityModel) getModel();
 		return FilterUtil.getFilteredChildren(model);
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		super.propertyChange(evt);
 		if (evt.getPropertyName().equals(CommonEntityModel.P_ENTITY_NAME)) {
@@ -66,11 +69,18 @@ public abstract class CommonEntityEditPart extends AbstractUMLEntityEditPart {
 		}
 	}
 
+	@Override
 	protected IFigure createFigure() {
 		CommonEntityModel model = (CommonEntityModel) getModel();
 		UMLClassFigure figure = getClassFigure();
 
-		figure.setClassName(showSimpleName() ? model.getSimpleName() : model.getName());
+		figure.setClassName(model.getSimpleName());
+		if (showSimpleName() == true) {
+			figure.setPackageName("");
+		}
+		else {
+			figure.setPackageName(model.getPackageName());
+		}
 		figure.setStereoType(model.getStereoType());
 
 		figure.setBackgroundColor(model.getBackgroundColor());
@@ -81,12 +91,20 @@ public abstract class CommonEntityEditPart extends AbstractUMLEntityEditPart {
 
 	abstract protected UMLClassFigure getClassFigure();
 
+	@Override
 	protected void refreshVisuals() {
 		super.refreshVisuals();
 
 		UMLClassFigure figure = (UMLClassFigure) getFigure();
 		CommonEntityModel model = (CommonEntityModel) getModel();
-		figure.setClassName(showSimpleName() ? model.getSimpleName() : model.getName());
+		
+		figure.setClassName(model.getSimpleName());
+		if (showSimpleName() == true) {
+			figure.setPackageName("");
+		}
+		else {
+			figure.setPackageName(model.getPackageName());
+		}
 		figure.setStereoType(model.getStereoType());
 		figure.setBackgroundColor(model.getBackgroundColor());
 		figure.setForegroundColor(model.getForegroundColor());
@@ -97,12 +115,14 @@ public abstract class CommonEntityEditPart extends AbstractUMLEntityEditPart {
 	 */
 	private class ClassNameDirectEditPolicy extends DirectEditPolicy {
 
+		@Override
 		protected Command getDirectEditCommand(DirectEditRequest directeditrequest) {
 			ClassNameDirectEditCommand command = new ClassNameDirectEditCommand();
 			command.setName((String) directeditrequest.getCellEditor().getValue());
 			return command;
 		}
 
+		@Override
 		protected void showCurrentEditValue(DirectEditRequest directeditrequest) {
 
 		}
@@ -114,6 +134,7 @@ public abstract class CommonEntityEditPart extends AbstractUMLEntityEditPart {
 
 		private String newName;
 
+		@Override
 		public void execute() {
 			CommonEntityModel model = (CommonEntityModel) getModel();
 			oldName = showSimpleName() ? model.getSimpleName() : model.getName();
@@ -128,6 +149,7 @@ public abstract class CommonEntityEditPart extends AbstractUMLEntityEditPart {
 			newName = name;
 		}
 
+		@Override
 		public void undo() {
 			CommonEntityModel model = (CommonEntityModel) getModel();
 			if (showSimpleName()) {
@@ -142,6 +164,7 @@ public abstract class CommonEntityEditPart extends AbstractUMLEntityEditPart {
 		return UMLPlugin.getDefault().getPreferenceStore().getBoolean(UMLPlugin.PREF_CLASS_DIAGRAM_SHOW_SIMPLE_NAME);
 	}
 
+	@Override
 	public void performRequest(Request req) {
 		if (getModel() instanceof EntityModel) {
 			if (req.getType().equals(RequestConstants.REQ_DIRECT_EDIT) || req.getType().equals(RequestConstants.REQ_OPEN)) {
@@ -168,6 +191,7 @@ public abstract class CommonEntityEditPart extends AbstractUMLEntityEditPart {
 			super(editPart, TextCellEditor.class, new EntityCellEditorLocator());
 		}
 
+		@Override
 		protected void initCellEditor() {
 			CommonEntityModel model = (CommonEntityModel) getModel();
 			getCellEditor().setValue(showSimpleName() ? model.getSimpleName() : model.getName());
@@ -180,6 +204,7 @@ public abstract class CommonEntityEditPart extends AbstractUMLEntityEditPart {
 	 * CellEditorLocator
 	 */
 	private class EntityCellEditorLocator implements CellEditorLocator {
+		@Override
 		public void relocate(CellEditor celleditor) {
 			EntityFigure figure = (EntityFigure) getFigure();
 			Text text = (Text) celleditor.getControl();

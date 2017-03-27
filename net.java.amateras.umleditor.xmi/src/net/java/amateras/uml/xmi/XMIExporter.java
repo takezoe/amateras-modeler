@@ -97,6 +97,7 @@ public class XMIExporter {
 		} else if (model instanceof InterfaceModel) {
 			createInterface((InterfaceModel) model);
 		}
+		//TODO JLD : Manage enum case
 	}
 
 	public void convertStructure(AbstractUMLEntityModel model) {

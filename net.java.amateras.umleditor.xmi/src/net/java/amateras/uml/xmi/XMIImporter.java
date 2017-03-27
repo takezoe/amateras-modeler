@@ -76,6 +76,7 @@ public class XMIImporter {
 			ecoreTypeMap.put(type, classModel);
 			amaterasModels.add(classModel);
 		}
+		//TODO JLD : manage enum case
 	}
 	
 	public void convertLinks(Element element) {

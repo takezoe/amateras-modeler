@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Text;
 
 public class OperationEditPart extends AbstractUMLEditPart {
@@ -68,31 +69,62 @@ public class OperationEditPart extends AbstractUMLEditPart {
 	private void updateLabel(OperationLabel label, OperationModel model) {
 
 		if (model.isShowIcon()) {
+			Image iconImage = null;
 			if (model.getVisibility().equals(Visibility.PUBLIC)) {
 				if(model.isConstructor()){
-					label.setIcon(UMLPlugin.getImageDescriptor("icons/const_public.gif").createImage());
-				} else {
-					label.setIcon(UMLPlugin.getImageDescriptor("icons/method_public.gif").createImage());
+					iconImage = UMLPlugin.getImageDescriptor("icons/const_public.gif").createImage();
 				}
-			} else if (model.getVisibility().equals(Visibility.PRIVATE)) {
-				if(model.isConstructor()){
-					label.setIcon(UMLPlugin.getImageDescriptor("icons/const_private.gif").createImage());
-				} else {
-					label.setIcon(UMLPlugin.getImageDescriptor("icons/method_private.gif").createImage());
-				}
-			} else if (model.getVisibility().equals(Visibility.PROTECTED)) {
-				if(model.isConstructor()){
-					label.setIcon(UMLPlugin.getImageDescriptor("icons/const_protected.gif").createImage());
-				} else {
-					label.setIcon(UMLPlugin.getImageDescriptor("icons/method_protected.gif").createImage());
-				}
-			} else if (model.getVisibility().equals(Visibility.PACKAGE)) {
-				if(model.isConstructor()){
-					label.setIcon(UMLPlugin.getImageDescriptor("icons/const_default.gif").createImage());
-				} else {
-					label.setIcon(UMLPlugin.getImageDescriptor("icons/method_default.gif").createImage());
+				else {
+					iconImage = UMLPlugin.getImageDescriptor("icons/method_public.gif").createImage();
 				}
 			}
+			else if (model.getVisibility().equals(Visibility.PRIVATE)) {
+				if(model.isConstructor()){
+					iconImage = UMLPlugin.getImageDescriptor("icons/const_private.gif").createImage();
+				}
+				else {
+					iconImage = UMLPlugin.getImageDescriptor("icons/method_private.gif").createImage();
+				}
+			}
+			else if (model.getVisibility().equals(Visibility.PROTECTED)) {
+				if(model.isConstructor()){
+					iconImage = UMLPlugin.getImageDescriptor("icons/const_protected.gif").createImage();
+				}
+				else {
+					iconImage = UMLPlugin.getImageDescriptor("icons/method_protected.gif").createImage();
+				}
+			}
+			else if (model.getVisibility().equals(Visibility.PACKAGE)) {
+				if(model.isConstructor()){
+					iconImage = UMLPlugin.getImageDescriptor("icons/const_default.gif").createImage();
+				}
+				else {
+					iconImage = UMLPlugin.getImageDescriptor("icons/method_default.gif").createImage();
+				}
+			}
+			Image iconDecorator;
+			//An abstract method could not be static or final
+			if (model.isAbstract()) {
+				iconDecorator = UMLPlugin.getImageDescriptor("icons/abstract_co.gif").createImage();
+				iconImage = addDecoratorTopRight(iconImage, iconDecorator);
+			}
+			else {
+				if (model.isFinal()) {
+					iconDecorator = UMLPlugin.getImageDescriptor("icons/final_co.gif").createImage();
+					iconImage = addDecoratorTopRight(iconImage, iconDecorator);
+					if (model.isStatic()) {
+						iconDecorator = UMLPlugin.getImageDescriptor("icons/static_co.gif").createImage();
+						iconImage = addDecoratorTopLeft(iconImage, iconDecorator);
+					}
+				}
+				else {
+					if (model.isStatic()) {
+						iconDecorator = UMLPlugin.getImageDescriptor("icons/static_co.gif").createImage();
+						iconImage = addDecoratorTopRight(iconImage, iconDecorator);
+					}
+				}
+			}
+			label.setIcon(iconImage);
 			label.setText(getOperationText(model));
 		} else {
 			String visibility = " ";

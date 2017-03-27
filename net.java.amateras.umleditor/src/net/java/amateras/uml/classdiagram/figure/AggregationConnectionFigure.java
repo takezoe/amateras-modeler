@@ -78,6 +78,7 @@ public class AggregationConnectionFigure extends PolylineConnection implements
 	/* (non-Javadoc)
 	 * @see net.java.amateras.uml.figure.PresentationFigure#updatePresentation(net.java.amateras.uml.model.AbstractUMLModel)
 	 */
+	@Override
 	public void updatePresentation(AbstractUMLModel model) {
 		labelStereoType.setForegroundColor(model.getForegroundColor());
 		labelFromMultiplicity.setForegroundColor(model.getForegroundColor());

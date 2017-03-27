@@ -11,17 +11,20 @@ import org.eclipse.draw2d.Label;
 
 public class CompositeEditPart extends AbstractUMLConnectionEditPart {
 	
+	@Override
 	protected IFigure createFigure() {
 		CompositeModel model = (CompositeModel)getModel();
 		return new CompositeConnectionFigure(model);
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		CompositeModel model = (CompositeModel)getModel();
 		((CompositeConnectionFigure) getFigure()).update(model);
 		super.propertyChange(evt);
 	}
 
+	@Override
 	protected Label getStereoTypeLabel() {
 		return ((CompositeConnectionFigure)getFigure()).getStereoTypeLabel();
 	}

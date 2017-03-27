@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %plugin.name
 Bundle-SymbolicName: net.java.amateras.umleditor.xmi;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1.snapshot
 Bundle-Activator: net.java.amateras.uml.xmi.Activator
 Bundle-Vendor: %plugin.author
 Bundle-Localization: plugin

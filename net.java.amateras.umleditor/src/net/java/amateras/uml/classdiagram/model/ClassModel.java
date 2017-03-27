@@ -59,6 +59,7 @@ public class ClassModel extends CommonEntityModel {
 		firePropertyChange(P_ABSTRACT, null, new Boolean(isAbstract));
 	}
 
+	@Override
 	public Object getPropertyValue(Object id) {
 		if (id.equals(P_ABSTRACT)) {
 			return new Boolean(isAbstract());
@@ -66,6 +67,7 @@ public class ClassModel extends CommonEntityModel {
 		return super.getPropertyValue(id);
 	}
 
+	@Override
 	public boolean isPropertySet(Object id) {
 		if (id.equals(P_ABSTRACT)) {
 			return true;
@@ -73,6 +75,7 @@ public class ClassModel extends CommonEntityModel {
 		return super.isPropertySet(id);
 	}
 
+	@Override
 	public void setPropertyValue(Object id, Object value) {
 		if (id.equals(P_ABSTRACT)) {
 			setAbstract(((Boolean) value).booleanValue());
@@ -84,6 +87,7 @@ public class ClassModel extends CommonEntityModel {
 	 * Clone this object. TODO, duplicated code with InterfaceModel.clone(), be careful to override clone!
 	 *@deprecated
 	 */
+	@Override
 	public Object clone() {
 		ClassModel newModel = new ClassModel();
 

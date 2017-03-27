@@ -52,6 +52,8 @@ public class UMLPlugin extends AbstractUIPlugin {
 	 */
 	public static final String PREF_CLASS_DIAGRAM_SHOW_PARAMETER_NAME = "pref.classdiagram.show_parameter_name";
 	
+	public static final String PREF_CLASS_DIAGRAM_CREATE_AGGREGATION_ON_IMPORT = "pref.classdiagram.create_aggreation_on_import";
+	
 	//============================================================================
 	// Sequence diagram settings
 	//============================================================================

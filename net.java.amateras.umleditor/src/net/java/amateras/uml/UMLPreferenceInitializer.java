@@ -11,6 +11,7 @@ public class UMLPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(UMLPlugin.PREF_SEQUENCE_DIAGRAM_CREATE_RETURN, true);
 		store.setDefault(UMLPlugin.PREF_CLASS_DIAGRAM_SHOW_SIMPLE_NAME, false);
 		store.setDefault(UMLPlugin.PREF_CLASS_DIAGRAM_SHOW_PARAMETER_NAME, true);
+		store.setDefault(UMLPlugin.PREF_CLASS_DIAGRAM_CREATE_AGGREGATION_ON_IMPORT, true);
 		store.setDefault(UMLPlugin.PREF_ANTI_ALIAS, false);
 		store.setDefault(UMLPlugin.PREF_SHOW_GRID, false);
 		store.setDefault(UMLPlugin.PREF_GRID_SIZE, 10);
