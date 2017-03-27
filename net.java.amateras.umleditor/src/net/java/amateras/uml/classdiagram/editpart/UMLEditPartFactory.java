@@ -6,6 +6,7 @@ import net.java.amateras.uml.classdiagram.model.AttributeModel;
 import net.java.amateras.uml.classdiagram.model.ClassModel;
 import net.java.amateras.uml.classdiagram.model.CompositeModel;
 import net.java.amateras.uml.classdiagram.model.DependencyModel;
+import net.java.amateras.uml.classdiagram.model.EnumModel;
 import net.java.amateras.uml.classdiagram.model.GeneralizationModel;
 import net.java.amateras.uml.classdiagram.model.InterfaceModel;
 import net.java.amateras.uml.classdiagram.model.OperationModel;
@@ -23,6 +24,7 @@ import org.eclipse.gef.EditPart;
  *   <li>RootModel -&gt; RootEditPart</li>
  *   <li>ClassModel -&gt; ClassEditPart</li>
  *   <li>InterfaceModel -&gt; InterfaceEditPart</li>
+ *   <li>EnumModel -&gt; EnumEditPart</li>
  *   <li>DependencyModel -&gt; DependencyEditPart</li>
  *   <li>AggregationModel -&gt; AggregationEditPart</li>
  *   <li>CompositeModel -&gt; CompositeEditPart</li>
@@ -40,6 +42,8 @@ public class UMLEditPartFactory extends BaseUMLEditPartFactory {
 			return new RootEditPart();
 		} else if(model instanceof ClassModel){
 			return new ClassEditPart();
+		} else if(model instanceof EnumModel){
+			return new EnumEditPart();
 		} else if(model instanceof InterfaceModel){
 			return new InterfaceEditPart();
 		} else if(model instanceof DependencyModel){

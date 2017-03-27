@@ -14,11 +14,13 @@ import org.eclipse.swt.SWT;
  */
 public class AnchorEditPart extends AbstractUMLConnectionEditPart {
 
+	@Override
 	protected void createEditPolicies() {
 		super.createEditPolicies();
 		removeEditPolicy(EditPolicy.DIRECT_EDIT_ROLE);
 	}
 	
+	@Override
 	protected IFigure createFigure() {
 		PolylineConnection connection = new PolylineConnection();
 		connection.setLineStyle(SWT.LINE_DASH);

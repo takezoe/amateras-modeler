@@ -36,6 +36,8 @@ public class UsecaseModel extends AbstractUMLEntityModel implements EntityModel,
 		super();
 		setName("usecase");
 	}
+	
+	@Override
 	public void setConstraint(Rectangle constraint) {
 		Dimension size = constraint.getSize();
 		if (MINIMUM_SIZE.contains(size)) {
@@ -43,12 +45,15 @@ public class UsecaseModel extends AbstractUMLEntityModel implements EntityModel,
 		}
 		super.setConstraint(constraint);
 	}
+	
+	@Override
 	public void setName(String name) {
 		String old = this.name;
 		this.name = name;
 		firePropertyChange(P_ENTITY_NAME, old, name);
 	}
 	
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -63,6 +68,7 @@ public class UsecaseModel extends AbstractUMLEntityModel implements EntityModel,
 		firePropertyChange(P_RESOURCE, old, file);
 	}
 	
+	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		return new IPropertyDescriptor[] {
 				new TextPropertyDescriptor(P_ENTITY_NAME, UMLPlugin
@@ -75,6 +81,7 @@ public class UsecaseModel extends AbstractUMLEntityModel implements EntityModel,
 						.getDefault().getResourceString("property.foreground"))};
 	}
 	
+	@Override
 	public Object getPropertyValue(Object id) {
 		if (P_ENTITY_NAME.equals(id)) {
 			return name;
@@ -84,6 +91,7 @@ public class UsecaseModel extends AbstractUMLEntityModel implements EntityModel,
 		return super.getPropertyValue(id);
 	}
 	
+	@Override
 	public void setPropertyValue(Object id, Object value) {
 		if (P_ENTITY_NAME.equals(id)) {
 			setName((String) value);
@@ -93,13 +101,16 @@ public class UsecaseModel extends AbstractUMLEntityModel implements EntityModel,
 		super.setPropertyValue(id, value);
 	}
 	
+	@Override
 	public boolean isPropertySet(Object id) {
 		return P_ENTITY_NAME.equals(id) || P_RESOURCE.equals(id) || super.isPropertySet(id);
 	}
+	
 	public IFile getFileResource() {
 		return ResourcesPlugin.getWorkspace().getRoot().getFile(Path.fromPortableString(resource));
 	}
 	
+	@Override
 	public Object clone(){
 		UsecaseModel model = new UsecaseModel();
 		model.setName(getName());

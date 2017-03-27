@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %plugin.name
 Bundle-SymbolicName: net.java.amateras.umleditor.java; singleton:=true
-Bundle-Version: 1.3.4
+Bundle-Version: 1.3.5.snapshot
 Bundle-Activator: net.java.amateras.uml.java.UMLJavaPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.gef,
  org.eclipse.jdt.ui,
- net.java.amateras.umleditor
+ net.java.amateras.umleditor,
+ org.eclipse.ui.workbench
 Bundle-Vendor: %plugin.author
 Eclipse-LazyStart: true
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

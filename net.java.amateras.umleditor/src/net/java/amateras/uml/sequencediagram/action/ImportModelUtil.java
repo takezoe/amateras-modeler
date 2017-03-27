@@ -15,6 +15,7 @@ import net.java.amateras.uml.DiagramSerializer;
 import net.java.amateras.uml.UMLPlugin;
 import net.java.amateras.uml.classdiagram.model.AttributeModel;
 import net.java.amateras.uml.classdiagram.model.ClassModel;
+import net.java.amateras.uml.classdiagram.model.EnumModel;
 import net.java.amateras.uml.classdiagram.model.InterfaceModel;
 import net.java.amateras.uml.classdiagram.model.OperationModel;
 import net.java.amateras.uml.model.AbstractUMLEntityModel;
@@ -181,6 +182,8 @@ public class ImportModelUtil {
 				return UMLPlugin.getImageDescriptor("icons/interface.gif").createImage();
 			} else if (element instanceof ClassModel) {
 				return UMLPlugin.getImageDescriptor("icons/class.gif").createImage();
+			} else if (element instanceof EnumModel) {
+				return UMLPlugin.getImageDescriptor("icons/enum.gif").createImage();
 			} else if (element instanceof AttributeModel) {
 				return ClassModelImageResolver.getAttributeImage((AttributeModel) element);
 			} else if (element instanceof OperationModel) {
@@ -208,6 +211,8 @@ public class ImportModelUtil {
 				return ((ClassModel)obj).getName();
 			} else if(obj instanceof InterfaceModel){
 				return ((InterfaceModel)obj).getName();
+			} else if(obj instanceof EnumModel){
+				return ((EnumModel)obj).getName();
 			}
 			return obj.toString();
 		}

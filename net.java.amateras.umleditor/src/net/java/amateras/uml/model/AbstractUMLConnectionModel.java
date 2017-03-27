@@ -114,6 +114,7 @@ public abstract class AbstractUMLConnectionModel extends AbstractUMLModel {
 		target = model;
 	}
 
+	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		return new IPropertyDescriptor[] {
 				new ColorPropertyDescriptor(P_FOREGROUND_COLOR, UMLPlugin

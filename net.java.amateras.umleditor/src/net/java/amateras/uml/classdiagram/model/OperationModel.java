@@ -27,6 +27,7 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 	private List<Argument> params = new ArrayList<Argument>();
 	private boolean isAbstract = false;
 	private boolean isStatic = false;
+	private boolean isFinal = false;
 
 	public static final String P_VISIBILITY = "_visibility";
 	public static final String P_NAME = "_name";
@@ -34,12 +35,21 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 	public static final String P_PARAMS = "_params";
 	public static final String P_ABSTRACT = "_abstract";
 	public static final String P_STATIC = "_static";
+	public static final String P_FINAL = "_final";
 
 	public boolean isConstructor(){
 		if(getType().length() == 0 || getType().equals("void")){
 			AbstractUMLEntityModel parent = getParent();
 			if(parent != null && parent instanceof ClassModel){
 				String className = ((ClassModel) parent).getName();
+				int index = className.lastIndexOf('.');
+				if(index >= 0){
+					className = className.substring(index + 1);
+				}
+				return className.equals(getName());
+			}
+			else if (parent != null && parent instanceof EnumModel) {
+				String className = ((EnumModel) parent).getName();
 				int index = className.lastIndexOf('.');
 				if(index >= 0){
 					className = className.substring(index + 1);
@@ -66,6 +76,15 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 	public void setStatic(boolean isStatic) {
 		this.isStatic = isStatic;
 		firePropertyChange(P_STATIC,null,new Boolean(isStatic));
+	}
+	
+	public boolean isFinal() {
+		return isFinal;
+	}
+	
+	public void setFinal(boolean isFinal) {
+		this.isFinal = isFinal;
+		firePropertyChange(P_FINAL,null,new Boolean(isFinal));
 	}
 
 	public String getName() {
@@ -120,6 +139,8 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 						UMLPlugin.getDefault().getResourceString("property.arguments")),
 				new BooleanPropertyDescriptor(P_STATIC,
 						UMLPlugin.getDefault().getResourceString("property.static")),
+				new BooleanPropertyDescriptor(P_FINAL,
+						UMLPlugin.getDefault().getResourceString("property.final")),
 				new BooleanPropertyDescriptor(P_ABSTRACT,
 						UMLPlugin.getDefault().getResourceString("property.abstract")),
 						new ColorPropertyDescriptor(P_FOREGROUND_COLOR, UMLPlugin
@@ -138,6 +159,8 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 			return getParams();
 		} else if(id.equals(P_STATIC)){
 			return new Boolean(isStatic());
+		} else if(id.equals(P_FINAL)){
+			return new Boolean(isFinal());
 		} else if(id.equals(P_ABSTRACT)){
 			return new Boolean(isAbstract());
 		}
@@ -154,6 +177,8 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 		} else if(id.equals(P_PARAMS)){
 			return true;
 		} else if(id.equals(P_STATIC)){
+			return true;
+		} else if(id.equals(P_FINAL)){
 			return true;
 		} else if(id.equals(P_ABSTRACT)){
 			return true;
@@ -173,6 +198,8 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 			setParams((List) value);
 		} else if(id.equals(P_STATIC)){
 			setStatic(((Boolean)value).booleanValue());
+		} else if(id.equals(P_FINAL)){
+			setFinal(((Boolean)value).booleanValue());
 		} else if(id.equals(P_ABSTRACT)){
 			setAbstract(((Boolean)value).booleanValue());
 		}
@@ -214,6 +241,7 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 
 		newModel.setParams(newArgs);
 		newModel.setStatic(isStatic());
+		newModel.setFinal(isFinal());
 		newModel.setAbstract(isAbstract());
 
 		return newModel;

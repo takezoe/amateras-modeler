@@ -3,6 +3,7 @@ package net.java.amateras.uml.classdiagram.action;
 import net.java.amateras.uml.action.AbstractPasteAction;
 import net.java.amateras.uml.classdiagram.ClassDiagramEditor;
 import net.java.amateras.uml.classdiagram.model.ClassModel;
+import net.java.amateras.uml.classdiagram.model.EnumModel;
 import net.java.amateras.uml.classdiagram.model.InterfaceModel;
 
 /**
@@ -17,6 +18,7 @@ public class PasteAction extends AbstractPasteAction {
 		super(editor);
 		registerAllowType(ClassModel.class);
 		registerAllowType(InterfaceModel.class);
+		registerAllowType(EnumModel.class);
 	}
 
 }
