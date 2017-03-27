@@ -588,7 +588,8 @@ public class JavaClassSynchronizer {
 				}
 				else if (member instanceof IFile) {
 					IFile iFile = (IFile)member;
-					if (iFile.getFileExtension().compareToIgnoreCase("cld") == 0) {
+					String fileExtension = iFile.getFileExtension();
+					if ((fileExtension != null) && (fileExtension.compareToIgnoreCase("cld") == 0)) {
 						cldList.add(iFile);
 					}
 				}
