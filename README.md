@@ -29,7 +29,14 @@ License
 
 History
 --------
-### 2012/7/16 - AmaterasUML 1.3.4
+### 2017/03/29 - AmaterasModeler 1.1.0
+
+- Java Enum support in class diagram
+- Some icon decorators such as abstract, static and final
+- Synchronization of class diagram against Java source
+- Option to turn on / off aggregation links on java import
+
+### 2012/07/16 - AmaterasUML 1.3.4
 
 - Fixed the issue on Java7.
 
@@ -39,11 +46,11 @@ History
 - Switching display mode (logical or physical) by CTRL+D.
 - Improvement of PostgreSQLDialect, MySQLDialect and OracleDialect.
 - Refreshing imported tables.
--The dictionary which is used for name conversion became customizable.
+- The dictionary which is used for name conversion became customizable.
 
 See details [here](http://osdn.jp/projects/amateras/wiki/AmaterasERD_1_0_9) about new features.
 
-### 2011/8/13 - AmaterasUML 1.3.3
+### 2011/08/13 - AmaterasUML 1.3.3
 
 - Improvement of constructor in the class diagram
 - Improvement of Java generics support
