@@ -5,6 +5,7 @@ package net.java.amateras.uml.dnd.java;
 
 import net.java.amateras.uml.classdiagram.model.AttributeModel;
 import net.java.amateras.uml.classdiagram.model.ClassModel;
+import net.java.amateras.uml.classdiagram.model.EnumModel;
 import net.java.amateras.uml.classdiagram.model.InterfaceModel;
 import net.java.amateras.uml.classdiagram.model.OperationModel;
 import net.java.amateras.uml.java.UMLJavaUtils;
@@ -36,6 +37,9 @@ class ClassModelConverter implements CreationFactory {
 			} else if (type.isClass()) {
 				rv = new ClassModel();
 				((ClassModel) rv).setName(type.getFullyQualifiedName());
+			} else if (type.isEnum()) {
+				rv = new EnumModel();
+				((EnumModel) rv).setName(type.getFullyQualifiedName());
 			}
 			
 			AttributeModel[] fields = UMLJavaUtils.getFields(type);
@@ -58,6 +62,8 @@ class ClassModelConverter implements CreationFactory {
 		try {
 			if (type.isInterface()) {
 				return InterfaceModel.class;
+			} else if (type.isEnum()) {
+				return EnumModel.class;
 			} else {
 				return ClassModel.class;
 			}

@@ -11,17 +11,20 @@ import org.eclipse.draw2d.Label;
 
 public class DependencyEditPart extends AbstractUMLConnectionEditPart {
 
+	@Override
 	protected IFigure createFigure() {
 		DependencyModel model = (DependencyModel)getModel();
 		return new DependencyConnectionFigure(model);
 	}
 	
+	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		DependencyModel model = (DependencyModel)getModel();
 		((DependencyConnectionFigure) getFigure()).update(model);
 		refreshVisuals();
 	}
 	
+	@Override
 	protected Label getStereoTypeLabel() {
 		return ((DependencyConnectionFigure) getFigure()).getStereoTypeLabel();
 	}

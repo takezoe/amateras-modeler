@@ -17,6 +17,12 @@ Installation
 --------
 Install from the update site: http://takezoe.github.io/amateras-update-site/
 
+For developers
+--------------
+Install the following eclipse plugins:
+- Eclipse SDK or PDE
+- UML2 Extender SDK
+
 License
 --------
 [Eclipse Public License 1.0](http://opensource.org/licenses/eclipse-1.0.php)

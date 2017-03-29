@@ -27,10 +27,12 @@ import org.eclipse.ui.ide.IDE;
  */
 public class UsecaseEditPart extends NamedEntityEditPart {
 
+	@Override
 	protected EntityFigure createEntityFigure() {
 		return UsecaseFigureFactory.getUsecaseFigure((UsecaseModel) getModel());
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		super.propertyChange(evt);
 		if (evt.getPropertyName().equals(UsecaseModel.P_RESOURCE)) {
@@ -41,6 +43,7 @@ public class UsecaseEditPart extends NamedEntityEditPart {
 		}
 	}
 
+	@Override
 	public void performRequest(Request req) {
 		if (req.getType().equals(RequestConstants.REQ_OPEN)) {
 			if (openEditor()) {

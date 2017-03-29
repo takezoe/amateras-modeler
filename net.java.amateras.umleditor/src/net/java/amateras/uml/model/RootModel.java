@@ -27,6 +27,7 @@ public class RootModel extends AbstractUMLEntityModel {
 		firePropertyChange(P_CHILDREN, null, null);
 	}
 	
+	@Override
 	public void setBackgroundColor(RGB backgroundColor) {
 		super.setBackgroundColor(backgroundColor);
 		for (Iterator<AbstractUMLModel> iter = getChildren().iterator(); iter.hasNext();) {
@@ -40,6 +41,7 @@ public class RootModel extends AbstractUMLEntityModel {
 		}
 	}
 
+	@Override
 	public void setForegroundColor(RGB foregroundColor) {
 		super.setForegroundColor(foregroundColor);
 		for (Iterator<AbstractUMLModel> iter = getChildren().iterator(); iter.hasNext();) {
@@ -53,6 +55,7 @@ public class RootModel extends AbstractUMLEntityModel {
 		}
 	}
 
+	@Override
 	public void setFilterProperty(Map<String, Boolean> filterProperty) {
 		super.setFilterProperty(filterProperty);
 		for (Iterator<AbstractUMLModel> iter = getChildren().iterator(); iter.hasNext();) {
@@ -61,6 +64,7 @@ public class RootModel extends AbstractUMLEntityModel {
 		}
 	}
 	
+	@Override
 	public void setShowIcon(boolean showIcon) {
 		super.setShowIcon(showIcon);
 		for (Iterator<AbstractUMLModel> iter = getChildren().iterator(); iter.hasNext();) {
@@ -69,6 +73,7 @@ public class RootModel extends AbstractUMLEntityModel {
 		}
 	}
 
+	@Override
 	public IPropertyDescriptor[] getPropertyDescriptors() {
 		return new IPropertyDescriptor[] {
 				new ColorPropertyDescriptor(P_BACKGROUND_COLOR, UMLPlugin

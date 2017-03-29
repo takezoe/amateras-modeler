@@ -2,13 +2,6 @@ package net.java.amateras.uml.classdiagram.editpart;
 
 import java.beans.PropertyChangeEvent;
 
-import net.java.amateras.uml.UMLPlugin;
-import net.java.amateras.uml.classdiagram.figure.AttributeLabel;
-import net.java.amateras.uml.classdiagram.model.AttributeModel;
-import net.java.amateras.uml.classdiagram.model.Visibility;
-import net.java.amateras.uml.editpart.AbstractUMLEditPart;
-import net.java.amateras.uml.model.AbstractUMLEntityModel;
-
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPolicy;
@@ -23,7 +16,15 @@ import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.gef.tools.DirectEditManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Text;
+
+import net.java.amateras.uml.UMLPlugin;
+import net.java.amateras.uml.classdiagram.figure.AttributeLabel;
+import net.java.amateras.uml.classdiagram.model.AttributeModel;
+import net.java.amateras.uml.classdiagram.model.Visibility;
+import net.java.amateras.uml.editpart.AbstractUMLEditPart;
+import net.java.amateras.uml.model.AbstractUMLEntityModel;
 
 public class AttributeEditPart extends AbstractUMLEditPart {
 
@@ -49,23 +50,39 @@ public class AttributeEditPart extends AbstractUMLEditPart {
 		updateLabel(label, model);
 		super.propertyChange(arg0);
 	}
-
+	
 	private void updateLabel(AttributeLabel label, AttributeModel model) {
 		
 		if (model.isShowIcon()) {
+			Image iconImage = null;
 			if (model.getVisibility().equals(Visibility.PUBLIC)) {
-				label.setIcon(UMLPlugin.getImageDescriptor(
-						"icons/field_public.gif").createImage());
-			} else if (model.getVisibility().equals(Visibility.PRIVATE)) {
-				label.setIcon(UMLPlugin.getImageDescriptor(
-						"icons/field_private.gif").createImage());
-			} else if (model.getVisibility().equals(Visibility.PROTECTED)) {
-				label.setIcon(UMLPlugin.getImageDescriptor(
-						"icons/field_protected.gif").createImage());
-			} else if (model.getVisibility().equals(Visibility.PACKAGE)) {
-				label.setIcon(UMLPlugin.getImageDescriptor(
-						"icons/field_default.gif").createImage());
+				iconImage = UMLPlugin.getImageDescriptor("icons/field_public.gif").createImage();
 			}
+			else if (model.getVisibility().equals(Visibility.PRIVATE)) {
+				iconImage = UMLPlugin.getImageDescriptor("icons/field_private.gif").createImage();
+			}
+			else if (model.getVisibility().equals(Visibility.PROTECTED)) {
+				iconImage = UMLPlugin.getImageDescriptor("icons/field_protected.gif").createImage();
+			}
+			else if (model.getVisibility().equals(Visibility.PACKAGE)) {
+				iconImage = UMLPlugin.getImageDescriptor("icons/field_default.gif").createImage();
+			}
+			Image iconDecorator;
+			if (model.isFinal()) {
+				iconDecorator = UMLPlugin.getImageDescriptor("icons/final_co.gif").createImage();
+				iconImage = addDecoratorTopRight(iconImage, iconDecorator);
+				if (model.isStatic()) {
+					iconDecorator = UMLPlugin.getImageDescriptor("icons/static_co.gif").createImage();
+					iconImage = addDecoratorTopLeft(iconImage, iconDecorator);
+				}
+			}
+			else {
+				if (model.isStatic()) {
+					iconDecorator = UMLPlugin.getImageDescriptor("icons/static_co.gif").createImage();
+					iconImage = addDecoratorTopRight(iconImage, iconDecorator);
+				}
+			}
+			label.setIcon(iconImage);
 			label.setText(model.toString());
 		} else {
 			String visibility = " ";

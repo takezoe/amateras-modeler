@@ -5,11 +5,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.java.amateras.uml.classdiagram.model.StereoTypeModel;
-import net.java.amateras.uml.figure.PresentationFigure;
-import net.java.amateras.uml.model.AbstractUMLConnectionModel;
-import net.java.amateras.uml.model.AbstractUMLModel;
-
 import org.eclipse.draw2d.BendpointConnectionRouter;
 import org.eclipse.draw2d.Connection;
 import org.eclipse.draw2d.Label;
@@ -35,11 +30,17 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Text;
 
+import net.java.amateras.uml.classdiagram.model.StereoTypeModel;
+import net.java.amateras.uml.figure.PresentationFigure;
+import net.java.amateras.uml.model.AbstractUMLConnectionModel;
+import net.java.amateras.uml.model.AbstractUMLModel;
+
 public abstract class AbstractUMLConnectionEditPart extends
 		AbstractConnectionEditPart implements PropertyChangeListener {
 
 	private StereoTypeDirectEditManager directManager;
 
+	@Override
 	protected void createEditPolicies() {
 		installEditPolicy(EditPolicy.COMPONENT_ROLE,
 				new EntityComponentEditPolicy());
@@ -51,11 +52,13 @@ public abstract class AbstractUMLConnectionEditPart extends
 				new UMLConnectionBendpointEditPolicy());
 	}
 
+	@Override
 	public void activate() {
 		super.activate();
 		((AbstractUMLModel) getModel()).addPropertyChangeListener(this);
 	}
 
+	@Override
 	public void deactivate() {
 		super.deactivate();
 		((AbstractUMLModel) getModel()).removePropertyChangeListener(this);
@@ -63,6 +66,7 @@ public abstract class AbstractUMLConnectionEditPart extends
 
 	/** EditPolicy for Entity */
 	private class EntityComponentEditPolicy extends ComponentEditPolicy {
+		@Override
 		protected Command createDeleteCommand(GroupRequest deleteRequest) {
 			DeleteCommand command = new DeleteCommand();
 			command.setModel((AbstractUMLConnectionModel) getModel());
@@ -78,17 +82,20 @@ public abstract class AbstractUMLConnectionEditPart extends
 			this.model = model;
 		}
 
+		@Override
 		public void execute() {
 			model.detachSource();
 			model.detachTarget();
 		}
 
+		@Override
 		public void undo(){
 			model.attachSource();
 			model.attachTarget();
 		}
 	}
 
+	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		refreshVisuals();
 	}
@@ -108,6 +115,7 @@ public abstract class AbstractUMLConnectionEditPart extends
 		getConnectionFigure().setRoutingConstraint(constraint);
 	}
 
+	@Override
 	protected void refreshVisuals() {
 		if (getFigure() instanceof PresentationFigure) {
 			PresentationFigure figure = (PresentationFigure) getFigure();
@@ -121,6 +129,7 @@ public abstract class AbstractUMLConnectionEditPart extends
 		return null;
 	}
 
+	@Override
 	public void performRequest(Request req) {
 		if (getStereoTypeLabel() != null || getModel() instanceof StereoTypeModel) {
 			if (req.getType().equals(RequestConstants.REQ_DIRECT_EDIT) || req.getType().equals(RequestConstants.REQ_OPEN)) {
@@ -148,6 +157,7 @@ public abstract class AbstractUMLConnectionEditPart extends
 					new CompositeCellEditorLocator());
 		}
 
+		@Override
 		protected void initCellEditor() {
 			getCellEditor().setValue(
 					((StereoTypeModel) getModel()).getStereoType());
@@ -160,6 +170,7 @@ public abstract class AbstractUMLConnectionEditPart extends
 	 * CellEditorLocator
 	 */
 	private class CompositeCellEditorLocator implements CellEditorLocator {
+		@Override
 		public void relocate(CellEditor celleditor) {
 			Text text = (Text) celleditor.getControl();
 			// Point pref = text.computeSize(-1, -1);
@@ -182,6 +193,7 @@ public abstract class AbstractUMLConnectionEditPart extends
 
 		private String newStereoType;
 
+		@Override
 		public void execute() {
 			StereoTypeModel model = (StereoTypeModel) getModel();
 			oldStereoType = model.getStereoType();
@@ -192,6 +204,7 @@ public abstract class AbstractUMLConnectionEditPart extends
 			newStereoType = stereoType;
 		}
 
+		@Override
 		public void undo() {
 			StereoTypeModel model = (StereoTypeModel) getModel();
 			model.setStereoType(oldStereoType);
@@ -203,18 +216,21 @@ public abstract class AbstractUMLConnectionEditPart extends
 	 */
 	private class StereoTypeDirectEditPolicy extends DirectEditPolicy {
 
+		@Override
 		protected Command getDirectEditCommand(DirectEditRequest request) {
 			DirectEditCommand command = new DirectEditCommand();
 			command.setStereoType((String) request.getCellEditor().getValue());
 			return command;
 		}
 
+		@Override
 		protected void showCurrentEditValue(DirectEditRequest request) {
 		}
 	}
-
+	
 	private class UMLConnectionBendpointEditPolicy extends BendpointEditPolicy {
 
+		@Override
 		protected Command getCreateBendpointCommand(BendpointRequest request) {
             CreateBendpointCommand command = new CreateBendpointCommand();
             Point p = request.getLocation();
@@ -235,6 +251,7 @@ public abstract class AbstractUMLConnectionEditPart extends
             return command;
 		}
 
+		@Override
 		protected Command getDeleteBendpointCommand(BendpointRequest request) {
             BendpointCommand command = new DeleteBendpointCommand();
             Point p = request.getLocation();
@@ -244,6 +261,7 @@ public abstract class AbstractUMLConnectionEditPart extends
             return command;
 		}
 
+		@Override
 		protected Command getMoveBendpointCommand(BendpointRequest request) {
             MoveBendpointCommand command = new MoveBendpointCommand();
             Point p = request.getLocation();
@@ -269,6 +287,7 @@ public abstract class AbstractUMLConnectionEditPart extends
 
 	private class CreateBendpointCommand extends BendpointCommand {
 
+		@Override
 		public void execute() {
             ConnectionBendpoint rbp = new ConnectionBendpoint(
                     getFirstRelativeDimension(), getSecondRelativeDimension());
@@ -276,6 +295,7 @@ public abstract class AbstractUMLConnectionEditPart extends
             super.execute();
 		}
 
+		@Override
 		public void undo() {
 			super.undo();
             getConnectionModel().removeBendpoint(getIndex());
@@ -286,6 +306,7 @@ public abstract class AbstractUMLConnectionEditPart extends
 
 		private ConnectionBendpoint oldBendpoint = null;
 
+		@Override
 		public void execute() {
 			ConnectionBendpoint bp = new ConnectionBendpoint(
                     getFirstRelativeDimension(), getSecondRelativeDimension());
@@ -302,6 +323,7 @@ public abstract class AbstractUMLConnectionEditPart extends
             oldBendpoint = bp;
         }
 
+        @Override
         public void undo() {
             super.undo();
             getConnectionModel().replaceBendpoint(getIndex(), getOldBendpoint());
@@ -311,12 +333,14 @@ public abstract class AbstractUMLConnectionEditPart extends
 	private class DeleteBendpointCommand extends BendpointCommand {
 		private ConnectionBendpoint bendpoint = null;
 
+		@Override
 		public void execute() {
 			bendpoint = (ConnectionBendpoint) getConnectionModel().getBendpoints().get(getIndex());
 			getConnectionModel().removeBendpoint(getIndex());
 			super.execute();
 		}
 
+		@Override
         public void undo() {
             super.undo();
             getConnectionModel().addBendpoint(getIndex(), bendpoint);
@@ -353,6 +377,7 @@ public abstract class AbstractUMLConnectionEditPart extends
             return connectionModel;
         }
 
+        @Override
         public void redo() {
             execute();
         }

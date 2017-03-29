@@ -25,6 +25,8 @@ public class UMLClassFigure extends Figure implements EntityFigure, Presentation
 
 	private Label name;
 
+	private Label packageName;
+	
 	private Label stereoType;
 
 	private Image icon;
@@ -39,6 +41,8 @@ public class UMLClassFigure extends Figure implements EntityFigure, Presentation
 		this.name.setForegroundColor(ColorConstants.darkGray);
 		this.name.setBorder(new MarginBorder(5));
 		this.name.setIcon(icon);
+		this.packageName = new Label();
+		this.packageName.setTextAlignment(PositionConstants.CENTER);
 		this.icon = icon;
 		this.stereoType = new Label();
 		this.stereoType.setTextAlignment(PositionConstants.CENTER);
@@ -52,6 +56,7 @@ public class UMLClassFigure extends Figure implements EntityFigure, Presentation
 //
 //		nameFigure.add(this.stereoType);
 		nameFigure.add(this.name);
+		nameFigure.add(this.packageName);
 		add(nameFigure);
 		add(attributeFigure);
 		add(methodFigure);
@@ -63,6 +68,19 @@ public class UMLClassFigure extends Figure implements EntityFigure, Presentation
 
 	public void setClassName(String className){
 		this.name.setText(className);
+	}
+	
+	public void setPackageName(String packageName){
+		if (packageName == null || "".equals(packageName)) {
+			if (nameFigure.getChildren().contains(this.packageName)) {
+				nameFigure.remove(this.packageName);
+			}
+		} else {
+			this.packageName.setText(packageName);
+			if (!nameFigure.getChildren().contains(this.packageName)) {
+				nameFigure.add(this.packageName, 1);
+			}
+		}
 	}
 
 	public void add(IFigure figure, Object constraint, int index) {

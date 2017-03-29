@@ -41,6 +41,7 @@ public class UsecaseDiagramEditor extends DiagramEditor {
 	private CopyAction copyAction;
 	private PasteAction pasteAction;
 	
+	@Override
 	protected RootModel createInitializeModel() {
 		UsecaseRootModel model = new UsecaseRootModel();
 		model.setShowIcon(true);
@@ -49,28 +50,34 @@ public class UsecaseDiagramEditor extends DiagramEditor {
 		return model;
 	}
 
+	@Override
 	protected String getDiagramType() {
 		return "usecase";
 	}
 
+	@Override
 	protected EditPartFactory createEditPartFactory() {
 		return new UsecaseEditPartFactory();
 	}
 
+	@Override
 	protected void createDiagramAction(GraphicalViewer viewer) {
 		
 	}
 
+	@Override
 	protected void fillDiagramPopupMenu(MenuManager manager) {
 		manager.add(new Separator("copy"));
 		manager.add(copyAction);
 		manager.add(pasteAction);
 	}
 
+	@Override
 	protected void updateDiagramAction(ISelection selection) {
 		
 	}
 
+	@Override
 	protected void createActions() {
 		super.createActions();
 		pasteAction = new PasteAction(this);
@@ -82,6 +89,7 @@ public class UsecaseDiagramEditor extends DiagramEditor {
 		getSelectionActions().add(copyAction.getId());
 	}
 	
+	@Override
 	protected PaletteRoot getPaletteRoot() {
 		PaletteRoot root = new PaletteRoot();
 		UMLPlugin plugin = UMLPlugin.getDefault();

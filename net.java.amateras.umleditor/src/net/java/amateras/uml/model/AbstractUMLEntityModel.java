@@ -49,8 +49,8 @@ public abstract class AbstractUMLEntityModel extends AbstractUMLModel {
 	
 	public void removeChild(AbstractUMLModel model) {
 		children.remove(model);
-		model.setParent(this);
-		firePropertyChange(P_CHILDREN,null,model);
+		model.setParent(null);
+		firePropertyChange(P_CHILDREN,model,null);
 	}
 	
 	public void forceUpdate() {
@@ -106,6 +106,7 @@ public abstract class AbstractUMLEntityModel extends AbstractUMLModel {
 		firePropertyChange(P_TARGET_CONNECTION, connx, null);
 	}
 	
+	@Override
 	public void setBackgroundColor(RGB backgroundColor) {
 		for (Iterator<AbstractUMLModel> iter = children.iterator(); iter.hasNext();) {
 			AbstractUMLModel element = (AbstractUMLModel) iter.next();
@@ -114,6 +115,7 @@ public abstract class AbstractUMLEntityModel extends AbstractUMLModel {
 		super.setBackgroundColor(backgroundColor);
 	}
 	
+	@Override
 	public void setForegroundColor(RGB foregroundColor) {
 		for (Iterator<AbstractUMLModel> iter = children.iterator(); iter.hasNext();) {
 			AbstractUMLModel element = (AbstractUMLModel) iter.next();
@@ -122,6 +124,7 @@ public abstract class AbstractUMLEntityModel extends AbstractUMLModel {
 		super.setForegroundColor(foregroundColor);
 	}
 	
+	@Override
 	public void setShowIcon(boolean showIcon) {
 		for (Iterator<AbstractUMLModel> iter = children.iterator(); iter.hasNext();) {
 			AbstractUMLModel element = (AbstractUMLModel) iter.next();

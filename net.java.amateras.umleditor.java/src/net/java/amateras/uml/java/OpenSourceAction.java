@@ -5,6 +5,7 @@ import java.util.List;
 import net.java.amateras.uml.classdiagram.ClassDiagramEditor;
 import net.java.amateras.uml.classdiagram.model.AttributeModel;
 import net.java.amateras.uml.classdiagram.model.ClassModel;
+import net.java.amateras.uml.classdiagram.model.EnumModel;
 import net.java.amateras.uml.classdiagram.model.InterfaceModel;
 import net.java.amateras.uml.classdiagram.model.OperationModel;
 import net.java.amateras.uml.model.AbstractUMLEntityModel;
@@ -61,6 +62,9 @@ public class OpenSourceAction implements IEditorActionDelegate {
 			
 		} else if(model instanceof InterfaceModel){
 			className = ((InterfaceModel)model).getName();
+			
+		} else if(model instanceof EnumModel){
+			className = ((EnumModel)model).getName();
 			
 		} else if(model instanceof OperationModel){
 			EditPart parent = ((EditPart)obj).getParent();
@@ -161,7 +165,7 @@ public class OpenSourceAction implements IEditorActionDelegate {
 			Object obj = this.selection.getFirstElement();
 			if(obj instanceof EditPart){
 				Object model = ((EditPart)obj).getModel();
-				if(model instanceof ClassModel || model instanceof InterfaceModel ||
+				if(model instanceof ClassModel || model instanceof InterfaceModel || model instanceof EnumModel ||
 						model instanceof AttributeModel || model instanceof OperationModel){
 					action.setEnabled(true);
 					return;
