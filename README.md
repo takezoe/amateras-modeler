@@ -15,7 +15,7 @@ Lightweight UML and ER-diagram editor for Eclipse. Former AmaterasUML and Amater
 
 Installation
 --------
-Install from the update site: http://takezoe.github.io/amateras-update-site/
+Install from the update site: https://takezoe.github.io/amateras-update-site/
 
 For developers
 --------------
