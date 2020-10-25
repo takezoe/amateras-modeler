@@ -29,6 +29,10 @@ License
 
 History
 --------
+### 2020/10/18 - AmaterasModeler 2.0.0
+
+- Java11 Support
+
 ### 2017/03/29 - AmaterasModeler 1.1.0
 
 - Java Enum support in class diagram
