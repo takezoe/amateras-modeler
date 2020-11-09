@@ -3,15 +3,15 @@
   <children>
     <net.java.amateras.db.visual.model.TableModel>
       <tableName>USER_INFO</tableName>
-      <logicalName>ユーザ情報</logicalName>
+      <logicalName>ãƒ¦ãƒ¼ã‚¶æƒ…å ±</logicalName>
       <description></description>
       <columns>
         <net.java.amateras.db.visual.model.ColumnModel>
           <columnName>USER_ID</columnName>
-          <logicalName>ユーザID</logicalName>
+          <logicalName>ãƒ¦ãƒ¼ã‚¶ID</logicalName>
           <columnType class="net.java.amateras.db.dialect.ColumnType">
             <name>INTEGER</name>
-            <logicalName>整数</logicalName>
+            <logicalName>æ•´æ•°</logicalName>
             <supportSize>false</supportSize>
             <type>4</type>
           </columnType>
@@ -23,10 +23,10 @@
           <defaultValue></defaultValue>
           <dommain>
             <id>12101269426330</id>
-            <name>ユーザID</name>
+            <name>ãƒ¦ãƒ¼ã‚¶ID</name>
             <type class="net.java.amateras.db.dialect.ColumnType">
               <name>VARCHAR</name>
-              <logicalName>文字列</logicalName>
+              <logicalName>æ–‡å­—åˆ—</logicalName>
               <supportSize>true</supportSize>
               <type>12</type>
             </type>
@@ -35,10 +35,10 @@
         </net.java.amateras.db.visual.model.ColumnModel>
         <net.java.amateras.db.visual.model.ColumnModel>
           <columnName>GROUP_ID</columnName>
-          <logicalName>グループID</logicalName>
+          <logicalName>ã‚°ãƒ«ãƒ¼ãƒ—ID</logicalName>
           <columnType class="net.java.amateras.db.dialect.ColumnType">
             <name>INTEGER</name>
-            <logicalName>整数</logicalName>
+            <logicalName>æ•´æ•°</logicalName>
             <supportSize>false</supportSize>
             <type>4</type>
           </columnType>
@@ -51,10 +51,10 @@
         </net.java.amateras.db.visual.model.ColumnModel>
         <net.java.amateras.db.visual.model.ColumnModel>
           <columnName>MAIL</columnName>
-          <logicalName>メールアドレス</logicalName>
+          <logicalName>ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹</logicalName>
           <columnType class="net.java.amateras.db.dialect.ColumnType">
             <name>INTEGER</name>
-            <logicalName>整数</logicalName>
+            <logicalName>æ•´æ•°</logicalName>
             <supportSize>false</supportSize>
             <type>4</type>
           </columnType>
@@ -66,14 +66,14 @@
           <defaultValue></defaultValue>
           <dommain>
             <id>12101269431961</id>
-            <name>メールアドレス</name>
+            <name>ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹</name>
             <type class="net.java.amateras.db.dialect.ColumnType" reference="../../../net.java.amateras.db.visual.model.ColumnModel/dommain/type"/>
             <size>100</size>
           </dommain>
         </net.java.amateras.db.visual.model.ColumnModel>
         <net.java.amateras.db.visual.model.ColumnModel>
           <columnName>PASSWORD</columnName>
-          <logicalName>パスワード</logicalName>
+          <logicalName>ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰</logicalName>
           <columnType class="net.java.amateras.db.dialect.ColumnType" reference="../../net.java.amateras.db.visual.model.ColumnModel[3]/columnType"/>
           <size>10</size>
           <notNull>false</notNull>
@@ -84,7 +84,7 @@
         </net.java.amateras.db.visual.model.ColumnModel>
         <net.java.amateras.db.visual.model.ColumnModel>
           <columnName>NAME</columnName>
-          <logicalName>氏名</logicalName>
+          <logicalName>æ°�å��</logicalName>
           <columnType class="net.java.amateras.db.dialect.ColumnType" reference="../../net.java.amateras.db.visual.model.ColumnModel[3]/columnType"/>
           <size>10</size>
           <notNull>false</notNull>
@@ -119,12 +119,12 @@
             <entry>
               <net.java.amateras.db.visual.model.ColumnModel>
                 <columnName>GROUP_ID</columnName>
-                <logicalName>グループID</logicalName>
+                <logicalName>ã‚°ãƒ«ãƒ¼ãƒ—ID</logicalName>
                 <columnType class="net.java.amateras.db.dialect.ColumnType" reference="../../../../../../columns/net.java.amateras.db.visual.model.ColumnModel[2]/columnType"/>
                 <size>10</size>
                 <notNull>false</notNull>
                 <primaryKey>true</primaryKey>
-                <description></description>
+                <description>testing group id description</description>
                 <autoIncrement>false</autoIncrement>
                 <defaultValue></defaultValue>
               </net.java.amateras.db.visual.model.ColumnModel>
@@ -134,16 +134,16 @@
           <source class="net.java.amateras.db.visual.model.TableModel" reference="../../.."/>
           <target class="net.java.amateras.db.visual.model.TableModel">
             <tableName>GROUP</tableName>
-            <logicalName>グループ</logicalName>
+            <logicalName>ã‚°ãƒ«ãƒ¼ãƒ—</logicalName>
             <description></description>
             <columns>
               <net.java.amateras.db.visual.model.ColumnModel reference="../../../references/entry/net.java.amateras.db.visual.model.ColumnModel"/>
               <net.java.amateras.db.visual.model.ColumnModel>
                 <columnName>GROUP_NAME</columnName>
-                <logicalName>グループ名</logicalName>
+                <logicalName>ã‚°ãƒ«ãƒ¼ãƒ—å��</logicalName>
                 <columnType class="net.java.amateras.db.dialect.ColumnType">
                   <name>VARCHAR</name>
-                  <logicalName>文字列</logicalName>
+                  <logicalName>æ–‡å­—åˆ—</logicalName>
                   <supportSize>true</supportSize>
                   <type>12</type>
                 </columnType>
@@ -204,7 +204,7 @@
     <net.java.amateras.db.visual.model.DommainModel reference="../../children/net.java.amateras.db.visual.model.TableModel/columns/net.java.amateras.db.visual.model.ColumnModel/dommain"/>
     <net.java.amateras.db.visual.model.DommainModel reference="../../children/net.java.amateras.db.visual.model.TableModel/columns/net.java.amateras.db.visual.model.ColumnModel[3]/dommain"/>
   </dommains>
-  <dialectName>PostgreSQL</dialectName>
+  <dialectName>MSSQL</dialectName>
   <logicalMode>false</logicalMode>
   <jarFile></jarFile>
   <jdbcDriver>sun.jdbc.odbc.JdbcOdbc</jdbcDriver>

@@ -1,6 +1,7 @@
 package net.java.amateras.db.dialect;
 
 import java.sql.Types;
+import java.text.MessageFormat;
 
 import net.java.amateras.db.Messages;
 import net.java.amateras.db.visual.model.ColumnModel;
@@ -12,6 +13,8 @@ import net.java.amateras.db.visual.model.TableModel;
  * @since 1.0.8
  */
 public class MSSQLDialect extends AbstractDialect {
+	
+	private static final String DESC_TPL = "EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'$desc' , @level0type=N'SCHEMA',@level0name=N'$schema', @level1type=N'TABLE',@level1name=N'$table', @level2type=N'COLUMN',@level2name=N'$column'";
 
 	private static final IColumnType[] COLUMN_TYPES = {
 		new ColumnType("BIT", Messages.getResourceString("type.bit"), false, Types.BIT),
@@ -53,6 +56,30 @@ public class MSSQLDialect extends AbstractDialect {
 			ddl += " IDENTITY";
 		}
 		return ddl;
+	}
+	
+	/**
+	 * 20201109 JIM - override this to add column descriptions in MSSQL
+	 */
+	@Override
+	protected void setupTableOption(RootModel root, TableModel model,
+			boolean schema, boolean drop, boolean alterTable, boolean comment,
+			StringBuilder additions, StringBuffer sb) {
+		super.setupTableOption(root, model, schema, drop, alterTable, comment, additions, sb);
+		if(comment) {
+			additions.append(LS);
+			for(ColumnModel cm : model.getColumns()) {
+				if(cm.getDescription()==null || cm.getDescription().isEmpty()) {
+					continue;
+				}
+				
+				String s = DESC_TPL.replace("$desc", cm.getDescription());
+				s = s.replace("$schema", root.getJdbcSchema());
+				s = s.replace("$table", model.getTableName());
+				s = s.replace("$column", cm.getColumnName());
+				additions.append(s).append(separator);
+			}
+		}
 	}
 
 	@Override
