@@ -77,7 +77,7 @@ public class MSSQLDialect extends AbstractDialect {
 				s = s.replace("$schema", root.getJdbcSchema());
 				s = s.replace("$table", model.getTableName());
 				s = s.replace("$column", cm.getColumnName());
-				additions.append(s).append(separator);
+				additions.append(s).append(separator).append(LS);
 			}
 		}
 	}
