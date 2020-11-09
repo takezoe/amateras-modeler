@@ -2,15 +2,15 @@
 <feature
       id="net.java.amateras.modeler"
       label="Amateras Modeler"
-      version="2.0.0.qualifier"
+      version="2.0.3.qualifier"
       provider-name="Project Amateras">
 
    <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+      [modified from original Amasteras project]
    </description>
 
    <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+      [all rights belongs to original Amasteras creator]
    </copyright>
 
    <license url="http://www.example.com/license">
