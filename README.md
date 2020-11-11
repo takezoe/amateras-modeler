@@ -29,9 +29,13 @@ License
 
 History
 --------
+### 2020/11/11 - AmaterasModeler 2.0.5
+
+- include table description into DDL when generating using MS SQL dialect
+
 ### 2020/11/10 - AmaterasModeler 2.0.4
 
-- add description into DDL when generating using MS SQL dialect
+- include column description into DDL when generating using MS SQL dialect
 
 ### 2020/10/18 - AmaterasModeler 2.0.0
 
