@@ -15,6 +15,7 @@ import net.java.amateras.db.visual.model.TableModel;
 public class MSSQLDialect extends AbstractDialect {
 	
 	private static final String DESC_TPL = "EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'$desc' , @level0type=N'SCHEMA',@level0name=N'$schema', @level1type=N'TABLE',@level1name=N'$table', @level2type=N'COLUMN',@level2name=N'$column'";
+	private static final String DESC_TBL_TPL = "EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'$desc' , @level0type=N'SCHEMA',@level0name=N'$schema', @level1type=N'TABLE',@level1name=N'$table'";
 
 	private static final IColumnType[] COLUMN_TYPES = {
 		new ColumnType("BIT", Messages.getResourceString("type.bit"), false, Types.BIT),
@@ -68,6 +69,12 @@ public class MSSQLDialect extends AbstractDialect {
 		super.setupTableOption(root, model, schema, drop, alterTable, comment, additions, sb);
 		if(comment) {
 			additions.append(LS);
+			if(model.getDescription() != null && !model.getDescription().isEmpty()) {
+				String s = DESC_TBL_TPL.replace("$desc", model.getDescription());
+				s = s.replace("$schema", root.getJdbcSchema());
+				s = s.replace("$table", model.getTableName());
+				additions.append(s).append(separator).append(LS);
+			}
 			for(ColumnModel cm : model.getColumns()) {
 				if(cm.getDescription()==null || cm.getDescription().isEmpty()) {
 					continue;

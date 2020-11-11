@@ -2,7 +2,7 @@
 <feature
       id="net.java.amateras.modeler"
       label="Amateras Modeler"
-      version="2.0.4.qualifier"
+      version="2.0.5.qualifier"
       provider-name="Project Amateras">
 
    <description url="http://www.example.com/description">
