@@ -25,6 +25,8 @@ public class ERDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	
 	private BooleanFieldEditor showNotNull;
 
+	private BooleanFieldEditor zoomableWithCtrlAndScroll;
+
 	public void init(IWorkbench workbench) {
 	}
 
@@ -44,6 +46,11 @@ public class ERDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 				layoutGroup);
 		snapToGeometry = new BooleanFieldEditor(DBPlugin.PREF_SNAP_GEOMETRY, DBPlugin.getResourceString(
 				"preference.layout.snapToGeometry"), layoutGroup);
+
+		zoomableWithCtrlAndScroll = new BooleanFieldEditor(DBPlugin.PREF_ZOOMABLE_WITH_CTRL_AND_SCROLL, DBPlugin.getResourceString(
+				"preference.layout.zoomableWithCtrlAndScroll"), layoutGroup);
+		zoomableWithCtrlAndScroll.fillIntoGrid(layoutGroup, 2);
+
 		layoutGroup.setLayout(new GridLayout(3, false));
 		
 		// for Diagram (Grid)
@@ -74,6 +81,9 @@ public class ERDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		
 		showNotNull.setPreferenceStore(store);
 		showNotNull.load();
+
+		zoomableWithCtrlAndScroll.setPreferenceStore(store);
+		zoomableWithCtrlAndScroll.load();
 	}
 	
 	public boolean performOk() {
@@ -81,6 +91,7 @@ public class ERDPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		gridSize.store();
 		snapToGeometry.store();
 		showNotNull.store();
+		zoomableWithCtrlAndScroll.store();
 		return true;
 	}
 

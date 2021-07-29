@@ -51,6 +51,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.MouseWheelHandler;
+import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.editparts.ScalableRootEditPart;
@@ -491,6 +493,15 @@ public class VisualDBEditor extends GraphicalEditorWithPalette
 
 		getGraphicalViewer().setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED,
 		                new Boolean(store.getBoolean(DBPlugin.PREF_SNAP_GEOMETRY)));
+
+		boolean isZoomableWithCtrlAndScroll = store.getBoolean(DBPlugin.PREF_ZOOMABLE_WITH_CTRL_AND_SCROLL);
+		String mouseWheelHandlerKey = MouseWheelHandler.KeyGenerator.getKey(SWT.CTRL);
+		if (isZoomableWithCtrlAndScroll) {
+			getGraphicalViewer().setProperty(mouseWheelHandlerKey,
+					MouseWheelZoomHandler.SINGLETON);
+		} else {
+			getGraphicalViewer().setProperty(mouseWheelHandlerKey, null);
+		}
 	}
 
 	public void propertyChange(PropertyChangeEvent evt) {
