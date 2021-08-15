@@ -57,7 +57,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="net.java.amateras.db.view.dialect.IDialect"/>
+                  <meta.attribute kind="java" basedOn="net.java.amateras.db.dialect.IDialect"/>
                </appInfo>
             </annotation>
          </attribute>
