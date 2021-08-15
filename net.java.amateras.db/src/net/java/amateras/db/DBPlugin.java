@@ -47,6 +47,7 @@ public class DBPlugin extends AbstractUIPlugin {
 	public static final String PREF_GRID_SIZE = "pref_grid_size";
 	public static final String PREF_SNAP_GEOMETRY = "pref_snap_geometry";
 	public static final String PREF_SHOW_NOT_NULL = "pref_show_notnull";
+	public static final String PREF_ZOOMABLE_WITH_CTRL_AND_SCROLL = "pref_zoomable_with_ctrl_and_scroll";
 	public static final String PREF_FONT = "pref_font";
 	public static final String PREF_DICTIONALY = "pref_dictionary";
 
