@@ -31,14 +31,15 @@ public class UMLPlugin extends AbstractUIPlugin {
 	public static final String PREF_SHOW_GRID = "pref.showgrid";
 	public static final String PREF_GRID_SIZE = "pref.gridsize";
 	public static final String PREF_SNAP_GEOMETRY = "pref.snapgeometry";
-	
+	public static final String PREF_ZOOMABLE_WITH_CTRL_AND_SCROLL = "pref_zoomable_with_ctrl_and_scroll";
+
 	//============================================================================
 	// Appearance settings
 	//============================================================================
 	public static final String PREF_ANTI_ALIAS = "pref.antialias";
 	public static final String PREF_NEWSTYLE = "pref.style.new";
-	
-	
+
+
 	//============================================================================
 	// Class diagram settings
 	//============================================================================
@@ -46,14 +47,14 @@ public class UMLPlugin extends AbstractUIPlugin {
 	 * Show simple name of classes to make Class seem shorter in class diagrams
 	 */
 	public static final String PREF_CLASS_DIAGRAM_SHOW_SIMPLE_NAME = "pref.classdiagram.simplename";
-	
+
 	/**
 	 * Show parameter name or not, methods will be shorter if parameter name isn't shown but only parameter type
 	 */
 	public static final String PREF_CLASS_DIAGRAM_SHOW_PARAMETER_NAME = "pref.classdiagram.show_parameter_name";
-	
+
 	public static final String PREF_CLASS_DIAGRAM_CREATE_AGGREGATION_ON_IMPORT = "pref.classdiagram.create_aggreation_on_import";
-	
+
 	//============================================================================
 	// Sequence diagram settings
 	//============================================================================
@@ -61,7 +62,7 @@ public class UMLPlugin extends AbstractUIPlugin {
 	 * Create a return message automatically in sequence diagrams
 	 */
 	public static final String PREF_SEQUENCE_DIAGRAM_CREATE_RETURN = "pref.sequence.createreturn";
-	
+
 	/**
 	 * Show simple name of classes to make Class seem shorter in sequence diagrams
 	 */
@@ -105,7 +106,7 @@ public class UMLPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Getsi18n message from <tt>UMLPlugin.properties</tt>.
-	 * 
+	 *
 	 * @param key a message key
 	 * @return i18n message
 	 */
@@ -126,7 +127,7 @@ public class UMLPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Logging debug information.
-	 * 
+	 *
 	 * @param message message
 	 */
 	public static void logDebug(String message) {
@@ -137,7 +138,7 @@ public class UMLPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Logging error information.
-	 * 
+	 *
 	 * @param message message
 	 */
 	public static void logError(String message) {
@@ -148,7 +149,7 @@ public class UMLPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Logging exception information.
-	 * 
+	 *
 	 * @param ex exception
 	 */
 	public static void logException(Throwable ex) {
