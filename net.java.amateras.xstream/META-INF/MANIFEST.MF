@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XStream
 Bundle-SymbolicName: net.java.amateras.xstream
-Bundle-Version: 2.0.0.qualifier
+Bundle-Version: 2.1.0.qualifier
 Export-Package: net.java.amateras.xstream
 Bundle-ClassPath: lib/activation-1.1.1.jar,
  lib/cglib-nodep-2.2.jar,

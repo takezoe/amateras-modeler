@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %plugin.name
 Bundle-SymbolicName: net.java.amateras.umleditor; singleton:=true
-Bundle-Version: 2.0.0.qualifier
+Bundle-Version: 2.1.0.qualifier
 Bundle-Activator: net.java.amateras.uml.UMLPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
