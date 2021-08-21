@@ -27,6 +27,8 @@ import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.KeyHandler;
 import org.eclipse.gef.KeyStroke;
 import org.eclipse.gef.LayerConstants;
+import org.eclipse.gef.MouseWheelHandler;
+import org.eclipse.gef.MouseWheelZoomHandler;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.commands.CommandStack;
@@ -102,7 +104,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 	private AbstractUMLEditorAction saveAsImageAction  = null;
 	private AbstractUMLEditorAction copyAsImageAction  = null;
 	private boolean needViewerRefreshFlag = true;
-	
+
 	private final List<AsyncSyncAction> asyncActionList = new ArrayList<AsyncSyncAction>();
 
 	private KeyHandler sharedKeyHandler;
@@ -164,7 +166,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 			}
 		}
 	}
-	
+
 	@Override
 	public void resourceChanged(final IResourceChangeEvent event) {
 		if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
@@ -210,7 +212,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 			}
 		}
 	}
-	
+
 	/**
 	 * The diagram has been modified and need to be saved later (asynchronous) on next refresh
 	 */
@@ -221,7 +223,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 		}
 		this.editorsOpenedDuringSynchronization.addAll(editorsOpenedDuringSynchronization);
 	}
-	
+
 	public void appendAsyncAction(AsyncSyncAction asyncSyncAction) {
 		asyncActionList.add(asyncSyncAction);
 	}
@@ -245,6 +247,15 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 
 		getGraphicalViewer().setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED,
 		                new Boolean(store.getBoolean(UMLPlugin.PREF_SNAP_GEOMETRY)));
+
+		boolean isZoomableWithCtrlAndScroll = store.getBoolean(UMLPlugin.PREF_ZOOMABLE_WITH_CTRL_AND_SCROLL);
+		String mouseWheelHandlerKey = MouseWheelHandler.KeyGenerator.getKey(SWT.CTRL);
+		if (isZoomableWithCtrlAndScroll) {
+			getGraphicalViewer().setProperty(mouseWheelHandlerKey,
+					MouseWheelZoomHandler.SINGLETON);
+		} else {
+			getGraphicalViewer().setProperty(mouseWheelHandlerKey, null);
+		}
 	}
 
 	/**
@@ -263,7 +274,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 			}
 		}
 	}
-	
+
 	/**
 	 * ロードに失敗した場合の初期モデルを返却する.
 	 * @return
@@ -414,7 +425,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 				.setParent(getCommonKeyHandler()));
 
 	}
-	
+
 	/**
 	 * タイプに特化したアクションを作る.
 	 * @param viewer
@@ -456,7 +467,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 	public void doSaveAs() {
 		doSave(new NullProgressMonitor());
 	}
-	
+
 	public RootModel getRootModel() {
 		return (RootModel)getGraphicalViewer().getContents().getModel();
 	}

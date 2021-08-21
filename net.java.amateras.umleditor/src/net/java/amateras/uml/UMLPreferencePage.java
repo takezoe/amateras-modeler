@@ -31,13 +31,15 @@ public class UMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 	 * Show parameter name or not, methods will be shorter if parameter name isn't shown but only parameter type
 	 */
 	private BooleanFieldEditor showParameterName;
-	
+
 	private BooleanFieldEditor createAggregationOnImport;
-	
+
 	private BooleanFieldEditor createReturn;
-	
+
 	private BooleanFieldEditor showSimpleNameInSequenceDiagram;
-	
+
+	private BooleanFieldEditor zoomableWithCtrlAndScroll;
+
 
 	public UMLPreferencePage() {
 		super("AmaterasUML");
@@ -58,6 +60,11 @@ public class UMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 				layoutGroup);
 		snapToGeometry = new BooleanFieldEditor(UMLPlugin.PREF_SNAP_GEOMETRY, UMLPlugin.getDefault().getResourceString(
 				"preference.layout.snapToGeometry"), layoutGroup);
+
+		zoomableWithCtrlAndScroll = new BooleanFieldEditor(UMLPlugin.PREF_ZOOMABLE_WITH_CTRL_AND_SCROLL, UMLPlugin.getDefault().getResourceString(
+				"preference.layout.zoomableWithCtrlAndScroll"), layoutGroup);
+		zoomableWithCtrlAndScroll.fillIntoGrid(layoutGroup, 2);
+
 		layoutGroup.setLayout(new GridLayout(3, false));
 
 		// for Class Diagram
@@ -123,15 +130,18 @@ public class UMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 
 		showParameterName.setPreferenceStore(store);
 		showParameterName.load();
-		
+
 		createAggregationOnImport.setPreferenceStore(store);
 		createAggregationOnImport.load();
-		
+
 		createReturn.setPreferenceStore(store);
 		createReturn.load();
-		
+
 		showSimpleNameInSequenceDiagram.setPreferenceStore(store);
 		showSimpleNameInSequenceDiagram.load();
+
+		zoomableWithCtrlAndScroll.setPreferenceStore(store);
+		zoomableWithCtrlAndScroll.load();
 	}
 
 	public boolean performOk() {
@@ -145,6 +155,7 @@ public class UMLPreferencePage extends PreferencePage implements IWorkbenchPrefe
 		showParameterName.store();
 		createAggregationOnImport.store();
 		showSimpleNameInSequenceDiagram.store();
+		zoomableWithCtrlAndScroll.store();
 		return true;
 	}
 
