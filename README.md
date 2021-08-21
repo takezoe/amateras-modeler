@@ -29,6 +29,10 @@ License
 
 History
 --------
+### 2021/08/22 - AmaterasModelar 2.1.0
+
+- Support zoom by CTRL + Mouse scroll
+
 ### 2020/10/18 - AmaterasModeler 2.0.0
 
 - Java11 Support
