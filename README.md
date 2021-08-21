@@ -25,10 +25,18 @@ Install the following eclipse plugins:
 
 License
 --------
-[Eclipse Public License 1.0](http://opensource.org/licenses/eclipse-1.0.php)
+[Eclipse Public License 2.0] (https://www.eclipse.org/legal/epl-2.0/)
 
 History
 --------
+### 2020/11/11 - AmaterasModeler 2.0.5
+
+- include table description into DDL when generating using MS SQL dialect
+
+### 2020/11/10 - AmaterasModeler 2.0.4
+
+- include column description into DDL when generating using MS SQL dialect
+
 ### 2020/10/18 - AmaterasModeler 2.0.0
 
 - Java11 Support
