@@ -29,7 +29,7 @@ License
 
 History
 --------
-### 2021/08/22 - AmaterasModelar 2.1.0
+### 2021/08/22 - AmaterasModeler 2.1.0
 
 - Support zoom by CTRL + Mouse scroll
 
