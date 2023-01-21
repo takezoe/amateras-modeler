@@ -17,6 +17,12 @@ Installation
 --------
 Install from the update site: https://takezoe.github.io/amateras-update-site/
 
+For users who use Eclipse on Java 16 or later, add the following to eclipse.ini.
+
+```
+--add-opens=java.desktop/java.beans=ALL-UNNAMED
+```
+
 For developers
 --------------
 Install the following eclipse plugins:
