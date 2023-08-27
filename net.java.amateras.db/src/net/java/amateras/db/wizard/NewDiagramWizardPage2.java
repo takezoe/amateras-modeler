@@ -194,7 +194,7 @@ public class NewDiagramWizardPage2 extends WizardPage {
 		//----------------
 		UIUtils.createLabel(container, DBPlugin.getResourceString("wizard.new.import.tables"));
 		list = new List(container, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-		list.setLayoutData(UIUtils.createGridData(3));
+		list.setLayoutData(UIUtils.createGridData(3, GridData.FILL_BOTH));
 		
 		//----------------
 		autoConvert = new Button(container, SWT.CHECK);
