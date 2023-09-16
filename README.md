@@ -223,7 +223,7 @@ See details [here](http://osdn.jp/projects/amateras/wiki/AmaterasERD_1_0_2) abou
 
 - Add drag-and-drop
   - both class and sequence
-  - drap Java file in package exploler view.
+  - drag-and-drop Java file in package explorer view.
 - Enable to delete and create Return message.
   - Auto return message creation swtich in AmaterasUML preference
 - Add code completion feature to edit message.
