@@ -33,7 +33,7 @@ License
 --------
 [Eclipse Public License 1.0](http://opensource.org/licenses/eclipse-1.0.php)
 
-History
+Release History
 --------
 ### 2021/08/22 - AmaterasModeler 2.1.0
 
@@ -141,7 +141,7 @@ See details [here](http://osdn.jp/projects/amateras/wiki/AmaterasERD_1_0_4) abou
 - New DDL generate option to generate constraints as ALTER TABLE
 - Index designing support
 - Domain (Generic data type definition) support
-- HTML report imprived
+- HTML report improved
 
 See details [here](http://osdn.jp/projects/amateras/wiki/AmaterasERD_1_0_3) about new features.
 
@@ -166,7 +166,7 @@ See details [here](http://osdn.jp/projects/amateras/wiki/AmaterasERD_1_0_2) abou
 ### 2007/10/07 - AmaterasUML 1.3.0
 
 - Eclipse 3.3 Support (This version can't work with Eclipse 3.2.x)
-- Copy & Pase in the class diagram, the usecase diagram and the activity diagram.
+- Copy & Paste in the class diagram, the usecase diagram and the activity diagram.
 - Brand new visual theme for diagrams.
 
 ### 2007/7/19 - AmaterasERD 1.0.1
@@ -214,7 +214,7 @@ See details [here](http://osdn.jp/projects/amateras/wiki/AmaterasERD_1_0_2) abou
 - Sequence Diagram
   - Change presentation of instance.
   - Add Sequence API and sample plugin.
--Java support
+- Java support
   - Enable to open Java editor from class diagram.
 - Limitation
   - Sorry, Sequence diagram editor can't edit *.sqd files created by older version. 
@@ -223,10 +223,10 @@ See details [here](http://osdn.jp/projects/amateras/wiki/AmaterasERD_1_0_2) abou
 
 - Add drag-and-drop
   - both class and sequence
-  - drap Java file in package exploler view.
+  - drag-and-drop Java file in package explorer view.
 - Enable to delete and create Return message.
   - Auto return message creation swtich in AmaterasUML preference
-- Add code compiletion feature to edit message.
+- Add code completion feature to edit message.
 
 ### 2006/4/9 - AmaterasUML 1.1.0
 
