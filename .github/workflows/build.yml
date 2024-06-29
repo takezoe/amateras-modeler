@@ -14,4 +14,4 @@ jobs:
         java-version: '17'
         distribution: temurin
     - name: Build
-      run: mvn -B verify
+      run: ./mvnw -B verify
