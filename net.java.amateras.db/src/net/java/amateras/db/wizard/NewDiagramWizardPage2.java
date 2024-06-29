@@ -1,5 +1,6 @@
 package net.java.amateras.db.wizard;
 
+import java.net.URI;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -251,12 +252,9 @@ public class NewDiagramWizardPage2 extends WizardPage {
 
 				IFile file = wsroot.getFile(new Path(jarFilePath));
 				jarFilePath = file.getLocation().makeAbsolute().toString();
-
-				jarURL = new URL("file:///" + jarFilePath);
-
-			} else {
-				jarURL = new URL("file:///" + jarFilePath);
 			}
+			
+			jarURL = new URI("file:///" + jarFilePath).toURL();
 
 			URL[] clspath = new URL[classpathes.length + 1];
 			clspath[0] = jarURL;

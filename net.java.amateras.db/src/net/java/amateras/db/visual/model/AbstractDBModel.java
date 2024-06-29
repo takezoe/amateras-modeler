@@ -12,7 +12,7 @@ public abstract class AbstractDBModel implements Serializable {
 		listeners.addPropertyChangeListener(listener);
 	}
 
-	public void firePropertyChange(String propName, Object oldValue,Object newValue) {
+	public void firePropertyChange(String propName, Object oldValue, Object newValue) {
 		listeners.firePropertyChange(propName, oldValue, newValue);
 	}
 

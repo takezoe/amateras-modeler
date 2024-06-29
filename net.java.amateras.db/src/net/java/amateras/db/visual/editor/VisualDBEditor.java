@@ -146,7 +146,6 @@ public class VisualDBEditor extends GraphicalEditorWithPalette
 		setPartName(input.getName());
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void initializeGraphicalViewer() {
 		GraphicalViewer viewer = getGraphicalViewer();
 
@@ -412,10 +411,10 @@ public class VisualDBEditor extends GraphicalEditorWithPalette
 		return entry;
 	}
 
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class type){
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> type){
 		if(type == IContentOutlinePage.class){
-			return this.outlinePage;
+			return (T) this.outlinePage;
 		}
 		return super.getAdapter(type);
 	}
@@ -483,16 +482,16 @@ public class VisualDBEditor extends GraphicalEditorWithPalette
 		IPreferenceStore store = DBPlugin.getDefault().getPreferenceStore();
 
 		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_ENABLED,
-		                new Boolean(store.getBoolean(DBPlugin.PREF_SHOW_GRID)));
+		                store.getBoolean(DBPlugin.PREF_SHOW_GRID));
 		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE,
-		                new Boolean(store.getBoolean(DBPlugin.PREF_SHOW_GRID)));
+		                store.getBoolean(DBPlugin.PREF_SHOW_GRID));
 
 		int gridSize = store.getInt(DBPlugin.PREF_GRID_SIZE);
 		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING,
 		                new Dimension(gridSize, gridSize));
 
 		getGraphicalViewer().setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED,
-		                new Boolean(store.getBoolean(DBPlugin.PREF_SNAP_GEOMETRY)));
+		                store.getBoolean(DBPlugin.PREF_SNAP_GEOMETRY));
 
 		boolean isZoomableWithCtrlAndScroll = store.getBoolean(DBPlugin.PREF_ZOOMABLE_WITH_CTRL_AND_SCROLL);
 		String mouseWheelHandlerKey = MouseWheelHandler.KeyGenerator.getKey(SWT.CTRL);

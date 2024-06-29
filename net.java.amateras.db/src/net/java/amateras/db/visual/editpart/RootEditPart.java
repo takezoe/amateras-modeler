@@ -17,8 +17,10 @@ import org.eclipse.draw2d.Layer;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.CompoundSnapToHelper;
+import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
@@ -58,9 +60,8 @@ public class RootEditPart extends AbstractDBEditPart {
 			refreshChildren();
 		}
 		if (evt.getPropertyName().equals(RootModel.P_FONT)) {
-			@SuppressWarnings("unchecked")
-			List<AbstractDBEntityEditPart> children = (List<AbstractDBEntityEditPart>) getChildren();
-			for(AbstractDBEntityEditPart part: children){
+			List<? extends GraphicalEditPart> children = getChildren();
+			for(GraphicalEditPart part: children){
 				part.refresh();
 				for(Object conn: part.getSourceConnections()){
 					((AbstractDBConnectionEditPart) conn).refresh();
@@ -68,13 +69,11 @@ public class RootEditPart extends AbstractDBEditPart {
 			}
 		}
 		if (evt.getPropertyName().equals(RootModel.P_MODE)) {
-			@SuppressWarnings("unchecked")
-			List<AbstractDBEntityEditPart> children = (List<AbstractDBEntityEditPart>) getChildren();
-			for(AbstractDBEntityEditPart part: children){
+			List<? extends GraphicalEditPart> children = getChildren();
+			for(GraphicalEditPart part: children){
 				part.refresh();
-				@SuppressWarnings("unchecked")
-				List<AbstractDBConnectionEditPart> conns = (List<AbstractDBConnectionEditPart>) part.getSourceConnections();
-				for(AbstractDBConnectionEditPart conn: conns){
+				List<? extends ConnectionEditPart> conns = part.getSourceConnections();
+				for(ConnectionEditPart conn: conns){
 					conn.refresh();
 				}
 			}
@@ -175,8 +174,8 @@ public class RootEditPart extends AbstractDBEditPart {
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter) {
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == SnapToHelper.class) {
 			List<SnapToHelper> snapStrategies = new ArrayList<SnapToHelper>();
 			Boolean val = (Boolean)getViewer().getProperty(RulerProvider.PROPERTY_RULER_VISIBILITY);
@@ -192,12 +191,12 @@ public class RootEditPart extends AbstractDBEditPart {
 			if (snapStrategies.size() == 0)
 				return null;
 			if (snapStrategies.size() == 1)
-				return (SnapToHelper)snapStrategies.get(0);
+				return (T) snapStrategies.get(0);
 
 			SnapToHelper ss[] = new SnapToHelper[snapStrategies.size()];
 			for (int i = 0; i < snapStrategies.size(); i++)
-				ss[i] = (SnapToHelper)snapStrategies.get(i);
-			return new CompoundSnapToHelper(ss);
+				ss[i] = (SnapToHelper) snapStrategies.get(i);
+			return (T) new CompoundSnapToHelper(ss);
 		}
 		return super.getAdapter(adapter);
 	}

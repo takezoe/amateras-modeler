@@ -1,5 +1,6 @@
 package net.java.amateras.db.util;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.Driver;
@@ -28,8 +29,8 @@ public class DatabaseInfo {
 	final public String DERBY = "Apache Derby";
 	final public String SYBASE = "Adaptive Server Enterprise";
 	
-	public DatabaseInfo(Class<?> driverClass) throws InstantiationException, IllegalAccessException {
-		driver = (Driver) driverClass.newInstance();
+	public DatabaseInfo(Class<?> driverClass) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		driver = (Driver) driverClass.getDeclaredConstructor().newInstance();
 	}
 
 	public void setURI(String uri) {

@@ -72,7 +72,7 @@ private int getColumnNear(Connection connection, int r, int n, int x) {
 		r--;
 	Integer i;
 	while (proximity < r) {
-		i = new Integer(r + proximity * direction);
+		i = r + proximity * direction;
 		if (!colsUsed.containsKey(i)) {
 			colsUsed.put(i, i);
 			reserveColumn(connection, i);
@@ -159,7 +159,7 @@ protected int getRowNear(Connection connection, int r, int n, int x) {
 		r--;
 	Integer i;
 	while (proximity < r) {
-		i = new Integer(r + proximity * direction);
+		i = r + proximity * direction;
 		if (!rowsUsed.containsKey(i)) {
 			rowsUsed.put(i, i);
 			reserveRow(connection, i);
@@ -316,9 +316,9 @@ public void route(Connection conn) {
 
 	List positions = new ArrayList(5);
 	if (horizontal)
-		positions.add(new Integer(start.y));
+		positions.add(start.y);
 	else
-		positions.add(new Integer(start.x));
+		positions.add(start.x);
 	horizontal = !horizontal;
 
 	if (startNormal.dotProduct(endNormal) == 0) {
@@ -335,7 +335,7 @@ public void route(Connection conn) {
 				else
 					i = average.x;
 			}
-			positions.add(new Integer(i));
+			positions.add(i);
 			horizontal = !horizontal;
 
 			if (endNormal.dotProduct(direction) > 0)
@@ -346,7 +346,7 @@ public void route(Connection conn) {
 				else
 					i = average.x;
 			}
-			positions.add(new Integer(i + (duplicationCount * interval)));
+			positions.add(i + (duplicationCount * interval));
 			horizontal = !horizontal;
 		}
 	} else {
@@ -356,13 +356,13 @@ public void route(Connection conn) {
 				i = startNormal.similarity(start.getAdded(startNormal.getScaled(10)));
 			else
 				i = endNormal.similarity(end.getAdded(endNormal.getScaled(10)));
-			positions.add(new Integer(i + (duplicationCount * interval)));
+			positions.add(i + (duplicationCount * interval));
 			horizontal = !horizontal;
 		} else {
 			//3 or 1
 			if (startNormal.dotProduct(direction) < 0) {
 				i = startNormal.similarity(start.getAdded(startNormal.getScaled(10)));
-				positions.add(new Integer(i + (duplicationCount * interval)));
+				positions.add(i + (duplicationCount * interval));
 				horizontal = !horizontal;
 			}
 
@@ -370,20 +370,20 @@ public void route(Connection conn) {
 				i = average.y;
 			else
 				i = average.x;
-			positions.add(new Integer(i + (duplicationCount * interval)));
+			positions.add(i + (duplicationCount * interval));
 			horizontal = !horizontal;
 
 			if (startNormal.dotProduct(direction) < 0) {
 				i = endNormal.similarity(end.getAdded(endNormal.getScaled(10)));
-				positions.add(new Integer(i + (duplicationCount * interval)));
+				positions.add(i + (duplicationCount * interval));
 				horizontal = !horizontal;
 			}
 		}
 	}
 	if (horizontal)
-		positions.add(new Integer(end.y));
+		positions.add(end.y);
 	else
-		positions.add(new Integer(end.x));
+		positions.add(end.x);
 
 	processPositions(start, end, positions, startNormal.isHorizontal(), conn);
 }
