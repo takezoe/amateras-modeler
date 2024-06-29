@@ -14,6 +14,7 @@ import net.java.amateras.db.visual.model.IndexModel;
 import net.java.amateras.db.visual.model.RootModel;
 import net.java.amateras.db.visual.model.TableModel;
 
+import org.eclipse.gef.TreeEditPart;
 import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -101,9 +102,8 @@ public class TableTreeEditPart extends AbstractDBTreeEditPart {
             setWidgetImage(DBPlugin.getImage(IMAGE_TABLE_WARNING));
 		}
 		
-		@SuppressWarnings("unchecked")
-		List<AbstractEditPart> children = getChildren();
-		for(AbstractEditPart child: children){
+		List<? extends TreeEditPart> children = getChildren();
+		for(TreeEditPart child: children){
 			child.refresh();
 		}
 	}
@@ -122,9 +122,8 @@ public class TableTreeEditPart extends AbstractDBTreeEditPart {
             
         } if(TableModel.P_COLUMNS.equals(propName) || TableModel.P_INDICES.equals(propName)){
         	refreshChildren();
-    		@SuppressWarnings("unchecked")
-    		List<AbstractEditPart> children = getChildren();
-    		for(AbstractEditPart child: children){
+    		List<? extends TreeEditPart> children = getChildren();
+    		for(TreeEditPart child: children){
     			child.refresh();
     		}
         }

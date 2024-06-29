@@ -15,6 +15,7 @@ import org.eclipse.draw2d.graph.Edge;
 import org.eclipse.draw2d.graph.EdgeList;
 import org.eclipse.draw2d.graph.Node;
 import org.eclipse.draw2d.graph.NodeList;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
@@ -36,10 +37,9 @@ public class AutoLayoutAction extends Action {
 		this.viewer = viewer;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void run() {
 		CompoundCommand commands = new CompoundCommand();
-		List<Object> models = viewer.getContents().getChildren();
+		List<? extends EditPart> models = viewer.getContents().getChildren();
 		NodeList graphNodes = new NodeList();
 		EdgeList graphEdges = new EdgeList();
 		// assemble nodes

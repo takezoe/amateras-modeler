@@ -59,7 +59,7 @@ public class RootEditPart extends AbstractDBEditPart {
 		}
 		if (evt.getPropertyName().equals(RootModel.P_FONT)) {
 			@SuppressWarnings("unchecked")
-			List<AbstractDBEntityEditPart> children = getChildren();
+			List<AbstractDBEntityEditPart> children = (List<AbstractDBEntityEditPart>) getChildren();
 			for(AbstractDBEntityEditPart part: children){
 				part.refresh();
 				for(Object conn: part.getSourceConnections()){
@@ -69,11 +69,11 @@ public class RootEditPart extends AbstractDBEditPart {
 		}
 		if (evt.getPropertyName().equals(RootModel.P_MODE)) {
 			@SuppressWarnings("unchecked")
-			List<AbstractDBEntityEditPart> children = getChildren();
+			List<AbstractDBEntityEditPart> children = (List<AbstractDBEntityEditPart>) getChildren();
 			for(AbstractDBEntityEditPart part: children){
 				part.refresh();
 				@SuppressWarnings("unchecked")
-				List<AbstractDBConnectionEditPart> conns = part.getSourceConnections();
+				List<AbstractDBConnectionEditPart> conns = (List<AbstractDBConnectionEditPart>) part.getSourceConnections();
 				for(AbstractDBConnectionEditPart conn: conns){
 					conn.refresh();
 				}
