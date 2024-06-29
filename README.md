@@ -35,6 +35,10 @@ License
 
 Release History
 --------
+### 2024/06/29 - AmaterasModeler 2.2.0
+
+- Support the latest Eclipse and GEF
+
 ### 2021/08/22 - AmaterasModeler 2.1.0
 
 - Support zoom by CTRL + Mouse scroll
