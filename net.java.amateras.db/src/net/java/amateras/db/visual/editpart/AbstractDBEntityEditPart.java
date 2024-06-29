@@ -85,8 +85,8 @@ public abstract class AbstractDBEntityEditPart extends AbstractDBEditPart implem
 		refreshSourceConnections();
 		refreshTargetConnections();
 		
-		invokePropertyChangeListener(evt, getSourceConnections());
-		invokePropertyChangeListener(evt, getTargetConnections());
+		invokePropertyChangeListener(evt, (List<PropertyChangeListener>) getSourceConnections());
+		invokePropertyChangeListener(evt, (List<PropertyChangeListener>) getTargetConnections());
 	}
 	
 	private void invokePropertyChangeListener(PropertyChangeEvent evt, List<PropertyChangeListener> listeners){
