@@ -6,8 +6,8 @@ package net.java.amateras.uml.dnd.java;
 import net.java.amateras.uml.dnd.UMLDropTargetListenerFactory;
 
 import org.eclipse.gef.EditPartViewer;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.util.TransferDropTargetListener;
-import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 
 /**
  * @author shida
@@ -21,7 +21,7 @@ public class SequenceDiagramDropTargetListenerFactory extends
 	 */
 	public TransferDropTargetListener getDropTargetListener(
 			EditPartViewer viewer) {
-		return new SequenceDiagramDropTargetListener(viewer, LocalSelectionTransfer.getInstance());
+		return new SequenceDiagramDropTargetListener(viewer, LocalSelectionTransfer.getTransfer());
 	}
 
 	/* (non-Javadoc)
