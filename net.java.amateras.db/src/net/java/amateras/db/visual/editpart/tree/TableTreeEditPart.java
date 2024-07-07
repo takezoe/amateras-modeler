@@ -15,7 +15,6 @@ import net.java.amateras.db.visual.model.RootModel;
 import net.java.amateras.db.visual.model.TableModel;
 
 import org.eclipse.gef.TreeEditPart;
-import org.eclipse.gef.editparts.AbstractEditPart;
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;

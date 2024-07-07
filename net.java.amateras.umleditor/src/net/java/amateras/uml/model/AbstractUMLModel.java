@@ -82,7 +82,7 @@ public abstract class AbstractUMLModel implements Serializable, IPropertySource 
 		} else if (P_FOREGROUND_COLOR.equals(id)) {
 			return foregroundColor;
 		} else if (P_SHOW_ICON.equals(id)) {
-			return new Boolean(isShowIcon());
+			return isShowIcon();
 		}
 		return null;
 	}
@@ -132,7 +132,7 @@ public abstract class AbstractUMLModel implements Serializable, IPropertySource 
 
 	public void setShowIcon(boolean showIcon) {
 		this.showIcon = showIcon;
-		firePropertyChange(P_SHOW_ICON, null, new Boolean(showIcon));
+		firePropertyChange(P_SHOW_ICON, null, showIcon);
 	}
 	
 	public void copyPresentation(AbstractUMLModel model) {

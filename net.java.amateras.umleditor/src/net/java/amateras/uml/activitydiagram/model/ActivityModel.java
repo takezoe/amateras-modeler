@@ -15,7 +15,7 @@ import net.java.amateras.uml.model.RootModel;
 public class ActivityModel extends RootModel {
 
 	public void addChild(AbstractUMLModel model) {
-		List children = getChildren();
+		List<AbstractUMLModel> children = getChildren();
 		model.setParent(this);
 		if(model instanceof VerticalPartitionModel){
 			children.add(0, model);

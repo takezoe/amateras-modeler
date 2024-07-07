@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Text;
  */
 public class MessageTextCellEditor extends TextCellEditor {
 
-	private List umlModel = new ArrayList();
+	private List<AbstractUMLModel> umlModel = new ArrayList<AbstractUMLModel>();
 
 	public MessageTextCellEditor() {
 		super();
@@ -56,7 +56,7 @@ public class MessageTextCellEditor extends TextCellEditor {
 	 * 
 	 * @param umlModel
 	 */
-	public void setUMLModel(List umlModel) {
+	public void setUMLModel(List<AbstractUMLModel> umlModel) {
 		this.umlModel = umlModel;
 	}
 
@@ -124,8 +124,8 @@ public class MessageTextCellEditor extends TextCellEditor {
 				int documentOffset) {
 			int caretPosition = text.getCaretPosition();
 			String previouse = text.getText().substring(0, caretPosition);
-			List result = new ArrayList();
-			for (Iterator iter = umlModel.iterator(); iter.hasNext();) {
+			List<ICompletionProposal> result = new ArrayList<ICompletionProposal>();
+			for (Iterator<AbstractUMLModel> iter = umlModel.iterator(); iter.hasNext();) {
 				AbstractUMLModel model = (AbstractUMLModel) iter.next();
 				CompletionProposal proposal = createProposal(model, previouse, documentOffset);
 				if (proposal != null && proposal.getDisplayString().startsWith(previouse)) {

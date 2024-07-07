@@ -109,18 +109,18 @@ public class ToggleAction extends AbstractUMLEditorAction {
 			Map<String, Boolean> map = target.getFilterProperty();
 			if (!map.containsKey(type + visibility)) {
 				oldValue = false;
-				map.put(type + visibility, new Boolean(true));
+				map.put(type + visibility, true);
 			} else {
 				Boolean value = (Boolean) map.get(type + visibility);
 				oldValue = value.booleanValue();
-				map.put(type + visibility, new Boolean(!value.booleanValue()));
+				map.put(type + visibility, !value.booleanValue());
 			}
 			target.setFilterProperty(map);
 		}
 
 		public void undo() {
 			Map<String, Boolean> map = target.getFilterProperty();
-			map.put(type + visibility, new Boolean(oldValue));
+			map.put(type + visibility, oldValue);
 			target.setFilterProperty(map);
 		}
 	}

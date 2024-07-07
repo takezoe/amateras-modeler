@@ -181,7 +181,7 @@ public class DiagramErrors {
 			try {
 				IMarker marker = resource.createMarker(IMarker.PROBLEM);
 				Map<String, Object> map = new HashMap<String, Object>();
-				map.put(IMarker.SEVERITY, new Integer(type));
+				map.put(IMarker.SEVERITY, type);
 				map.put(IMarker.MESSAGE, message);
 //				map.put(IMarker.LINE_NUMBER,new Integer(line));
 				marker.setAttributes(map);

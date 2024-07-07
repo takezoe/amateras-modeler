@@ -9,25 +9,28 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
+import net.java.amateras.uml.model.AbstractUMLModel;
+
 /**
  * @author shida
  *
  */
 public class MessagePropertyDescriptor extends PropertyDescriptor {
 
-	List models;
-	
+	private List<AbstractUMLModel> models;
+
 	public MessagePropertyDescriptor(Object id, String displayName) {
 		super(id, displayName);
 	}
 
-	public void setUMLModels(List models) {
+	public void setUMLModels(List<AbstractUMLModel> models) {
 		this.models = models;
 	}
+
 	public CellEditor createPropertyEditor(Composite parent) {
 		MessageTextCellEditor cellEditor = new MessageTextCellEditor(parent);
 		cellEditor.setUMLModel(models);
-		if (getValidator() != null){
+		if (getValidator() != null) {
 			cellEditor.setValidator(getValidator());
 		}
 		return cellEditor;

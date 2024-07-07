@@ -143,12 +143,12 @@ public class RootModel extends AbstractDBModel implements IPropertySource {
 
 	public void setIncludeView(boolean includeView) {
 		this.includeView = includeView;
-		firePropertyChange(P_JDBC_INFO, null, new Boolean(jdbcCatalog));
+		firePropertyChange(P_JDBC_INFO, null, includeView);
 	}
 
 	public void setLogicalMode(boolean logicalMode){
 		this.logicalMode = logicalMode;
-		firePropertyChange(P_MODE, null, new Boolean(logicalMode));
+		firePropertyChange(P_MODE, null, logicalMode);
 	}
 
 	public boolean getLogicalMode(){

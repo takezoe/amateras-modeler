@@ -68,12 +68,12 @@ public class ShowPublicAction extends AbstractUMLEditorAction {
 		public void execute() {
 			oldValue = target.getFilterProperty();
 			Map<String, Boolean> newValue = new HashMap<String, Boolean>();
-			newValue.put(ToggleAction.ATTRIBUTE + Visibility.PROTECTED, new Boolean(true));
-			newValue.put(ToggleAction.ATTRIBUTE + Visibility.PACKAGE, new Boolean(true));
-			newValue.put(ToggleAction.ATTRIBUTE + Visibility.PRIVATE, new Boolean(true));
-			newValue.put(ToggleAction.OPERATION + Visibility.PROTECTED, new Boolean(true));
-			newValue.put(ToggleAction.OPERATION + Visibility.PACKAGE, new Boolean(true));
-			newValue.put(ToggleAction.OPERATION + Visibility.PRIVATE, new Boolean(true));
+			newValue.put(ToggleAction.ATTRIBUTE + Visibility.PROTECTED, true);
+			newValue.put(ToggleAction.ATTRIBUTE + Visibility.PACKAGE, true);
+			newValue.put(ToggleAction.ATTRIBUTE + Visibility.PRIVATE, true);
+			newValue.put(ToggleAction.OPERATION + Visibility.PROTECTED, true);
+			newValue.put(ToggleAction.OPERATION + Visibility.PACKAGE, true);
+			newValue.put(ToggleAction.OPERATION + Visibility.PRIVATE, true);
 			target.setFilterProperty(newValue);
 		}
 

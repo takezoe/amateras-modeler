@@ -38,20 +38,28 @@ public class JarClassLoader extends URLClassLoader {
 		if(jarName.equals("")){
 			return Collections.emptyList();
 		}
-		JarFile jarFile = new JarFile(jarName);
-		Enumeration<JarEntry> e = jarFile.entries();
+		
 		ArrayList<Class<?>> list = new ArrayList<Class<?>>();
-		while(e.hasMoreElements()){
-			JarEntry entry = (JarEntry)e.nextElement();
-			String name = entry.getName();
-			if(name.lastIndexOf(".class")!=-1){
-				String ccls = name.replaceFirst(".class","").replaceAll("/",".");
-				try {
-				    Class<?> cls = loadClass(ccls,true);
-				    getJDBCDriverClass(list, cls ,cls);
-				} catch (NoClassDefFoundError ex) {
-				} catch (ClassNotFoundException ex) {
+		JarFile jarFile = new JarFile(jarName);
+		try {
+			Enumeration<JarEntry> e = jarFile.entries();
+			while(e.hasMoreElements()){
+				JarEntry entry = (JarEntry)e.nextElement();
+				String name = entry.getName();
+				if(name.lastIndexOf(".class")!=-1){
+					String ccls = name.replaceFirst(".class","").replaceAll("/",".");
+					try {
+					    Class<?> cls = loadClass(ccls,true);
+					    getJDBCDriverClass(list, cls ,cls);
+					} catch (NoClassDefFoundError ex) {
+					} catch (ClassNotFoundException ex) {
+					}
 				}
+			}
+		} finally {
+			try {
+				jarFile.close();
+			} catch (Exception ex) {
 			}
 		}
 		return list;

@@ -74,7 +74,7 @@ public class AttributeModel extends AbstractUMLModel implements Cloneable {
 		else {
 			this.isStatic = isStatic;
 		}
-		firePropertyChange(P_STATIC,null,new Boolean(this.isStatic));
+		firePropertyChange(P_STATIC, null, this.isStatic);
 	}
 	
 	public boolean isFinal() {
@@ -88,7 +88,7 @@ public class AttributeModel extends AbstractUMLModel implements Cloneable {
 		else {
 			this.isFinal = isFinal;
 		}
-		firePropertyChange(P_FINAL,null,new Boolean(this.isFinal));
+		firePropertyChange(P_FINAL, null, this.isFinal);
 	}
 	
 	public boolean isEnumCst() {
@@ -132,9 +132,9 @@ public class AttributeModel extends AbstractUMLModel implements Cloneable {
 		} else if(id.equals(P_VISIBILITY)){
 			return getVisibility();
 		} else if(id.equals(P_STATIC)){
-			return new Boolean(isStatic());
+			return isStatic();
 		} else if(id.equals(P_FINAL)){
-			return new Boolean(isFinal());
+			return isFinal();
 		}
 		return null;
 	}

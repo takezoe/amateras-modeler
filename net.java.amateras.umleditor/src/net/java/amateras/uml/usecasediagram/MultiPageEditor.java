@@ -38,7 +38,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements IResourceCha
 
 	private UsecaseDiagramEditor useCaseDiagramEditor;
 	
-	private Map editorMap = new HashMap();
+	private Map<Object, Integer> editorMap = new HashMap<Object, Integer>();
 	
 	/**
 	 * Creates a multi-page editor example.
@@ -63,13 +63,13 @@ public class MultiPageEditor extends MultiPageEditorPart implements IResourceCha
 			EmptyEditor editor = new EmptyEditor();
 			int index = addPage(editor, getEditorInput());
 			setPageText(index, "ユースケース " + index);
-			editorMap.put(newValue, new Integer(index));
+			editorMap.put(newValue, index);
 		} catch (PartInitException e) {
 		}
 	}
 	
 	void removeEmptyEditor(Object oldValue) {
-		Integer index = (Integer) editorMap.get(oldValue);
+		Integer index = editorMap.get(oldValue);
 		removePage(index.intValue());
 	}
 	/**

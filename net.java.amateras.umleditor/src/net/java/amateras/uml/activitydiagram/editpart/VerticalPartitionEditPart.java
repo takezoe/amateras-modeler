@@ -1,8 +1,5 @@
 package net.java.amateras.uml.activitydiagram.editpart;
 
-import java.util.Collections;
-import java.util.List;
-
 import net.java.amateras.uml.activitydiagram.figure.ActivityFigureFactory;
 import net.java.amateras.uml.activitydiagram.figure.VerticalPartitionFigure;
 import net.java.amateras.uml.activitydiagram.model.VerticalPartitionModel;
@@ -41,10 +38,6 @@ public class VerticalPartitionEditPart extends AbstractUMLEntityEditPart {
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, new RootEditPolicy());
 		removeEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE);
 	}	
-	
-	protected List getModelChildren() {
-		return Collections.EMPTY_LIST;
-	}
 	
 	/** エディットポリシー */
 	private class RootEditPolicy extends XYLayoutEditPolicy {

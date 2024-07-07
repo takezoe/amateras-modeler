@@ -1,7 +1,6 @@
 package net.java.amateras.db.visual.editpart;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +30,7 @@ import org.eclipse.gef.requests.ReconnectRequest;
 public abstract class AbstractDBEntityEditPart extends AbstractDBEditPart implements NodeEditPart {
 	
 	/**
-	 * Creats a {@link CreateConnectionCommand} instance.
+	 * Creates a {@link CreateConnectionCommand} instance.
 	 * Override to return an instance of extended class to customize connection creation.
 	 * 
 	 * @return the connection creation command
@@ -79,19 +78,18 @@ public abstract class AbstractDBEntityEditPart extends AbstractDBEditPart implem
 		return new ChopboxAnchor(getFigure());
 	}
 
-	@SuppressWarnings("unchecked")
 	public void propertyChange(PropertyChangeEvent evt) {
 		refreshVisuals();
 		refreshSourceConnections();
 		refreshTargetConnections();
 		
-		invokePropertyChangeListener(evt, (List<PropertyChangeListener>) getSourceConnections());
-		invokePropertyChangeListener(evt, (List<PropertyChangeListener>) getTargetConnections());
+		invokePropertyChangeListener(evt, getSourceConnections());
+		invokePropertyChangeListener(evt, getTargetConnections());
 	}
 	
-	private void invokePropertyChangeListener(PropertyChangeEvent evt, List<PropertyChangeListener> listeners){
-		for(PropertyChangeListener listener: listeners){
-			listener.propertyChange(evt);
+	private void invokePropertyChangeListener(PropertyChangeEvent evt, List<? extends ConnectionEditPart> listeners){
+		for(ConnectionEditPart listener: listeners){
+			((AbstractDBConnectionEditPart) listener).propertyChange(evt);
 		}
 	}
 	

@@ -1,7 +1,5 @@
 package net.java.amateras.uml;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -68,7 +66,7 @@ public class UMLPlugin extends AbstractUIPlugin {
 	 */
 	public static final String PREF_SEQUENCE_DIAGRAM_SHOW_SIMPLE_NAME = "pref.sequence.simplename";
 
-	private List dndListeners = new ArrayList();
+//	private List dndListeners = new ArrayList();
 
 	/**
 	 * The constructor.
@@ -172,7 +170,7 @@ public class UMLPlugin extends AbstractUIPlugin {
 	//		return type;
 	//	}
 
-	public List getDndListeners() {
-		return dndListeners;
-	}
+//	public List getDndListeners() {
+//		return dndListeners;
+//	}
 }

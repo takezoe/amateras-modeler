@@ -59,7 +59,6 @@ public abstract class CommonEntityEditPart extends AbstractUMLEntityEditPart {
 		} else if (evt.getPropertyName().equals(CommonEntityModel.P_CHILDREN)) {
 			refreshChildren();
 		} else if (evt.getPropertyName().equals(CommonEntityModel.P_FILTER)) {
-			@SuppressWarnings("unchecked")
 			List<EditPart> list = new ArrayList<EditPart>(getChildren());
 			for (Iterator<EditPart> iter = list.iterator(); iter.hasNext();) {
 				EditPart element = iter.next();

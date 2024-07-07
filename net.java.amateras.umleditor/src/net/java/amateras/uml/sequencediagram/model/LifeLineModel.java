@@ -6,6 +6,7 @@ package net.java.amateras.uml.sequencediagram.model;
 import java.util.Iterator;
 
 import net.java.amateras.uml.model.AbstractUMLEntityModel;
+import net.java.amateras.uml.model.AbstractUMLModel;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -55,7 +56,7 @@ public class LifeLineModel extends AbstractUMLEntityModel {
 			setConstraint(rectangle);
 		}
 		delta.y = 0;
-		for (Iterator iter = getChildren().iterator(); iter.hasNext();) {
+		for (Iterator<AbstractUMLModel> iter = getChildren().iterator(); iter.hasNext();) {
 			ActivationModel element = (ActivationModel) iter.next();
 			element.adjustLocation(delta);
 		}
@@ -74,7 +75,7 @@ public class LifeLineModel extends AbstractUMLEntityModel {
 		Rectangle rectangle = getConstraint();
 		if (rectangle != null) {
 			int max = 0;
-			for (Iterator iter = getChildren().iterator(); iter.hasNext();) {
+			for (Iterator<AbstractUMLModel> iter = getChildren().iterator(); iter.hasNext();) {
 				ActivationModel element = (ActivationModel) iter.next();
 				int cmax = element.getConstraint().y + element.getConstraint().height;
 				if (max < cmax) {

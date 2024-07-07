@@ -146,7 +146,6 @@ public class VisualDBEditor extends GraphicalEditorWithPalette
 		setPartName(input.getName());
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void initializeGraphicalViewer() {
 		GraphicalViewer viewer = getGraphicalViewer();
 
@@ -383,13 +382,13 @@ public class VisualDBEditor extends GraphicalEditorWithPalette
 	 * @param icon the icon path
 	 * @return created <code>PaletteEntry</code>
 	 */
-	private PaletteEntry createConnectionEntry(String itemName, Class<?> clazz, String icon){
+	private <T> PaletteEntry createConnectionEntry(String itemName, Class<T> clazz, String icon){
 		ImageDescriptor image = null;
 		if(icon!=null){
 			image = DBPlugin.getImageDescriptor(icon);
 		}
 		ConnectionCreationToolEntry entry = new ConnectionCreationToolEntry(
-				itemName, itemName, new SimpleFactory(clazz), image, image);
+				itemName, itemName, new SimpleFactory<T>(clazz), image, image);
 		return entry;
 	}
 
@@ -401,21 +400,21 @@ public class VisualDBEditor extends GraphicalEditorWithPalette
 	 * @param icon the icon path
 	 * @return created <code>PaletteEntry</code>
 	 */
-	private PaletteEntry createEntityEntry(String itemName,Class<?> clazz,String icon){
+	private <T> PaletteEntry createEntityEntry(String itemName,Class<T> clazz,String icon){
 		ImageDescriptor image = null;
 		if(icon!=null){
 			image = DBPlugin.getImageDescriptor(icon);
 		}
 		CreationToolEntry entry = new CreationToolEntry(
-				itemName, itemName, new SimpleFactory(clazz), image, image);
+				itemName, itemName, new SimpleFactory<T>(clazz), image, image);
 
 		return entry;
 	}
 
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class type){
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> type){
 		if(type == IContentOutlinePage.class){
-			return this.outlinePage;
+			return (T) this.outlinePage;
 		}
 		return super.getAdapter(type);
 	}
@@ -427,7 +426,7 @@ public class VisualDBEditor extends GraphicalEditorWithPalette
 				IFile file = ((IFileEditorInput) input).getFile();
 				GraphicalViewer viewer = getGraphicalViewer();
 
-				// desirialize
+				// deserialize
 				RootModel newRoot = null;
 				try {
 					newRoot = VisualDBSerializer.deserialize(file.getContents());
@@ -483,16 +482,16 @@ public class VisualDBEditor extends GraphicalEditorWithPalette
 		IPreferenceStore store = DBPlugin.getDefault().getPreferenceStore();
 
 		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_ENABLED,
-		                new Boolean(store.getBoolean(DBPlugin.PREF_SHOW_GRID)));
+		                store.getBoolean(DBPlugin.PREF_SHOW_GRID));
 		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE,
-		                new Boolean(store.getBoolean(DBPlugin.PREF_SHOW_GRID)));
+		                store.getBoolean(DBPlugin.PREF_SHOW_GRID));
 
 		int gridSize = store.getInt(DBPlugin.PREF_GRID_SIZE);
 		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING,
 		                new Dimension(gridSize, gridSize));
 
 		getGraphicalViewer().setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED,
-		                new Boolean(store.getBoolean(DBPlugin.PREF_SNAP_GEOMETRY)));
+		                store.getBoolean(DBPlugin.PREF_SNAP_GEOMETRY));
 
 		boolean isZoomableWithCtrlAndScroll = store.getBoolean(DBPlugin.PREF_ZOOMABLE_WITH_CTRL_AND_SCROLL);
 		String mouseWheelHandlerKey = MouseWheelHandler.KeyGenerator.getKey(SWT.CTRL);
