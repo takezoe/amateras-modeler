@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.java.amateras.uml.UMLPlugin;
+import net.java.amateras.uml.model.AbstractUMLConnectionModel;
 import net.java.amateras.uml.model.EntityModel;
 import net.java.amateras.uml.model.TypeEntityModel;
 import net.java.amateras.uml.sequencediagram.property.TypePropertyDescriptor;
@@ -107,8 +108,8 @@ public class InstanceModel extends MessageAcceptableModel implements
 	public void setConstraint(Rectangle constraint) {
 		Rectangle old = getConstraint();
 		if (old != null) {
-			List connections = getModelTargetConnections();
-			for (Iterator iter = connections.iterator(); iter.hasNext();) {
+			List<AbstractUMLConnectionModel> connections = getModelTargetConnections();
+			for (Iterator<AbstractUMLConnectionModel> iter = connections.iterator(); iter.hasNext();) {
 				SyncMessageModel element = (SyncMessageModel) iter.next();
 				if (element.getSource().getConstraint().y > constraint.y) {
 					constraint.y = element.getSource().getConstraint().y;
@@ -128,8 +129,8 @@ public class InstanceModel extends MessageAcceptableModel implements
 
 		}
 		super.setConstraint(constraint);
-		List connections = getModelTargetConnections();
-		for (Iterator iter = connections.iterator(); iter.hasNext();) {
+		List<AbstractUMLConnectionModel> connections = getModelTargetConnections();
+		for (Iterator<AbstractUMLConnectionModel >iter = connections.iterator(); iter.hasNext();) {
 			SyncMessageModel element = (SyncMessageModel) iter.next();
 			element.updateCaller(getConstraint().y + getConstraint().height
 					+ 20);

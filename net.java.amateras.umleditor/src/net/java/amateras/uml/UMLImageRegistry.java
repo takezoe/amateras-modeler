@@ -4,7 +4,8 @@
 package net.java.amateras.uml;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -36,11 +37,13 @@ public class UMLImageRegistry {
 
 	private Image createImage(String url) {
 		try {
-			ImageDescriptor descriptor = ImageDescriptor.createFromURL(new URL(url));
+			ImageDescriptor descriptor = ImageDescriptor.createFromURL(new URI(url).toURL());
 			if (registry.get(url) == null) {
 				registry.put(url, descriptor);
 			}
 			return registry.get(url);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}

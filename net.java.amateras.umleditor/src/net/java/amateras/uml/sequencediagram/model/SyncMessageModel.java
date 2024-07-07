@@ -18,7 +18,7 @@ public class SyncMessageModel extends MessageModel {
 
 	private int order, oldOrder;
 	
-	private static int number = 1;
+//	private static int number = 1;
 	
 	public SyncMessageModel() {
 		setName("");
@@ -26,18 +26,18 @@ public class SyncMessageModel extends MessageModel {
 	
 	public void attachSource() {
 		super.attachSource();
-		number++;
+//		number++;
 	}
 	
 	public void detachSource() {
 		super.detachSource();
-		number--;
+//		number--;
 	}
 	
 	public void setOrder(int order) {
 		this.oldOrder = this.order;
 		this.order = order;
-		firePropertyChange(P_ORDER, new Integer(oldOrder), new Integer(this.order));
+		firePropertyChange(P_ORDER, oldOrder, this.order);
 	}
 	
 	public int getOrder() {

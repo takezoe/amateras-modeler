@@ -1,7 +1,6 @@
 package net.java.amateras.db.visual.editpart;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 

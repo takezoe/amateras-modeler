@@ -9,6 +9,7 @@ import java.util.List;
 import net.java.amateras.uml.UMLPlugin;
 import net.java.amateras.uml.model.AbstractUMLConnectionModel;
 import net.java.amateras.uml.model.AbstractUMLEntityModel;
+import net.java.amateras.uml.model.AbstractUMLModel;
 import net.java.amateras.uml.model.EntityModel;
 import net.java.amateras.uml.sequencediagram.property.MessagePropertyDescriptor;
 
@@ -19,8 +20,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
  * @author Takahiro Shida.
  * 
  */
-public class MessageModel extends AbstractUMLConnectionModel implements
-		EntityModel {
+public class MessageModel extends AbstractUMLConnectionModel implements EntityModel {
 
 	public static final String P_NAME = "_instance_name";
 
@@ -50,24 +50,21 @@ public class MessageModel extends AbstractUMLConnectionModel implements
 		return null;
 	}
 
-	public List getProporsal() {
+	public List<AbstractUMLModel> getProporsal() {
 		EntityModel model = getType();
 		if (model instanceof AbstractUMLEntityModel) {
 			AbstractUMLEntityModel entityModel = (AbstractUMLEntityModel) model;
 			return entityModel.getChildren();
 		}
-		return Collections.EMPTY_LIST;
+		return Collections.emptyList();
 	}
 
 	public IPropertyDescriptor[] getPropertyDescriptors() {
-		MessagePropertyDescriptor descriptor = new MessagePropertyDescriptor(
-				P_NAME, UMLPlugin.getDefault().getResourceString(
-						"property.name"));
+		MessagePropertyDescriptor descriptor = new MessagePropertyDescriptor(P_NAME,
+				UMLPlugin.getDefault().getResourceString("property.name"));
 		descriptor.setUMLModels(getProporsal());
-		return new IPropertyDescriptor[] { descriptor,
-				new ColorPropertyDescriptor(
-						P_FOREGROUND_COLOR, UMLPlugin.getDefault().getResourceString(
-								"property.foreground")) };
+		return new IPropertyDescriptor[] { descriptor, new ColorPropertyDescriptor(P_FOREGROUND_COLOR,
+				UMLPlugin.getDefault().getResourceString("property.foreground")) };
 	}
 
 	public Object getPropertyValue(Object id) {
@@ -97,8 +94,7 @@ public class MessageModel extends AbstractUMLConnectionModel implements
 
 	public void calcDirection() {
 		if (getSource() != null && getTarget() != null)
-		setDirection(getSource().getConstraint().x < getTarget()
-				.getConstraint().x);
+			setDirection(getSource().getConstraint().x < getTarget().getConstraint().x);
 	}
 
 	public boolean isDirection() {
@@ -107,6 +103,6 @@ public class MessageModel extends AbstractUMLConnectionModel implements
 
 	public void setDirection(boolean direction) {
 		this.direction = direction;
-		firePropertyChange(P_DIRECTION, null, new Boolean(direction));
+		firePropertyChange(P_DIRECTION, null, direction);
 	}
 }

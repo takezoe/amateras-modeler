@@ -8,6 +8,7 @@ import java.util.Set;
 
 import net.java.amateras.uml.UMLPlugin;
 import net.java.amateras.uml.model.AbstractUMLEntityModel;
+import net.java.amateras.uml.model.AbstractUMLModel;
 import net.java.amateras.uml.model.NoteModel;
 import net.java.amateras.uml.model.RootModel;
 
@@ -36,16 +37,17 @@ import org.eclipse.gef.rulers.RulerProvider;
 import org.eclipse.swt.SWT;
 
 public class RootEditPart extends AbstractUMLEditPart {
-	
-	private Set RESIZABLE = null;
+
+	private Set<Class<?>> RESIZABLE = null;
 	{
-		RESIZABLE = new HashSet();
+		RESIZABLE = new HashSet<Class<?>>();
 		RESIZABLE.add(NoteModel.class);
 	}
-	protected void addResizableClass(Class c) {
+
+	protected void addResizableClass(Class<?> c) {
 		RESIZABLE.add(c);
 	}
-	
+
 	protected IFigure createFigure() {
 		Layer figure = new Layer() {
 			public void paint(Graphics graphics) {
@@ -57,7 +59,7 @@ public class RootEditPart extends AbstractUMLEditPart {
 			}
 		};
 		figure.setLayoutManager(new XYLayout());
-		
+
 		ConnectionLayer layer = (ConnectionLayer) getLayer(LayerConstants.CONNECTION_LAYER);
 //		if ("manhattan".equals(UMLPlugin.getDefault().getConnectionRouter())) {
 //			layer.setConnectionRouter(new ManhattanConnectionRouter());
@@ -69,17 +71,17 @@ public class RootEditPart extends AbstractUMLEditPart {
 //			ShortestPathConnectionRouter router = new ShortestPathConnectionRouter(figure);
 //			layer.setConnectionRouter(router);
 //		} else {
-			layer.setConnectionRouter(ConnectionRouter.NULL);
+		layer.setConnectionRouter(ConnectionRouter.NULL);
 //		}
 		return figure;
 	}
-	
+
 	protected void createEditPolicies() {
 		installEditPolicy(EditPolicy.LAYOUT_ROLE, new RootEditPolicy());
 	}
-	
-	protected List getModelChildren() {
-		return ((RootModel)getModel()).getChildren();
+
+	protected List<AbstractUMLModel> getModelChildren() {
+		return ((RootModel) getModel()).getChildren();
 //		ArrayList models = new ArrayList();
 //		for(int i=0;i<list.size();i++){
 //			Object obj = list.get(i);
@@ -89,7 +91,7 @@ public class RootEditPart extends AbstractUMLEditPart {
 //		}
 //		return models;
 	}
-	
+
 //	protected void refreshVisuals(){
 //		List list = getChildren();
 //		for(int i=0;i<list.size();i++){
@@ -99,13 +101,13 @@ public class RootEditPart extends AbstractUMLEditPart {
 //			}
 //		}
 //	}
-	
+
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals(RootModel.P_CHILDREN)) {
 			refreshChildren();
 		}
 	}
-	
+
 	/** エディットポリシー */
 	private class RootEditPolicy extends XYLayoutEditPolicy {
 
@@ -116,7 +118,7 @@ public class RootEditPart extends AbstractUMLEditPart {
 				return new NonResizableEditPolicy();
 			}
 		}
-		
+
 		protected Command createAddCommand(EditPart child, Object constraint) {
 			if (!(child.getModel() instanceof AbstractUMLEntityModel)) {
 				return null;
@@ -124,21 +126,21 @@ public class RootEditPart extends AbstractUMLEditPart {
 			CreateAddCommand command = new CreateAddCommand();
 			command.setModel((AbstractUMLEntityModel) child.getModel());
 			command.setTarget((RootModel) getHost().getModel());
-			
+
 			ChangeConstraintCommand nextCommand = new ChangeConstraintCommand();
-			nextCommand.setModel((AbstractUMLEntityModel)child.getModel());
-			nextCommand.setConstraint((Rectangle)constraint);
-			
+			nextCommand.setModel((AbstractUMLEntityModel) child.getModel());
+			nextCommand.setConstraint((Rectangle) constraint);
+
 			return command.chain(nextCommand);
 		}
-		
-		protected Command createChangeConstraintCommand(EditPart child,Object constraint) {
+
+		protected Command createChangeConstraintCommand(EditPart child, Object constraint) {
 			ChangeConstraintCommand command = new ChangeConstraintCommand();
-			command.setModel((AbstractUMLEntityModel)child.getModel());
-			command.setConstraint((Rectangle)constraint);
+			command.setModel((AbstractUMLEntityModel) child.getModel());
+			command.setConstraint((Rectangle) constraint);
 			return command;
 		}
-		
+
 		protected Command getCreateCommand(CreateRequest request) {
 			CreateCommand command = new CreateCommand();
 			Rectangle constraint = (Rectangle) getConstraintFor(request);
@@ -148,62 +150,62 @@ public class RootEditPart extends AbstractUMLEditPart {
 				constraint.height = -1;
 			}
 			model.setConstraint(constraint);
-			
+
 			command.setRootModel(getHost().getModel());
 			command.setModel(model);
 			return command;
 		}
-		
+
 		protected Command getDeleteDependantCommand(Request request) {
 			return null;
 		}
 	}
-	
+
 	/** 制約の変更コマンド */
 	private class ChangeConstraintCommand extends Command {
-		
+
 		private AbstractUMLEntityModel model;
 		private Rectangle constraint;
 		private Rectangle oldConstraint;
-		
-		public void execute(){
+
+		public void execute() {
 			model.setConstraint(constraint);
 		}
-		
-		public void setConstraint(Rectangle constraint){
+
+		public void setConstraint(Rectangle constraint) {
 			this.constraint = constraint;
 		}
-		
-		public void setModel(AbstractUMLEntityModel model){
+
+		public void setModel(AbstractUMLEntityModel model) {
 			this.model = model;
 			oldConstraint = model.getConstraint();
 		}
-		
+
 		public void undo() {
 			model.setConstraint(oldConstraint);
 		}
 	}
-	
+
 	/** モデルの新規作成コマンド */
 	private class CreateCommand extends Command {
-		
+
 		private RootModel root;
 		private AbstractUMLEntityModel model;
-		
+
 		public void execute() {
 			root.copyFilter(model);
 			root.copyPresentation(model);
 			root.addChild(model);
 		}
-		
+
 		public void setRootModel(Object root) {
-			this.root = (RootModel)root;
+			this.root = (RootModel) root;
 		}
-		
+
 		public void setModel(Object model) {
 			this.model = (AbstractUMLEntityModel) model;
 		}
-		
+
 		public void undo() {
 			root.removeChild(model);
 		}
@@ -213,50 +215,53 @@ public class RootEditPart extends AbstractUMLEditPart {
 		private RootModel target;
 		private AbstractUMLEntityModel model;
 		private AbstractUMLEntityModel container;
-		
+
 		public void execute() {
 			this.container = model.getParent();
 			container.removeChild(model);
 			target.addChild(model);
 		}
-		
+
 		public void undo() {
 			target.removeChild(model);
 			container.addChild(model);
 		}
+
 		public void setTarget(RootModel target) {
 			this.target = target;
 		}
-		
+
 		public void setModel(AbstractUMLEntityModel model) {
 			this.model = model;
 		}
 	}
+
 	/**
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
-	public Object getAdapter(Class adapter) {
+	@SuppressWarnings("unchecked")
+	public <T> T getAdapter(Class<T> adapter) {
 		if (adapter == SnapToHelper.class) {
-			List snapStrategies = new ArrayList();
-			Boolean val = (Boolean)getViewer().getProperty(RulerProvider.PROPERTY_RULER_VISIBILITY);
+			List<SnapToHelper> snapStrategies = new ArrayList<SnapToHelper>();
+			Boolean val = (Boolean) getViewer().getProperty(RulerProvider.PROPERTY_RULER_VISIBILITY);
 			if (val != null && val.booleanValue())
 				snapStrategies.add(new SnapToGuides(this));
-			val = (Boolean)getViewer().getProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED);
+			val = (Boolean) getViewer().getProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED);
 			if (val != null && val.booleanValue())
 				snapStrategies.add(new SnapToGeometry(this));
-			val = (Boolean)getViewer().getProperty(SnapToGrid.PROPERTY_GRID_ENABLED);
+			val = (Boolean) getViewer().getProperty(SnapToGrid.PROPERTY_GRID_ENABLED);
 			if (val != null && val.booleanValue())
 				snapStrategies.add(new SnapToGrid(this));
-			
+
 			if (snapStrategies.size() == 0)
 				return null;
 			if (snapStrategies.size() == 1)
-				return (SnapToHelper)snapStrategies.get(0);
+				return (T) (SnapToHelper) snapStrategies.get(0);
 
 			SnapToHelper ss[] = new SnapToHelper[snapStrategies.size()];
 			for (int i = 0; i < snapStrategies.size(); i++)
-				ss[i] = (SnapToHelper)snapStrategies.get(i);
-			return new CompoundSnapToHelper(ss);
+				ss[i] = (SnapToHelper) snapStrategies.get(i);
+			return (T) new CompoundSnapToHelper(ss);
 		}
 		return super.getAdapter(adapter);
 	}

@@ -382,13 +382,13 @@ public class VisualDBEditor extends GraphicalEditorWithPalette
 	 * @param icon the icon path
 	 * @return created <code>PaletteEntry</code>
 	 */
-	private PaletteEntry createConnectionEntry(String itemName, Class<?> clazz, String icon){
+	private <T> PaletteEntry createConnectionEntry(String itemName, Class<T> clazz, String icon){
 		ImageDescriptor image = null;
 		if(icon!=null){
 			image = DBPlugin.getImageDescriptor(icon);
 		}
 		ConnectionCreationToolEntry entry = new ConnectionCreationToolEntry(
-				itemName, itemName, new SimpleFactory(clazz), image, image);
+				itemName, itemName, new SimpleFactory<T>(clazz), image, image);
 		return entry;
 	}
 
@@ -400,13 +400,13 @@ public class VisualDBEditor extends GraphicalEditorWithPalette
 	 * @param icon the icon path
 	 * @return created <code>PaletteEntry</code>
 	 */
-	private PaletteEntry createEntityEntry(String itemName,Class<?> clazz,String icon){
+	private <T> PaletteEntry createEntityEntry(String itemName,Class<T> clazz,String icon){
 		ImageDescriptor image = null;
 		if(icon!=null){
 			image = DBPlugin.getImageDescriptor(icon);
 		}
 		CreationToolEntry entry = new CreationToolEntry(
-				itemName, itemName, new SimpleFactory(clazz), image, image);
+				itemName, itemName, new SimpleFactory<T>(clazz), image, image);
 
 		return entry;
 	}
@@ -426,7 +426,7 @@ public class VisualDBEditor extends GraphicalEditorWithPalette
 				IFile file = ((IFileEditorInput) input).getFile();
 				GraphicalViewer viewer = getGraphicalViewer();
 
-				// desirialize
+				// deserialize
 				RootModel newRoot = null;
 				try {
 					newRoot = VisualDBSerializer.deserialize(file.getContents());

@@ -37,21 +37,20 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 	public static final String P_STATIC = "_static";
 	public static final String P_FINAL = "_final";
 
-	public boolean isConstructor(){
-		if(getType().length() == 0 || getType().equals("void")){
+	public boolean isConstructor() {
+		if (getType().length() == 0 || getType().equals("void")) {
 			AbstractUMLEntityModel parent = getParent();
-			if(parent != null && parent instanceof ClassModel){
+			if (parent != null && parent instanceof ClassModel) {
 				String className = ((ClassModel) parent).getName();
 				int index = className.lastIndexOf('.');
-				if(index >= 0){
+				if (index >= 0) {
 					className = className.substring(index + 1);
 				}
 				return className.equals(getName());
-			}
-			else if (parent != null && parent instanceof EnumModel) {
+			} else if (parent != null && parent instanceof EnumModel) {
 				String className = ((EnumModel) parent).getName();
 				int index = className.lastIndexOf('.');
-				if(index >= 0){
+				if (index >= 0) {
 					className = className.substring(index + 1);
 				}
 				return className.equals(getName());
@@ -66,7 +65,7 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 
 	public void setAbstract(boolean isAbstract) {
 		this.isAbstract = isAbstract;
-		firePropertyChange(P_ABSTRACT,null,new Boolean(isAbstract));
+		firePropertyChange(P_ABSTRACT, null, isAbstract);
 	}
 
 	public boolean isStatic() {
@@ -75,16 +74,16 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 
 	public void setStatic(boolean isStatic) {
 		this.isStatic = isStatic;
-		firePropertyChange(P_STATIC,null,new Boolean(isStatic));
+		firePropertyChange(P_STATIC, null, isStatic);
 	}
-	
+
 	public boolean isFinal() {
 		return isFinal;
 	}
-	
+
 	public void setFinal(boolean isFinal) {
 		this.isFinal = isFinal;
-		firePropertyChange(P_FINAL,null,new Boolean(isFinal));
+		firePropertyChange(P_FINAL, null, isFinal);
 	}
 
 	public String getName() {
@@ -93,7 +92,7 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 
 	public void setName(String name) {
 		this.name = name;
-		firePropertyChange(P_NAME,null,name);
+		firePropertyChange(P_NAME, null, name);
 	}
 
 	public List<Argument> getParams() {
@@ -102,7 +101,7 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 
 	public void setParams(List<Argument> params) {
 		this.params = params;
-		firePropertyChange(P_PARAMS,null,params);
+		firePropertyChange(P_PARAMS, null, params);
 	}
 
 	public String getType() {
@@ -111,7 +110,7 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 
 	public void setType(String type) {
 		this.type = type;
-		firePropertyChange(P_TYPE,null,type);
+		firePropertyChange(P_TYPE, null, type);
 	}
 
 	public Visibility getVisibility() {
@@ -120,106 +119,99 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 
 	public void setVisibility(Visibility visibility) {
 		this.visibility = visibility;
-		firePropertyChange(P_VISIBILITY,null,visibility);
+		firePropertyChange(P_VISIBILITY, null, visibility);
 		if (getParent() != null) {
 			getParent().forceUpdate();
 		}
 	}
 
 	public IPropertyDescriptor[] getPropertyDescriptors() {
-		return new IPropertyDescriptor[]{
-				new TextPropertyDescriptor(P_NAME,
-						UMLPlugin.getDefault().getResourceString("property.name")),
-				new TextPropertyDescriptor(P_TYPE,
-						UMLPlugin.getDefault().getResourceString("property.type")),
+		return new IPropertyDescriptor[] {
+				new TextPropertyDescriptor(P_NAME, UMLPlugin.getDefault().getResourceString("property.name")),
+				new TextPropertyDescriptor(P_TYPE, UMLPlugin.getDefault().getResourceString("property.type")),
 				new EnumPropertyDescriptor(P_VISIBILITY,
-						UMLPlugin.getDefault().getResourceString("property.visibility"),
-						Visibility.getVisibilities()),
+						UMLPlugin.getDefault().getResourceString("property.visibility"), Visibility.getVisibilities()),
 				new ArgumentsPropertyDescriptor(P_PARAMS,
 						UMLPlugin.getDefault().getResourceString("property.arguments")),
-				new BooleanPropertyDescriptor(P_STATIC,
-						UMLPlugin.getDefault().getResourceString("property.static")),
-				new BooleanPropertyDescriptor(P_FINAL,
-						UMLPlugin.getDefault().getResourceString("property.final")),
+				new BooleanPropertyDescriptor(P_STATIC, UMLPlugin.getDefault().getResourceString("property.static")),
+				new BooleanPropertyDescriptor(P_FINAL, UMLPlugin.getDefault().getResourceString("property.final")),
 				new BooleanPropertyDescriptor(P_ABSTRACT,
 						UMLPlugin.getDefault().getResourceString("property.abstract")),
-						new ColorPropertyDescriptor(P_FOREGROUND_COLOR, UMLPlugin
-								.getDefault().getResourceString("property.foreground"))
-		};
+				new ColorPropertyDescriptor(P_FOREGROUND_COLOR,
+						UMLPlugin.getDefault().getResourceString("property.foreground")) };
 	}
 
 	public Object getPropertyValue(Object id) {
-		if(id.equals(P_NAME)){
+		if (id.equals(P_NAME)) {
 			return getName();
-		} else if(id.equals(P_TYPE)){
+		} else if (id.equals(P_TYPE)) {
 			return getType();
-		} else if(id.equals(P_VISIBILITY)){
+		} else if (id.equals(P_VISIBILITY)) {
 			return getVisibility();
-		} else if(id.equals(P_PARAMS)){
+		} else if (id.equals(P_PARAMS)) {
 			return getParams();
-		} else if(id.equals(P_STATIC)){
-			return new Boolean(isStatic());
-		} else if(id.equals(P_FINAL)){
-			return new Boolean(isFinal());
-		} else if(id.equals(P_ABSTRACT)){
-			return new Boolean(isAbstract());
+		} else if (id.equals(P_STATIC)) {
+			return isStatic();
+		} else if (id.equals(P_FINAL)) {
+			return isFinal();
+		} else if (id.equals(P_ABSTRACT)) {
+			return isAbstract();
 		}
 		return super.getPropertyValue(id);
 	}
 
 	public boolean isPropertySet(Object id) {
-		if(id.equals(P_NAME)){
+		if (id.equals(P_NAME)) {
 			return true;
-		} else if(id.equals(P_TYPE)){
+		} else if (id.equals(P_TYPE)) {
 			return true;
-		} else if(id.equals(P_VISIBILITY)){
+		} else if (id.equals(P_VISIBILITY)) {
 			return true;
-		} else if(id.equals(P_PARAMS)){
+		} else if (id.equals(P_PARAMS)) {
 			return true;
-		} else if(id.equals(P_STATIC)){
+		} else if (id.equals(P_STATIC)) {
 			return true;
-		} else if(id.equals(P_FINAL)){
+		} else if (id.equals(P_FINAL)) {
 			return true;
-		} else if(id.equals(P_ABSTRACT)){
+		} else if (id.equals(P_ABSTRACT)) {
 			return true;
 		}
 		return super.isPropertySet(id);
 	}
 
-	@SuppressWarnings({"rawtypes", "unchecked"})
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void setPropertyValue(Object id, Object value) {
-		if(id.equals(P_NAME)){
-			setName((String)value);
-		} else if(id.equals(P_TYPE)){
-			setType((String)value);
-		} else if(id.equals(P_VISIBILITY)){
-			setVisibility((Visibility)value);
-		} else if(id.equals(P_PARAMS)){
+		if (id.equals(P_NAME)) {
+			setName((String) value);
+		} else if (id.equals(P_TYPE)) {
+			setType((String) value);
+		} else if (id.equals(P_VISIBILITY)) {
+			setVisibility((Visibility) value);
+		} else if (id.equals(P_PARAMS)) {
 			setParams((List) value);
-		} else if(id.equals(P_STATIC)){
-			setStatic(((Boolean)value).booleanValue());
-		} else if(id.equals(P_FINAL)){
-			setFinal(((Boolean)value).booleanValue());
-		} else if(id.equals(P_ABSTRACT)){
-			setAbstract(((Boolean)value).booleanValue());
+		} else if (id.equals(P_STATIC)) {
+			setStatic(((Boolean) value).booleanValue());
+		} else if (id.equals(P_FINAL)) {
+			setFinal(((Boolean) value).booleanValue());
+		} else if (id.equals(P_ABSTRACT)) {
+			setAbstract(((Boolean) value).booleanValue());
 		}
 		super.setPropertyValue(id, value);
 	}
 
-
-	public String toString(){
+	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append(getName());
 		sb.append("(");
-		for(int i=0;i<params.size();i++){
-			if(i!=0){
+		for (int i = 0; i < params.size(); i++) {
+			if (i != 0) {
 				sb.append(", ");
 			}
-			Argument arg = (Argument)params.get(i);
+			Argument arg = (Argument) params.get(i);
 			sb.append(arg.toString());
 		}
 		sb.append(")");
-		if(!isConstructor()){
+		if (!isConstructor()) {
 			sb.append(": ");
 			sb.append(getType());
 		}
@@ -235,7 +227,7 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 
 		List<Argument> args = getParams();
 		List<Argument> newArgs = new ArrayList<Argument>();
-		for(int i=0;i<args.size();i++){
+		for (int i = 0; i < args.size(); i++) {
 			newArgs.add((Argument) args.get(i).clone());
 		}
 
@@ -246,6 +238,5 @@ public class OperationModel extends AbstractUMLModel implements Cloneable {
 
 		return newModel;
 	}
-
 
 }

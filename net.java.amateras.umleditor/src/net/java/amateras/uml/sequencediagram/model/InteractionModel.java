@@ -28,13 +28,13 @@ public class InteractionModel extends RootModel {
 	
 	public static final String P_LIFELINE = "_children_lifeline";
 	
-	private List instances = new ArrayList();
+	private List<InstanceModel> instances = new ArrayList<InstanceModel>();
 	
-	private List activations = new ArrayList();
+	private List<ActivationModel> activations = new ArrayList<ActivationModel>();
 	
-	private List fragments = new ArrayList();
+	private List<FragmentModel> fragments = new ArrayList<FragmentModel>();
 	
-	private List lifelines = new ArrayList();
+	private List<LifeLineModel> lifelines = new ArrayList<LifeLineModel>();
 	
 	public void addInstance(InstanceModel child){
 		child.setRoot(this);
@@ -43,7 +43,7 @@ public class InteractionModel extends RootModel {
 		firePropertyChange(P_INSTANCE,null,child);
 	}
 	
-	public List getInstances(){
+	public List<InstanceModel> getInstances(){
 		return instances;
 	}
 	
@@ -60,7 +60,7 @@ public class InteractionModel extends RootModel {
 		firePropertyChange(P_ACTIVATION,null,child);
 	}
 	
-	public List getActivations(){
+	public List<ActivationModel> getActivations(){
 		return activations;
 	}
 	
@@ -68,7 +68,7 @@ public class InteractionModel extends RootModel {
 		activations.remove(obj);
 		removeChild(obj);
 		firePropertyChange(P_ACTIVATION, obj, null);
-		for (Iterator iter = obj.getChildren().iterator(); iter.hasNext();) {
+		for (Iterator<AbstractUMLModel> iter = obj.getChildren().iterator(); iter.hasNext();) {
 			ActivationModel element = (ActivationModel) iter.next();
 			removeActivation(element);
 		}
@@ -82,7 +82,7 @@ public class InteractionModel extends RootModel {
 		firePropertyChange(P_FRAGMENT,null,child);
 	}
 	
-	public List getFragments(){
+	public List<FragmentModel> getFragments(){
 		return fragments;
 	}
 	
@@ -99,7 +99,7 @@ public class InteractionModel extends RootModel {
 		adjustLifeLine();
 	}
 	
-	public List getLifeLines(){
+	public List<LifeLineModel> getLifeLines(){
 		return lifelines;
 	}
 	
@@ -107,7 +107,7 @@ public class InteractionModel extends RootModel {
 		removeChild(obj);
 		lifelines.remove(obj);
 		firePropertyChange(P_LIFELINE, obj, null);
-		for (Iterator iter = obj.getChildren().iterator(); iter.hasNext();) {
+		for (Iterator<AbstractUMLModel> iter = obj.getChildren().iterator(); iter.hasNext();) {
 			ActivationModel element = (ActivationModel) iter.next();
 			removeActivation(element);
 		}
@@ -136,9 +136,9 @@ public class InteractionModel extends RootModel {
 	
 	public void adjustLifeLine() {
 		int max =LifeLineModel.DEFAULT_HEIGHT + InstanceModel.DEFAULT_LOCATION;
-		for (Iterator iter = lifelines.iterator(); iter.hasNext();) {
+		for (Iterator<LifeLineModel> iter = lifelines.iterator(); iter.hasNext();) {
 			LifeLineModel element = (LifeLineModel) iter.next();
-			for (Iterator iterator = element.getChildren().iterator(); iterator.hasNext();) {
+			for (Iterator<AbstractUMLModel> iterator = element.getChildren().iterator(); iterator.hasNext();) {
 				ActivationModel a = (ActivationModel) iterator.next();
 				int current = a.getConstraint().y + a.getConstraint().height + 30;
 				if (current > max) {
@@ -147,7 +147,7 @@ public class InteractionModel extends RootModel {
 				
 			}
 		}
-		for (Iterator iter = lifelines.iterator(); iter.hasNext();) {
+		for (Iterator<LifeLineModel> iter = lifelines.iterator(); iter.hasNext();) {
 			LifeLineModel element = (LifeLineModel) iter.next();
 			Rectangle rectangle = element.getConstraint();
 			rectangle.height = max - rectangle.y;
@@ -155,12 +155,12 @@ public class InteractionModel extends RootModel {
 		}		
 	}
 
-	public List getNotes() {
-		List rv = new ArrayList();
-		for (Iterator iter = getChildren().iterator(); iter.hasNext();) {
+	public List<NoteModel> getNotes() {
+		List<NoteModel> rv = new ArrayList<NoteModel>();
+		for (Iterator<AbstractUMLModel> iter = getChildren().iterator(); iter.hasNext();) {
 			Object element = (Object) iter.next();
 			if (element instanceof NoteModel) {
-				rv.add(element);
+				rv.add((NoteModel) element);
 			}
 		}
 		return rv;

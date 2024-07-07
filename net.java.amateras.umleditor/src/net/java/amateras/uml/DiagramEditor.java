@@ -93,16 +93,16 @@ import net.java.amateras.uml.model.RootModel;
  * @author Takahiro Shida.
  */
 public abstract class DiagramEditor extends GraphicalEditorWithPalette
-	implements IPropertyChangeListener, IResourceChangeListener {
+		implements IPropertyChangeListener, IResourceChangeListener {
 
 	private boolean savePreviouslyNeeded = false;
 	private boolean need2Serialize = false;
 	private IEditorPart activeEditorBeforeSynchronization = null;
 	private List<IEditorPart> editorsOpenedDuringSynchronization = new ArrayList<IEditorPart>();
-	private AbstractUMLEditorAction openOutlineAction  = null;
+	private AbstractUMLEditorAction openOutlineAction = null;
 	private AbstractUMLEditorAction openPropertyAction = null;
-	private AbstractUMLEditorAction saveAsImageAction  = null;
-	private AbstractUMLEditorAction copyAsImageAction  = null;
+	private AbstractUMLEditorAction saveAsImageAction = null;
+	private AbstractUMLEditorAction copyAsImageAction = null;
 	private boolean needViewerRefreshFlag = true;
 
 	private final List<AsyncSyncAction> asyncActionList = new ArrayList<AsyncSyncAction>();
@@ -123,17 +123,17 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 	@Override
 	protected void initializeGraphicalViewer() {
 		GraphicalViewer viewer = getGraphicalViewer();
-		IFile file = ((IFileEditorInput)getEditorInput()).getFile();
+		IFile file = ((IFileEditorInput) getEditorInput()).getFile();
 		RootModel root = null;
-		if(file.exists()){
+		if (file.exists()) {
 			try {
 				root = DiagramSerializer.deserialize(file.getContents());
 				validateModel(root);
-			} catch(Exception ex){
+			} catch (Exception ex) {
 				UMLPlugin.logException(ex);
 			}
 		}
-		if(root == null){
+		if (root == null) {
 			root = createInitializeModel();
 		}
 		viewer.setContents(root);
@@ -141,7 +141,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 		applyPreferences();
 	}
 
-	private void refreshGraphicalViewer(){
+	private void refreshGraphicalViewer() {
 		IEditorInput input = getEditorInput();
 		if (input instanceof IFileEditorInput) {
 			try {
@@ -152,7 +152,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 				RootModel newRoot = null;
 				try {
 					newRoot = DiagramSerializer.deserialize(file.getContents());
-				} catch(Exception ex){
+				} catch (Exception ex) {
 					UMLPlugin.logException(ex);
 					return;
 				}
@@ -193,7 +193,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 								doSave(new NullProgressMonitor());
 								need2Serialize = false;
 							}
-							if(needViewerRefreshFlag){
+							if (needViewerRefreshFlag) {
 								refreshGraphicalViewer();
 							} else {
 								needViewerRefreshFlag = true;
@@ -214,9 +214,11 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 	}
 
 	/**
-	 * The diagram has been modified and need to be saved later (asynchronous) on next refresh
+	 * The diagram has been modified and need to be saved later (asynchronous) on
+	 * next refresh
 	 */
-	public void need2Serialize(IEditorPart activeEditorBeforeSynchronization, List<IEditorPart> editorsOpenedDuringSynchronization) {
+	public void need2Serialize(IEditorPart activeEditorBeforeSynchronization,
+			List<IEditorPart> editorsOpenedDuringSynchronization) {
 		need2Serialize = true;
 		if (activeEditorBeforeSynchronization != null) {
 			this.activeEditorBeforeSynchronization = activeEditorBeforeSynchronization;
@@ -229,38 +231,33 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent event){
+	public void propertyChange(PropertyChangeEvent event) {
 		applyPreferences();
 	}
 
-	protected void applyPreferences(){
+	protected void applyPreferences() {
 		IPreferenceStore store = UMLPlugin.getDefault().getPreferenceStore();
 
-		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_ENABLED,
-		                new Boolean(store.getBoolean(UMLPlugin.PREF_SHOW_GRID)));
-		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE,
-		                new Boolean(store.getBoolean(UMLPlugin.PREF_SHOW_GRID)));
+		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_ENABLED, store.getBoolean(UMLPlugin.PREF_SHOW_GRID));
+		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE, store.getBoolean(UMLPlugin.PREF_SHOW_GRID));
 
 		int gridSize = store.getInt(UMLPlugin.PREF_GRID_SIZE);
-		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING,
-		                new Dimension(gridSize, gridSize));
+		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING, new Dimension(gridSize, gridSize));
 
 		getGraphicalViewer().setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED,
-		                new Boolean(store.getBoolean(UMLPlugin.PREF_SNAP_GEOMETRY)));
+				store.getBoolean(UMLPlugin.PREF_SNAP_GEOMETRY));
 
 		boolean isZoomableWithCtrlAndScroll = store.getBoolean(UMLPlugin.PREF_ZOOMABLE_WITH_CTRL_AND_SCROLL);
 		String mouseWheelHandlerKey = MouseWheelHandler.KeyGenerator.getKey(SWT.CTRL);
 		if (isZoomableWithCtrlAndScroll) {
-			getGraphicalViewer().setProperty(mouseWheelHandlerKey,
-					MouseWheelZoomHandler.SINGLETON);
+			getGraphicalViewer().setProperty(mouseWheelHandlerKey, MouseWheelZoomHandler.SINGLETON);
 		} else {
 			getGraphicalViewer().setProperty(mouseWheelHandlerKey, null);
 		}
 	}
 
 	/**
-	 * 以前のバージョンで作成されたファイルを自動修正する.
-	 * -v2.0 親子関係の追加
+	 * 以前のバージョンで作成されたファイルを自動修正する. -v2.0 親子関係の追加
 	 */
 	private void validateModel(AbstractUMLEntityModel parent) {
 		List<AbstractUMLModel> children = parent.getChildren();
@@ -277,18 +274,21 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 
 	/**
 	 * ロードに失敗した場合の初期モデルを返却する.
+	 * 
 	 * @return
 	 */
 	protected abstract RootModel createInitializeModel();
 
 	/**
 	 * エディタのタイプを返却する. (ex class)
+	 * 
 	 * @return
 	 */
 	protected abstract String getDiagramType();
 
 	/**
 	 * Diagramモデルを返却する.
+	 * 
 	 * @return
 	 */
 	public static final RootModel getActiveDiagramModel() {
@@ -342,38 +342,34 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 		ScalableRootEditPart rootEditPart = new ScalableRootEditPart();
 		viewer.setRootEditPart(rootEditPart);
 
-	    // ZoomManagerの取得
-	    ZoomManager manager = rootEditPart.getZoomManager();
+		// ZoomManagerの取得
+		ZoomManager manager = rootEditPart.getZoomManager();
 
-	    // ズームレベルの設定
-	    double[] zoomLevels = new double[] {
-	      0.25,0.5,0.75,1.0,1.5,2.0,2.5,3.0,4.0,5.0,10.0,20.0
-	    };
-	    manager.setZoomLevels(zoomLevels);
+		// ズームレベルの設定
+		double[] zoomLevels = new double[] { 0.25, 0.5, 0.75, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 10.0, 20.0 };
+		manager.setZoomLevels(zoomLevels);
 
-	    // ズーム レベル コントリビューションの設定
-	    ArrayList<String> zoomContributions = new ArrayList<String>();
-	    zoomContributions.add(ZoomManager.FIT_ALL);
-	    zoomContributions.add(ZoomManager.FIT_HEIGHT);
-	    zoomContributions.add(ZoomManager.FIT_WIDTH);
-	    manager.setZoomLevelContributions(zoomContributions);
-	    // 拡大アクションの作成と登録
-	    getActionRegistry().registerAction(new ZoomInAction(manager));
-	    // 縮小アクションの作成と登録
-	    getActionRegistry().registerAction(new ZoomOutAction(manager));
+		// ズーム レベル コントリビューションの設定
+		ArrayList<String> zoomContributions = new ArrayList<String>();
+		zoomContributions.add(ZoomManager.FIT_ALL);
+		zoomContributions.add(ZoomManager.FIT_HEIGHT);
+		zoomContributions.add(ZoomManager.FIT_WIDTH);
+		manager.setZoomLevelContributions(zoomContributions);
+		// 拡大アクションの作成と登録
+		getActionRegistry().registerAction(new ZoomInAction(manager));
+		// 縮小アクションの作成と登録
+		getActionRegistry().registerAction(new ZoomOutAction(manager));
 
-        getGraphicalViewer().setKeyHandler(
-                new GraphicalViewerKeyHandler(getGraphicalViewer()));
+		getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()));
 
-	    // コンテクストメニューの作成
-	    String menuId = this.getClass().getName() + ".EditorContext";
-
+		// コンテクストメニューの作成
+		String menuId = this.getClass().getName() + ".EditorContext";
 
 		MenuManager menuMgr = new MenuManager(menuId, menuId);
 		openPropertyAction = new OpenPropertyViewAction(viewer);
-		openOutlineAction  = new OpenOutlineViewAction(viewer);
-		saveAsImageAction  = new SaveAsImageAction(viewer);
-		copyAsImageAction  = new CopyAsImageAction(viewer);
+		openOutlineAction = new OpenOutlineViewAction(viewer);
+		saveAsImageAction = new SaveAsImageAction(viewer);
+		copyAsImageAction = new CopyAsImageAction(viewer);
 		createDiagramAction(viewer);
 
 		getSite().registerContextMenu(menuId, menuMgr, viewer);
@@ -421,19 +417,20 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 		menuMgr.add(new Separator("generate"));
 		menuMgr.add(new Separator("additions"));
 		viewer.setContextMenu(menuMgr);
-		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer)
-				.setParent(getCommonKeyHandler()));
+		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer).setParent(getCommonKeyHandler()));
 
 	}
 
 	/**
 	 * タイプに特化したアクションを作る.
+	 * 
 	 * @param viewer
 	 */
 	protected abstract void createDiagramAction(GraphicalViewer viewer);
 
 	/**
 	 * アクションをコンテキストメニューに設定する.
+	 * 
 	 * @param manager
 	 */
 	protected abstract void fillDiagramPopupMenu(MenuManager manager);
@@ -448,16 +445,14 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 	public void doSave(IProgressMonitor monitor) {
 		try {
 			IEditorInput input = getEditorInput();
-			if(input instanceof IFileEditorInput){
+			if (input instanceof IFileEditorInput) {
 				needViewerRefreshFlag = false;
-				IFile file = ((IFileEditorInput)input).getFile();
+				IFile file = ((IFileEditorInput) input).getFile();
 				file.setContents(DiagramSerializer.serialize(getRootModel()), true, true, monitor);
 			}
-		}
-		catch(CoreException ex){
+		} catch (CoreException ex) {
 			throw new RuntimeException(ex);
-		}
-		catch(UnsupportedEncodingException ex){
+		} catch (UnsupportedEncodingException ex) {
 			throw new RuntimeException(ex);
 		}
 		getCommandStack().markSaveLocation();
@@ -469,7 +464,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 	}
 
 	public RootModel getRootModel() {
-		return (RootModel)getGraphicalViewer().getContents().getModel();
+		return (RootModel) getGraphicalViewer().getContents().getModel();
 	}
 
 	@Override
@@ -478,7 +473,7 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 	}
 
 	@Override
-	public void dispose(){
+	public void dispose() {
 		UMLPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(this);
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
 		super.dispose();
@@ -510,17 +505,13 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 	 * エンティティ用のPaletteEntryを作成します。
 	 *
 	 * @param itemName パレットに表示するアイテム名
-	 * @param clazz モデルのクラス
-	 * @param icon パレットに表示するアイコンのパス
+	 * @param clazz    モデルのクラス
+	 * @param icon     パレットに表示するアイコンのパス
 	 * @return PaletteEntry
 	 */
-	protected PaletteEntry createEntityEntry(String itemName,Class<?> clazz,String icon){
-		CreationToolEntry entry = new CreationToolEntry(
-				itemName,
-				itemName,
-				new SimpleFactory(clazz),
-				UMLPlugin.getImageDescriptor(icon),
-				UMLPlugin.getImageDescriptor(icon));
+	protected <T> PaletteEntry createEntityEntry(String itemName, Class<T> clazz, String icon) {
+		CreationToolEntry entry = new CreationToolEntry(itemName, itemName, new SimpleFactory<T>(clazz),
+				UMLPlugin.getImageDescriptor(icon), UMLPlugin.getImageDescriptor(icon));
 		return entry;
 	}
 
@@ -528,71 +519,67 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 	 * コネクション用のPaletteEntryを作成します。
 	 *
 	 * @param itemName パレットに表示するアイテム名
-	 * @param clazz モデルのクラス
-	 * @param icon パレットに表示するアイコンのパス
+	 * @param clazz    モデルのクラス
+	 * @param icon     パレットに表示するアイコンのパス
 	 * @return PaletteEntry
 	 */
-	protected PaletteEntry createConnectionEntry(String itemName,Class<?> clazz,String icon){
-		ConnectionCreationToolEntry entry = new ConnectionCreationToolEntry(
-				itemName,
-				itemName,
-				new SimpleFactory(clazz),
-				UMLPlugin.getImageDescriptor(icon),
-				UMLPlugin.getImageDescriptor(icon));
+	protected <T> PaletteEntry createConnectionEntry(String itemName, Class<T> clazz, String icon) {
+		ConnectionCreationToolEntry entry = new ConnectionCreationToolEntry(itemName, itemName,
+				new SimpleFactory<T>(clazz), UMLPlugin.getImageDescriptor(icon), UMLPlugin.getImageDescriptor(icon));
 		return entry;
 	}
 
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		super.selectionChanged(part,selection);
+		super.selectionChanged(part, selection);
 		if (selection instanceof IStructuredSelection) {
-			openPropertyAction.update((IStructuredSelection)selection);
-			openOutlineAction.update((IStructuredSelection)selection);
-			saveAsImageAction.update((IStructuredSelection)selection);
+			openPropertyAction.update((IStructuredSelection) selection);
+			openOutlineAction.update((IStructuredSelection) selection);
+			saveAsImageAction.update((IStructuredSelection) selection);
 			updateDiagramAction(selection);
 		}
 	}
 
 	/**
-	 * Returns the KeyHandler with common bindings for both the Outline and Graphical Views.
-	 * For example, delete is a common action.
+	 * Returns the KeyHandler with common bindings for both the Outline and
+	 * Graphical Views. For example, delete is a common action.
 	 */
-	protected KeyHandler getCommonKeyHandler(){
-		if (sharedKeyHandler == null){
+	protected KeyHandler getCommonKeyHandler() {
+		if (sharedKeyHandler == null) {
 			sharedKeyHandler = new KeyHandler();
-			sharedKeyHandler.put(
-				KeyStroke.getPressed(SWT.F2, 0),
-				getActionRegistry().getAction(GEFActionConstants.DIRECT_EDIT));
+			sharedKeyHandler.put(KeyStroke.getPressed(SWT.F2, 0),
+					getActionRegistry().getAction(GEFActionConstants.DIRECT_EDIT));
 		}
 		return sharedKeyHandler;
 	}
 
 	/**
 	 * アクションを更新する.
+	 * 
 	 * @param selection
 	 */
 	protected abstract void updateDiagramAction(ISelection selection);
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
-		if (type == ZoomManager.class){
-			return ((ScalableRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager();
+	public <T> T getAdapter(Class<T> type) {
+		if (type == ZoomManager.class) {
+			return (T) ((ScalableRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager();
 		}
 		if (type == IContentOutlinePage.class) {
-			return new UMLContentOutlinePage();
+			return (T) new UMLContentOutlinePage();
 		}
-		if (type == RootModel.class){
-			return getGraphicalViewer().getContents().getModel();
+		if (type == RootModel.class) {
+			return (T) getGraphicalViewer().getContents().getModel();
 		}
 		if (type == CommandStack.class) {
-			return getCommandStack();
+			return (T) getCommandStack();
 		}
 		return super.getAdapter(type);
 	}
 
 	/**
-	 * UMLエディタのアウトラインページ。
-	 * ダイアグラムのサムネイルを表示します。
+	 * UMLエディタのアウトラインページ。 ダイアグラムのサムネイルを表示します。
 	 */
 	private class UMLContentOutlinePage implements IContentOutlinePage {
 
@@ -606,8 +593,8 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 			LightweightSystem lws = new LightweightSystem(canvas);
 
 			// RootEditPartのビューをソースとしてサムネイルを作成
-			ScalableRootEditPart rootEditPart = (ScalableRootEditPart)getGraphicalViewer().getRootEditPart();
-			this.thumbnail = new ScrollableThumbnail((Viewport)rootEditPart.getFigure());
+			ScalableRootEditPart rootEditPart = (ScalableRootEditPart) getGraphicalViewer().getRootEditPart();
+			this.thumbnail = new ScrollableThumbnail((Viewport) rootEditPart.getFigure());
 			this.thumbnail.setSource(rootEditPart.getLayer(LayerConstants.PRINTABLE_LAYERS));
 			lws.setContents(thumbnail);
 
@@ -626,13 +613,13 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 		}
 
 		@Override
-		public Control getControl(){
+		public Control getControl() {
 			return this.canvas;
 		}
 
 		@Override
 		public void dispose() {
-			if (getGraphicalViewer().getControl() != null && !getGraphicalViewer().getControl().isDisposed()){
+			if (getGraphicalViewer().getControl() != null && !getGraphicalViewer().getControl().isDisposed()) {
 				getGraphicalViewer().getControl().removeDisposeListener(disposeListener);
 			}
 		}
@@ -668,6 +655,5 @@ public abstract class DiagramEditor extends GraphicalEditorWithPalette
 			// nothing to do
 		}
 	}
-
 
 }

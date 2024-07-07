@@ -7,6 +7,7 @@ import net.java.amateras.uml.activitydiagram.figure.ActionFigure;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 
@@ -26,6 +27,7 @@ public class ActionFigureEx extends ActionFigure {
 	public void paintFigure(Graphics graphics) {
 		graphics.setBackgroundColor(ColorConstants.lightGray);
 		Rectangle copy = getBounds().getCopy();
+		Dimension corner = getCornerDimensions();
 		copy = copy.shrink(3, 3);
 		copy = copy.translate(3, 3);
 		graphics.fillRoundRectangle(copy, corner.width, corner.height);

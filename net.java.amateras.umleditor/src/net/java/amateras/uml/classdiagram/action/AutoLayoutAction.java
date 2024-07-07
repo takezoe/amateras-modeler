@@ -42,7 +42,7 @@ public class AutoLayoutAction extends AbstractUMLEditorAction {
 		// Do nothing
 	}
 
-	@SuppressWarnings({"rawtypes", "unchecked"})
+	@SuppressWarnings("rawtypes")
 	public void run() {
 		CompoundCommand commands = new CompoundCommand();
 		List models = getViewer().getContents().getChildren();
@@ -89,7 +89,7 @@ public class AutoLayoutAction extends AbstractUMLEditorAction {
 		graph.edges = graphEdges;
 		new DirectedGraphLayout().visit(graph);
 		for (int i = 0; i < graph.nodes.size(); i++) {
-			EntityNode node = (EntityNode) graph.nodes.getNode(i);
+			EntityNode node = (EntityNode) graph.nodes.get(i);
 			commands.add(new LayoutCommand(node.model, node.x, node.y));
 		}
 

@@ -56,13 +56,13 @@ public class ClassModel extends CommonEntityModel {
 
 	public void setAbstract(boolean isAbstract) {
 		this.isAbstract = isAbstract;
-		firePropertyChange(P_ABSTRACT, null, new Boolean(isAbstract));
+		firePropertyChange(P_ABSTRACT, null, isAbstract);
 	}
 
 	@Override
 	public Object getPropertyValue(Object id) {
 		if (id.equals(P_ABSTRACT)) {
-			return new Boolean(isAbstract());
+			return isAbstract();
 		}
 		return super.getPropertyValue(id);
 	}
