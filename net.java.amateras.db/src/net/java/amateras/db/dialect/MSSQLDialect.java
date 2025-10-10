@@ -15,30 +15,34 @@ public class MSSQLDialect extends AbstractDialect {
 
 	private static final IColumnType[] COLUMN_TYPES = {
 		new ColumnType("BIT", Messages.getResourceString("type.bit"), false, Types.BIT),
+		new ColumnType("TINYINT", Messages.getResourceString("type.integer"), false, Types.TINYINT),
+		new ColumnType("SMALLINT", Messages.getResourceString("type.integer"), false, Types.SMALLINT),
 		new ColumnType("INT", Messages.getResourceString("type.integer"), false, Types.INTEGER),
 		new ColumnType("BIGINT", Messages.getResourceString("type.integer"), false, Types.BIGINT),
-		new ColumnType("SMALLINT", Messages.getResourceString("type.integer"), false, Types.SMALLINT),
-		new ColumnType("TINYINT", Messages.getResourceString("type.integer"), false, Types.TINYINT),
-		new ColumnType("DECIMAL", Messages.getResourceString("type.numeric"), false, Types.DECIMAL),
-		new ColumnType("NUMERIC", Messages.getResourceString("type.numeric"), false, Types.NUMERIC),
+		new ColumnType("DECIMAL", Messages.getResourceString("type.numeric"), true, Types.DECIMAL),
+		new ColumnType("NUMERIC", Messages.getResourceString("type.numeric"), true, Types.NUMERIC),
 		new ColumnType("MONEY", Messages.getResourceString("type.money"), false, Types.DECIMAL),
 		new ColumnType("SMALLMONEY", Messages.getResourceString("type.money"), false, Types.DECIMAL),
 		new ColumnType("FLOAT", Messages.getResourceString("type.real"), true, Types.FLOAT),
 		new ColumnType("REAL", Messages.getResourceString("type.real"), false, Types.REAL),
-		new ColumnType("DATETIME", Messages.getResourceString("type.date"), false, Types.DATE), // TIMESTAMPかも？
-		new ColumnType("SMALLDATETIME", Messages.getResourceString("type.date"), false, Types.DATE), // TIMESTAMPかも？
 		new ColumnType("CHAR", Messages.getResourceString("type.char"),true, Types.CHAR),
-		new ColumnType("TEXT", Messages.getResourceString("type.text"),false, Types.VARCHAR),
 		new ColumnType("VARCHAR", Messages.getResourceString("type.string"),true, Types.VARCHAR),
+		new ColumnType("TEXT", Messages.getResourceString("type.text"),false, Types.VARCHAR),
 		new ColumnType("NCHAR", Messages.getResourceString("type.char") + Messages.getResourceString("type.unicode"),true, Types.NCHAR),
-		new ColumnType("NTEXT", Messages.getResourceString("type.text") + Messages.getResourceString("type.unicode"),false, Types.VARCHAR),
 		new ColumnType("NVARCHAR", Messages.getResourceString("type.string") + Messages.getResourceString("type.unicode"),true, Types.NVARCHAR),
+		new ColumnType("NTEXT", Messages.getResourceString("type.text") + Messages.getResourceString("type.unicode"),false, Types.VARCHAR),
 		new ColumnType("BINARY", Messages.getResourceString("type.binary"),true, Types.BLOB),
 		new ColumnType("VARBINARY", Messages.getResourceString("type.binary"), true, Types.BLOB),
-		new ColumnType("TIMESTAMP", Messages.getResourceString("type.timestamp"), false, Types.BINARY),
-		new ColumnType("SQL_VARIANT", Messages.getResourceString("type.variant"), false, Types.OTHER),
+		new ColumnType("DATE", Messages.getResourceString("type.date"), false, Types.DATE),
+		new ColumnType("TIME", Messages.getResourceString("type.time"), false, Types.TIME),
+		new ColumnType("DATETIME", Messages.getResourceString("type.datetime"), false, Types.TIMESTAMP),
+		new ColumnType("DATETIME2", Messages.getResourceString("type.datetime"), false, Types.TIMESTAMP),
+		new ColumnType("SMALLDATETIME", Messages.getResourceString("type.datetime"), false, Types.TIMESTAMP),
+		new ColumnType("DATETIMEOFFSET", Messages.getResourceString("type.datetime"), false, Types.TIMESTAMP_WITH_TIMEZONE),
 		new ColumnType("UNIQUEIDENTIFIER", Messages.getResourceString("type.guid"), false, Types.OTHER),
+		new ColumnType("SQL_VARIANT", Messages.getResourceString("type.variant"), false, Types.OTHER),
 		new ColumnType("XML", Messages.getResourceString("type.xml"), false, Types.OTHER),
+		// TODO: ROWVERSION, TIMESTAMP, HIERARCHYID, GEOMETORY, GEOGRAPHY
 	};
 
 	public MSSQLDialect() {
