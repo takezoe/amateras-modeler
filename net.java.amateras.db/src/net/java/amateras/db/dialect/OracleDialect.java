@@ -20,19 +20,20 @@ public class OracleDialect extends AbstractDialect {
 
 	private static final IColumnType[] COLUMN_TYPES = {
 		new ColumnType("NUMBER", Messages.getResourceString("type.numeric"), true, Types.NUMERIC),
-		new ColumnType("INTEGER", Messages.getResourceString("type.integer"), true, Types.INTEGER),
-		new ColumnType("BINARY_FLOAT", Messages.getResourceString("type.bit"), false, Types.FLOAT),
-		new ColumnType("DOUBLE PRECISION", Messages.getResourceString("type.real"), false, Types.DOUBLE),
-		new ColumnType("VARCHAR2", Messages.getResourceString("type.string"),true, Types.VARCHAR),
-		//new ColumnType("NVARCHAR2", Messages.getResourceString("type.string"),true, Types.NVARCHAR),
+		new ColumnType("FLOAT", Messages.getResourceString("type.numeric"), true, Types.FLOAT),
+		new ColumnType("BINARY_FLOAT", Messages.getResourceString("type.numeric"), false, Types.FLOAT),
+		new ColumnType("BINARY_DOUBLE", Messages.getResourceString("type.numeric"), false, Types.DOUBLE),
 		new ColumnType("CHAR", Messages.getResourceString("type.char"),true, Types.CHAR),
-		//new ColumnType("NCHAR", Messages.getResourceString("type.char"),true, Types.NCHAR),
+		new ColumnType("VARCHAR2", Messages.getResourceString("type.string"),true, Types.VARCHAR),
+		new ColumnType("NCHAR", Messages.getResourceString("type.char"),true, Types.NCHAR),
+		new ColumnType("NVARCHAR2", Messages.getResourceString("type.string"),true, Types.NVARCHAR),
 		new ColumnType("CLOB", Messages.getResourceString("type.string"),true, Types.CLOB),
 		new ColumnType("LONG", Messages.getResourceString("type.string"),false, Types.CLOB),
+		new ColumnType("RAW", Messages.getResourceString("type.binary"), true, Types.BINARY),
+		new ColumnType("BLOB", Messages.getResourceString("type.binary"), false, Types.BLOB),
 		new ColumnType("DATE", Messages.getResourceString("type.date"), false, Types.DATE),
 		new ColumnType("TIMESTAMP", Messages.getResourceString("type.date"), true, Types.TIMESTAMP),
-		new ColumnType("RAW", Messages.getResourceString("type.binary"), false, Types.BINARY),
-		new ColumnType("BLOB", Messages.getResourceString("type.binary"), false, Types.BLOB),
+		new ColumnType("XMLTYPE", Messages.getResourceString("type.xml"), true, Types.SQLXML),
 	};
 
 	public OracleDialect() {
