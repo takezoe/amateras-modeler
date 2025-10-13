@@ -874,6 +874,7 @@ public class TableEditDialog extends Dialog {
 	}
 
 	protected void okPressed() {
+		updateColumn();
 		this.tableName = txtTableName.getText();
 		this.tableLogicalName = txtTableLogicalName.getText();
 		this.tableDescription = txtTableDescription.getText();
