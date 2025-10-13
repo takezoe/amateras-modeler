@@ -160,7 +160,7 @@ public class TableEditDialog extends Dialog {
 	@Override protected void constrainShellSize() {
 		Shell shell = getShell();
 		shell.pack();
-		shell.setSize(shell.getSize().x, 450);
+		shell.setSize(shell.getSize().x, 520);
 	}
 
 	private void syncColumnModelsToTable(){
@@ -268,7 +268,7 @@ public class TableEditDialog extends Dialog {
 				column.setColumnName("COLUMN_" + (columnModels.size() + 1));
 				column.setLogicalName(DBPlugin.getResourceString("label.column") + (columnModels.size() + 1));
 				column.setColumnType(dialect.getDefaultColumnType());
-				column.setSize("10");
+				column.setSize("");
 
 				int i = tblColumns.getSelectionIndex();
 				if(i == -1){
