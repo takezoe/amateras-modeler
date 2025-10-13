@@ -36,7 +36,7 @@
             class="net.java.amateras.db.dialect.H2Dialect"
             name="H2"/>
 	  <dialect
-            class="net.java.amateras.db.dialect.DerbyDialect"
+            class="net.java.amateras.db.dialect.legacy.DerbyDialect"
             name="Derby"/>
 	  <dialect
 	        class="net.java.amateras.db.dialect.MySQLDialect"
@@ -51,10 +51,10 @@
 	        class="net.java.amateras.db.dialect.MSSQLDialect"
 	        name="MSSQL"/>
 	 <dialect
-	        class="net.java.amateras.db.dialect.SybaseDialect"
+	        class="net.java.amateras.db.dialect.legacy.SybaseDialect"
 	        name="Sybase"/>
 	<dialect
-	        class="net.java.amateras.db.dialect.DB2Dialect"
+	        class="net.java.amateras.db.dialect.legacy.DB2Dialect"
 	        name="DB2">
   </dialect>
    </extension>

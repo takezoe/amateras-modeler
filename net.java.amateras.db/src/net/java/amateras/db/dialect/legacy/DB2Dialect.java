@@ -1,9 +1,12 @@
-package net.java.amateras.db.dialect;
+package net.java.amateras.db.dialect.legacy;
 
 import java.sql.Types;
 
 import net.java.amateras.db.DBPlugin;
 import net.java.amateras.db.Messages;
+import net.java.amateras.db.dialect.AbstractDialect;
+import net.java.amateras.db.dialect.ColumnType;
+import net.java.amateras.db.dialect.IColumnType;
 import net.java.amateras.db.validator.DiagramErrors;
 import net.java.amateras.db.visual.model.AbstractDBEntityModel;
 import net.java.amateras.db.visual.model.ColumnModel;

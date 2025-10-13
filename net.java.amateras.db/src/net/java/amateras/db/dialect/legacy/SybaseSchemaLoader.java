@@ -1,7 +1,7 @@
 /**
  * Sybase Schema Loader(61UAT Server DB_AG all_comments)
  */
-package net.java.amateras.db.dialect;
+package net.java.amateras.db.dialect.legacy;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.java.amateras.db.DBPlugin;
+import net.java.amateras.db.dialect.DefaultSchemaLoader;
+import net.java.amateras.db.dialect.IColumnType;
+import net.java.amateras.db.dialect.IDialect;
 import net.java.amateras.db.util.StringUtils;
 import net.java.amateras.db.visual.model.ColumnModel;
 import net.java.amateras.db.visual.model.IndexModel;
