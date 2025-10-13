@@ -11,6 +11,7 @@ import net.java.amateras.db.visual.model.TableModel;
 /**
  *
  * @since 1.0.8
+ * @deprecated We no longer maintain this dialect actively. Pull requests are still welcome.
  */
 public class SybaseDialect extends AbstractDialect {
 

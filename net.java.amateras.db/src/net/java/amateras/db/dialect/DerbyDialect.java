@@ -7,6 +7,9 @@ import net.java.amateras.db.visual.model.ColumnModel;
 import net.java.amateras.db.visual.model.RootModel;
 import net.java.amateras.db.visual.model.TableModel;
 
+/**
+ * @deprecated We no longer maintain this dialect actively. Pull requests are still welcome.
+ */
 public class DerbyDialect extends AbstractDialect {
 
 	private static final IColumnType[] COLUMN_TYPES = {

@@ -19,6 +19,9 @@ import net.java.amateras.db.visual.model.ColumnModel;
 import net.java.amateras.db.visual.model.IndexModel;
 import net.java.amateras.db.visual.model.TableModel;
 
+/**
+ * @deprecated We no longer maintain this dialect actively. Pull requests are still welcome.
+ */
 public class SybaseSchemaLoader extends DefaultSchemaLoader {
 
 	@Override
