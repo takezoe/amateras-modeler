@@ -317,10 +317,29 @@ public abstract class AbstractDialect implements IDialect {
 			ColumnModel columnModel, boolean schema, boolean alterTable, StringBuilder additions, boolean comment){
 		StringBuffer sb = new StringBuffer();
 		sb.append(StringUtils.rpad(columnModel.getColumnName(), 30) );
-		sb.append(TAB).append(columnModel.getColumnType().getName());
-		if(columnModel.getColumnType().supportSize() && columnModel.getSize().length() > 0){
-			sb.append("(").append(columnModel.getSize()).append(")");
+		
+		if (columnModel.getColumnType().getType() == Types.TIME_WITH_TIMEZONE) {
+			sb.append(TAB).append("TIME");
+			if(columnModel.getColumnType().supportSize() && columnModel.getSize().length() > 0){
+				sb.append("(").append(columnModel.getSize()).append(")");
+			}
+			sb.append(" WITH TIME ZONE");
+			
+		} else if (columnModel.getColumnType().getType() == Types.TIMESTAMP_WITH_TIMEZONE) {
+			sb.append(TAB).append("TIMESTAMP");
+			if(columnModel.getColumnType().supportSize() && columnModel.getSize().length() > 0){
+				sb.append("(").append(columnModel.getSize()).append(")");
+			}
+			sb.append(" WITH TIME ZONE");
+			
+		} else {
+			sb.append(TAB).append(columnModel.getColumnType().getName());
+			if(columnModel.getColumnType().supportSize() && columnModel.getSize().length() > 0){
+				sb.append("(").append(columnModel.getSize()).append(")");
+			}
 		}
+		
+		
 		if(columnModel.getDefaultValue().length()!=0){
 			sb.append(TAB).append(" DEFAULT ").append(columnModel.getDefaultValue());
 		}

@@ -30,7 +30,9 @@ public class H2Dialect extends AbstractDialect {
 		new ColumnType("DOUBLE PRECISION", Messages.getResourceString("type.real"), false, Types.DOUBLE),
 		new ColumnType("DATE", Messages.getResourceString("type.date"), false, Types.DATE),
 		new ColumnType("TIME", Messages.getResourceString("type.time"), true, Types.TIME),
+		new ColumnType("TIME WITH TIME ZONE", Messages.getResourceString("type.time"), true, Types.TIME_WITH_TIMEZONE),
 		new ColumnType("TIMESTAMP", Messages.getResourceString("type.datetime"), true, Types.TIMESTAMP),
+		new ColumnType("TIMESTAMP WITH TIME ZONE", Messages.getResourceString("type.datetime"), true, Types.TIMESTAMP_WITH_TIMEZONE),
 	};
 
 	public H2Dialect(){
@@ -45,9 +47,25 @@ public class H2Dialect extends AbstractDialect {
 		if(columnModel.isAutoIncrement()){
 			sb.append(" IDENTITY");
 		} else {
-			sb.append(" ").append(columnModel.getColumnType().getName());
-			if(columnModel.getColumnType().supportSize() && columnModel.getSize().length() > 0){
-				sb.append("(").append(columnModel.getSize()).append(")");
+			if (columnModel.getColumnType().getType() == Types.TIME_WITH_TIMEZONE) {
+				sb.append(" TIME");
+				if(columnModel.getColumnType().supportSize() && columnModel.getSize().length() > 0){
+					sb.append("(").append(columnModel.getSize()).append(")");
+				}
+				sb.append(" WITH TIME ZONE");
+				
+			} else if (columnModel.getColumnType().getType() == Types.TIMESTAMP_WITH_TIMEZONE) {
+				sb.append(" TIMESTAMP");
+				if(columnModel.getColumnType().supportSize() && columnModel.getSize().length() > 0){
+					sb.append("(").append(columnModel.getSize()).append(")");
+				}
+				sb.append(" WITH TIME ZONE");
+				
+			} else {
+				sb.append(" ").append(columnModel.getColumnType().getName());
+				if(columnModel.getColumnType().supportSize() && columnModel.getSize().length() > 0){
+					sb.append("(").append(columnModel.getSize()).append(")");
+				}
 			}
 		}
 		if(columnModel.getDefaultValue().length()!=0){

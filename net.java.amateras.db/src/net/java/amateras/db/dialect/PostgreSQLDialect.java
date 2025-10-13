@@ -24,7 +24,9 @@ public class PostgreSQLDialect extends AbstractDialect {
 		new ColumnType("SMALLINT", Messages.getResourceString("type.integer"), false, Types.SMALLINT),
 		new ColumnType("TEXT", Messages.getResourceString("type.string"), false, Types.VARCHAR),
 		new ColumnType("TIME", Messages.getResourceString("type.time"), true, Types.TIME),
+		new ColumnType("TIME WITH TIME ZONE", Messages.getResourceString("type.time"), true, Types.TIME_WITH_TIMEZONE),
 		new ColumnType("TIMESTAMP", Messages.getResourceString("type.datetime"), true, Types.TIMESTAMP),
+		new ColumnType("TIMESTAMP WITH TIME ZONE", Messages.getResourceString("type.datetime"), true, Types.TIMESTAMP_WITH_TIMEZONE),
 		new ColumnType("SERIAL", Messages.getResourceString("type.serial"), false, Types.INTEGER),
 		new ColumnType("BIGSERIAL", Messages.getResourceString("type.serial"), false, Types.BIGINT),
 		new ColumnType("XML", Messages.getResourceString("type.xml"), false, Types.SQLXML),
@@ -51,9 +53,25 @@ public class PostgreSQLDialect extends AbstractDialect {
 				sb.append(" SERIAL");
 			}
 		} else {
-			sb.append(" ").append(columnModel.getColumnType().getName());
-			if(columnModel.getColumnType().supportSize() && columnModel.getSize().length() > 0){
-				sb.append("(").append(columnModel.getSize()).append(")");
+			if (columnModel.getColumnType().getType() == Types.TIME_WITH_TIMEZONE) {
+				sb.append(" TIME");
+				if(columnModel.getColumnType().supportSize() && columnModel.getSize().length() > 0){
+					sb.append("(").append(columnModel.getSize()).append(")");
+				}
+				sb.append(" WITH TIME ZONE");
+				
+			} else if (columnModel.getColumnType().getType() == Types.TIMESTAMP_WITH_TIMEZONE) {
+				sb.append(" TIMESTAMP");
+				if(columnModel.getColumnType().supportSize() && columnModel.getSize().length() > 0){
+					sb.append("(").append(columnModel.getSize()).append(")");
+				}
+				sb.append(" WITH TIME ZONE");
+				
+			} else {
+				sb.append(" ").append(columnModel.getColumnType().getName());
+				if(columnModel.getColumnType().supportSize() && columnModel.getSize().length() > 0){
+					sb.append("(").append(columnModel.getSize()).append(")");
+				}
 			}
 			if(columnModel.isNotNull()){
 				sb.append(" NOT NULL");

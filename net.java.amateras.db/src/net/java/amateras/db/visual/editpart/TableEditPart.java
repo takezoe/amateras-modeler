@@ -1,5 +1,6 @@
 package net.java.amateras.db.visual.editpart;
 
+import java.sql.Types;
 import java.util.List;
 
 import net.java.amateras.db.DBPlugin;
@@ -82,13 +83,30 @@ public class TableEditPart extends AbstractDBEntityEditPart implements NodeEditP
 		StringBuffer sb = new StringBuffer();
 		if(root.getLogicalMode()){
 			sb.append(model.getColumnType().getLogicalName());
+			if(model.getColumnType().supportSize() && model.getSize().length() > 0){
+				sb.append("(").append(model.getSize()).append(")");
+			}
 		} else {
-			sb.append(model.getColumnType().getName());
-		}
-		if(model.getColumnType().supportSize() && model.getSize().length() > 0){
-			sb.append("(");
-			sb.append(model.getSize());
-			sb.append(")");
+			if (model.getColumnType().getType() == Types.TIME_WITH_TIMEZONE) {
+				sb.append("TIME");
+				if(model.getColumnType().supportSize() && model.getSize().length() > 0){
+					sb.append("(").append(model.getSize()).append(")");
+				}
+				sb.append(" WITH TIME ZONE");
+				
+			} else if (model.getColumnType().getType() == Types.TIMESTAMP_WITH_TIMEZONE) {
+				sb.append("TIMESTAMP");
+				if(model.getColumnType().supportSize() && model.getSize().length() > 0){
+					sb.append("(").append(model.getSize()).append(")");
+				}
+				sb.append(" WITH TIME ZONE");
+				
+			} else {
+				sb.append(model.getColumnType().getName());
+				if(model.getColumnType().supportSize() && model.getSize().length() > 0){
+					sb.append("(").append(model.getSize()).append(")");
+				}
+			}
 		}
 		ColumnFigure label1 = new ColumnFigure();
 		ColumnFigure label2 = new ColumnFigure();

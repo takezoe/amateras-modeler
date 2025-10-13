@@ -1,5 +1,6 @@
 package net.java.amateras.db.visual.editpart;
 
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -932,10 +933,26 @@ public class TableEditDialog extends Dialog {
 
 	private void updateTableItem(TableItem item, ColumnModel model){
 		StringBuilder sb = new StringBuilder();
-		sb.append(model.getColumnType().getName());
-		if(model.getColumnType().supportSize() && model.getSize().length() > 0){
-			sb.append("(").append(model.getSize()).append(")");
+		
+		if (model.getColumnType().getType() == Types.TIME_WITH_TIMEZONE) {
+			sb.append("TIME");
+			if(model.getColumnType().supportSize() && model.getSize().length() > 0){
+				sb.append("(").append(model.getSize()).append(")");
+			}
+			sb.append(" WITH TIME ZONE");
+		} else if (model.getColumnType().getType() == Types.TIMESTAMP_WITH_TIMEZONE) {
+			sb.append("TIMESTAMP");
+			if(model.getColumnType().supportSize() && model.getSize().length() > 0){
+				sb.append("(").append(model.getSize()).append(")");
+			}
+			sb.append(" WITH TIME ZONE");
+		} else {
+			sb.append(model.getColumnType().getName());
+			if(model.getColumnType().supportSize() && model.getSize().length() > 0){
+				sb.append("(").append(model.getSize()).append(")");
+			}
 		}
+		
 
 		item.setText(0, model.getLogicalName());
 		item.setText(1, model.getColumnName());

@@ -9,7 +9,7 @@ public class ColumnType implements IColumnType, Serializable {
 	private boolean supportSize;
 	private int type;
 	
-	public ColumnType(String name, String logicalName, boolean supportSize,int type){
+	public ColumnType(String name, String logicalName, boolean supportSize, int type){
 		this.name = name;
 		this.logicalName = logicalName;
 		this.supportSize = supportSize;
