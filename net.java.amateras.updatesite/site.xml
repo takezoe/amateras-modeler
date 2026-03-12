@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/net.java.amateras.modeler_2.3.0.202603091846.jar" id="net.java.amateras.modeler" version="2.3.0.202603091846"/>
+   <category-def name="Tool" label="ツール"/>
+</site>

@@ -3,16 +3,16 @@ package net.java.amateras.db.visual.action;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.java.amateras.db.DBPlugin;
-import net.java.amateras.db.visual.editor.VisualDBEditor;
-import net.java.amateras.db.visual.model.ICloneableModel;
-
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.ui.actions.Clipboard;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
+
+import net.java.amateras.db.DBPlugin;
+import net.java.amateras.db.visual.editor.VisualDBEditor;
+import net.java.amateras.db.visual.model.ICloneableModel;
 
 /**
  * Copy selected entity models in the diagram editor.
@@ -39,7 +39,7 @@ public class CopyAction extends SelectionAction {
 
 	@SuppressWarnings("unchecked")
 	public void run() {
-		List<EditPart> selection = getSelectedObjects();
+		List<Object> selection = getSelectedObjects();
 		List<ICloneableModel> copied = new ArrayList<ICloneableModel>();
 		for (int i = 0; i < selection.size(); i++) {
 			EditPart editPart = (EditPart) selection.get(i);

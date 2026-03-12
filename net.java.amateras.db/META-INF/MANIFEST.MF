@@ -38,4 +38,4 @@ Export-Package: net.java.amateras.db,
  net.java.amateras.db.visual.generate,
  net.java.amateras.db.visual.model,
  net.java.amateras.db.wizard
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

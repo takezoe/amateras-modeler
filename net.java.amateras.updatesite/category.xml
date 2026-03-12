@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+	<feature id="net.java.amateras.modeler" version="2.3.0.qualifier">
+		<category name="tool" />
+	</feature>
+	<category-def name="tool" label="TOOL">
+		<description>
+			ツール
+		</description>
+	</category-def>
+</site>

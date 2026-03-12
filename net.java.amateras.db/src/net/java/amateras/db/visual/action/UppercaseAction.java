@@ -2,6 +2,11 @@ package net.java.amateras.db.visual.action;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.dialogs.MessageDialog;
+
 import net.java.amateras.db.DBPlugin;
 import net.java.amateras.db.util.UIUtils;
 import net.java.amateras.db.visual.editor.VisualDBEditor;
@@ -9,11 +14,6 @@ import net.java.amateras.db.visual.editpart.TableEditPart;
 import net.java.amateras.db.visual.model.ColumnModel;
 import net.java.amateras.db.visual.model.IndexModel;
 import net.java.amateras.db.visual.model.TableModel;
-
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.gef.EditPart;
-import org.eclipse.gef.ui.actions.SelectionAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 
 /**
  * Converts selected table name and column name to uppercase.
@@ -39,7 +39,7 @@ public class UppercaseAction extends SelectionAction {
 			return;
 		}
 
-		List<EditPart> selection = getSelectedObjects();
+		List<Object> selection = getSelectedObjects();
 
 		for (int i = 0; i < selection.size(); i++) {
 			EditPart editPart = (EditPart) selection.get(i);

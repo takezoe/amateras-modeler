@@ -2,6 +2,13 @@ name: build
 
 on: [push, pull_request]
 
+permissions:
+  contents: write
+
+  # Git Hub Pagesに公開する対象フォルダ
+env:
+  REPOSITORY_PATH: net.java.amateras.updatesite/target/repository
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,3 +22,30 @@ jobs:
         distribution: temurin
     - name: Build
       run: ./mvnw -B verify
+
+    - name: 📄 Create Info HTML for Browser Access
+      run: |
+       REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+       HOME_URL="https://${{ github.repository_owner }}.github.io/${REPO_NAME}/"
+       TEMPLATE_PATH=".github/workflows/update-site-index.html"
+       TARGET_PATH="${{ env.REPOSITORY_PATH }}/index.html"
+
+        # テンプレートをコピーし、変数を sed で置換
+        # {{REPO_NAME}} と {{HOME_URL}} を実際の実装値に書き換える
+       cp $TEMPLATE_PATH $TARGET_PATH
+       sed -i "s|{{REPO_NAME}}|$REPO_NAME|g" $TARGET_PATH
+       sed -i "s|{{HOME_URL}}|$HOME_URL|g" $TARGET_PATH
+
+    - name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+       # 公開する成果物があるフォルダ
+       folder: ${{ env.REPOSITORY_PATH }}
+       # 公開専用の別ブランチ。ここをgitpageで公開する想定
+       branch: gh-pages
+       # ブランチによって保存先を自動変更する_
+       target-folder: updatesite/${{ github.ref_name }}
+       # プッシュ先は一度全て削除
+       clean: true 
+       # 履歴は残さない
+       single-commit: true
